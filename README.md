@@ -5,3 +5,27 @@ This is the CS490 Project for Team Fashionably Late
 - McCarten, Stephanie
 - Patel, Neil D.
 - Patel, Pruthul
+
+Frontend Framework and Language
+•Framework: Angular
+•Language: JavaScript
+
+Component Library
+•Angular Material UI
+
+API
+•REST
+
+Backend Language
+•Node.js (with Express.js)
+
+Database
+•Firebase
+
+Authentication Model
+•Firebase Authentication
+
+Unit Test Frameworks
+•Frontend: Jasmine / Karma
+•Backend: Jasmine
+
