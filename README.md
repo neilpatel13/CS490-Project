@@ -11,7 +11,7 @@ Frontend Framework and Language
 •Language: JavaScript
 
 Component Library
-•Angular Material UI
+•React Material UI
 
 API
 •REST
