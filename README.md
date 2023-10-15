@@ -7,7 +7,7 @@ This is the CS490 Project for Team Fashionably Late
 - Patel, Pruthul
 
 Frontend Framework and Language
-•Framework: Angular
+•Framework: React
 •Language: JavaScript
 
 Component Library
