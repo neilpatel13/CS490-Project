@@ -1,0 +1,26 @@
+{
+  "name": "crush-it",
+  "version": "1.0.0",
+  "description": "This is the CS490 Project for Team Fashionably Late\r - Bunglawala, Mueen\r - Bedi, Krish R\r - McCarten, Stephanie\r - Patel, Neil D.\r - Patel, Pruthul",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
