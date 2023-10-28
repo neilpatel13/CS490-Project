@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 
+
+
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -13,9 +15,10 @@ const LoginScreen = () => {
     };
 
     return (
-        <FormContainer>
-            <h1>Sign In</h1>
 
+        <FormContainer>
+
+            <h1>Sign In</h1>
             <Form onSubmit={submitHandler}>
                 <Form.Group className='my-2' controlId='email'>
                     <Form.Label>Email Address/username</Form.Label>
@@ -47,6 +50,7 @@ const LoginScreen = () => {
                     </Col>
                 </Row>
         </FormContainer>
+
     );
 };
 export default LoginScreen
