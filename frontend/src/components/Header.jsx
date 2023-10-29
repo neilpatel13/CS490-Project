@@ -19,7 +19,7 @@ const Header = () => {
               </Nav.Link>
               </LinkContainer>
               <LinkContainer to='/register'>
-              <Nav.Link href='/register'>
+              <Nav.Link>
                 <FaSignOutAlt /> Sign up
               </Nav.Link>
               </LinkContainer>
