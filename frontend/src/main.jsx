@@ -10,11 +10,14 @@ import App from './App.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import LoginScreen from './screens/LoginScreen.jsx';
+import RegisterScreen from './screens/RegisterScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route index ={true} path='/' element={<LoginScreen />} />
+      <Route path='/register' element={<RegisterScreen />} />
+      
     </Route>
   )
 );
