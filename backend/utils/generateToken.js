@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 const generateToken = (res, userId) => {
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
@@ -13,4 +14,9 @@ const generateToken = (res, userId) => {
     })
 }
 
-export default generateToken;
+const generateVerificationToken = () => {
+    const token = crypto.randomBytes(20).toString('hex'); // Generate a random hexadecimal token (40 characters long)
+    return token;
+};
+
+export { generateToken, generateVerificationToken };
