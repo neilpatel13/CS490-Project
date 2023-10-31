@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-//import { Link, useLocation, useNavigate } from 'react-router-dom';
-import{Link, useNavigate} from 'react-router-bootstrap';
+import{Link, useNavigate} from 'react-router-dom';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,7 +22,7 @@ const RegisterScreen = () => {
   
     useEffect(() => {
       if (userInfo) {
-        navigate('/');
+        navigate('/register');
       }
     }, [navigate, userInfo]);
     
@@ -45,7 +44,7 @@ const RegisterScreen = () => {
           try {
             const res = await register({ name, email, password }).unwrap();
             dispatch(setCredentials({ ...res }));
-            navigate('/');
+            navigate('/profile');
           } catch (err) {
             toast.error(err?.data?.message || err.error);
           }
@@ -106,7 +105,7 @@ const RegisterScreen = () => {
             
             <Row className='py-3'>
                 <Col>
-                    Already Have An Account? Login <Link to={'/'}>here</Link>
+                    Already Have An Account? Login <Link to={'/login'}>here</Link>
                 </Col>
             </Row>
         </FormContainer>

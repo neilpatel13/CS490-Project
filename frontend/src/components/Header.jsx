@@ -19,7 +19,7 @@ const Header = () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
-      navigate('/');
+      navigate('/login');
     } catch (err) {
       console.error(err);
     }
@@ -41,7 +41,7 @@ const Header = () => {
                     <LinkContainer to='/profile'>
                       <NavDropdown.Item>Profile</NavDropdown.Item>
                     </LinkContainer>
-                    <NavDropdown.Item onclick={logoutHandler}>
+                    <NavDropdown.Item onClick={logoutHandler}>
                       Logout
                     </NavDropdown.Item>
                   </NavDropdown>
@@ -50,7 +50,7 @@ const Header = () => {
                 <>
               
 
-              <LinkContainer to='/'>
+              <LinkContainer to='/login'>
               <Nav.Link>
                 <FaSignInAlt /> Sign In
               </Nav.Link>
