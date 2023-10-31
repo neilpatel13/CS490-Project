@@ -76,7 +76,8 @@ const getUserProfile = asyncHandler(async(req, res) => {
     const user = {
         _id: req.user._id,
         name: req.user.name,
-        email: req.user.email
+        email: req.user.email,
+        personalSettings: req.user.personalSettings
     }
     res.status(200).json(user);
 })
