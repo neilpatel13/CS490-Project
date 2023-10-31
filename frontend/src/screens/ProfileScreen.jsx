@@ -15,6 +15,13 @@ const ProfileScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // State for Pomodoro Timer settings
+  const [pomodoroTime, setPomodoroTime] = useState(25);
+  const [shortBreakTime, setShortBreakTime] = useState(5);
+  const [longBreakTime, setLongBreakTime] = useState(15);
+
+
+
   const dispatch = useDispatch();
 
   const { userInfo } = useSelector((state) => state.auth);
@@ -109,6 +116,52 @@ const ProfileScreen = () => {
           ></Form.Control>
         </Form.Group>
 
+        {/* Pomodoro Timer settings */}
+        <Form.Group className="my-2" controlId="pomodoroTime">
+          <Form.Label>Pomodoro Timer (minutes)</Form.Label>
+          <Form.Control
+            type="number"
+            placeholder="Pomodoro Timer"
+            value={pomodoroTime}
+            onChange={(e) => setPomodoroTime(e.target.value)}
+          />
+        </Form.Group>
+
+        <Form.Group className="my-2" controlId="shortBreakTime">
+          <Form.Label>Short Break (minutes)</Form.Label>
+          <Form.Control
+            type="number"
+            placeholder="Short Break"
+            value={shortBreakTime}
+            onChange={(e) => setShortBreakTime(e.target.value)}
+          />
+        </Form.Group>
+
+        <Form.Group className="my-2" controlId="longBreakTime">
+          <Form.Label>Long Break (minutes)</Form.Label>
+          <Form.Control
+            type="number"
+            placeholder="Long Break"
+            value={longBreakTime}
+            onChange={(e) => setLongBreakTime(e.target.value)}
+          />
+        </Form.Group>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <Button type='submit' variant='primary' className='mt-3'>
           Update
         </Button>
@@ -116,6 +169,7 @@ const ProfileScreen = () => {
         {isLoading && <Loader />}
       </Form>
     </FormContainer>
+    
   );
 };
 
