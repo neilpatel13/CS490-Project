@@ -14,6 +14,14 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true,
+        validate: {
+            validator: function (v) {
+                // Password complexity rules using a regular expression
+                return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/.test(v);
+            },
+            message: 'Password does not meet complexity requirements',
+        },
+
     },
 },
 {

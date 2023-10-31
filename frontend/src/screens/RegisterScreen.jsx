@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+//import { Link, useLocation, useNavigate } from 'react-router-dom';
+import{Link, useNavigate} from 'react-router-bootstrap';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,6 +29,15 @@ const RegisterScreen = () => {
     
     const submitHandler = async (e) => {
         e.preventDefault();
+        
+        //password complexity: Minumum 8 character, At least one upper, At least one lower, At least one digit
+        // Requires symbols such as !@#$%^&*
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+          toast.error('Password does not meet complexity requirements');
+          return;
+        }
     
         if (password !== confirmPassword) {
           toast.error('Passwords do not match');
@@ -90,7 +100,7 @@ const RegisterScreen = () => {
                     Sign Up
                 </Button>
 
-                {isLoading && <Loader />}
+                {isLoading && <Loader/>}
 
             </Form>
             
