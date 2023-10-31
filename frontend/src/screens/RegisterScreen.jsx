@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+//import { Link, useLocation, useNavigate } from 'react-router-dom';
+import{Link, useNavigate} from 'react-router-bootstrap';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -99,7 +100,7 @@ const RegisterScreen = () => {
                     Sign Up
                 </Button>
 
-                {isLoading && <Loader />}
+                {isLoading && <Loader/>}
 
             </Form>
             

@@ -11,6 +11,7 @@ import { setCredentials } from '../slices/authSlice';
 const ProfileScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const[currentPassword, setCurrntPassword] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -29,16 +30,17 @@ const ProfileScreen = () => {
     e.preventDefault();
 
     //password complexity: Minumum 8 character, At least one upper, At least one lower, At least one digit
-        // Requires symbols such as !@#$%^&*
-        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+    // Requires symbols such as !@#$%^&*
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
 
-        if (!passwordRegex.test(password)) {
-          toast.error('Password does not meet complexity requirements');
-          return;
-        }
+    if (!passwordRegex.test(password)) {
+      toast.error('Password does not meet complexity requirements');
+      return;
+    }
 
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
+  
     } else {
       try {
         const res = await updateProfile({
@@ -78,11 +80,20 @@ const ProfileScreen = () => {
             onChange={(e) => setEmail(e.target.value)}
           ></Form.Control>
         </Form.Group>
-        <Form.Group className='my-2' controlId='password'>
-          <Form.Label>Password</Form.Label>
+        <Form.Group className='my-2' controlId='currentPassword'>
+          <Form.Label>Current Password</Form.Label>
           <Form.Control
             type='password'
-            placeholder='Enter password'
+            placeholder='Current Password'
+            value={currentPassword}
+            onChange={(e) => setCurrntPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group className='my-2' controlId='password'>
+          <Form.Label>New Password</Form.Label>
+          <Form.Control
+            type='password'
+            placeholder='New Password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           ></Form.Control>
@@ -92,7 +103,7 @@ const ProfileScreen = () => {
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             type='password'
-            placeholder='Confirm password'
+            placeholder='Confirm New Password'
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           ></Form.Control>
