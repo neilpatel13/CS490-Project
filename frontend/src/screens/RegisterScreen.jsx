@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 
+
 const RegisterScreen = () => {
     const [name, setName] = useState('');
     const[email, setEmail] = useState('');
@@ -43,7 +44,7 @@ const RegisterScreen = () => {
                     <Form.Control
                         type='password'
                         placeholder='Enter Password'
-                        value={name}
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         ></Form.Control>
                 </Form.Group>
