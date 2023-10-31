@@ -7,6 +7,9 @@ import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import { useUpdateUserMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
+//import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 
 
 const ProfileScreen = () => {
@@ -36,6 +39,16 @@ const ProfileScreen = () => {
       setShortBreakTime(userInfo.short);
       setLongBreakTime(userInfo.long);
   }, [userInfo.email, userInfo.name, userInfo.pomodoro, userInfo.short, userInfo.long]);
+
+  //const history = useHistory();
+
+/**
+ * const handleCancelClick = () => {
+    history.push('/');
+  };
+ */
+  
+
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -163,7 +176,13 @@ const ProfileScreen = () => {
         </Form.Group>
 
 
-        <Button type='submit' variant='primary' className='mt-3'>
+        {/* Buttons */}
+        <Link to="/"> {/* This will navigate to the home page */}
+        <Button type="button" variant="secondary" className="mt-3">
+          Cancel
+        </Button>
+        </Link>
+        <Button type="submit" variant="primary" className="mt-3">
           Update
         </Button>
 
