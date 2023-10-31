@@ -27,28 +27,37 @@ const RegisterScreen = () => {
     }, [navigate, userInfo]);
     
     const submitHandler = async (e) => {
-        e.preventDefault();
-        
-        //password complexity: Minumum 8 character, At least one upper, At least one lower, At least one digit
-        // Requires symbols such as !@#$%^&*
-        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
-
-        if (!passwordRegex.test(password)) {
-          toast.error('Password does not meet complexity requirements');
-          return;
-        }
+      e.preventDefault();
     
-        if (password !== confirmPassword) {
+      // Check length
+      if (password.length < 12) {
+          toast.error('Password must be at least 12 characters long');
+          return;
+      }
+  
+      // Check complexity
+      let checksPassed = 0;
+      if (/[A-Z]/.test(password)) checksPassed++; // Uppercase letter
+      if (/[a-z]/.test(password)) checksPassed++; // Lowercase letter
+      if (/\d/.test(password)) checksPassed++; // Numeric digit
+      if (/\W/.test(password)) checksPassed++; // Special character
+  
+      if (checksPassed < 2) {
+          toast.error('Password must contain at least two of the following: an uppercase letter, a lowercase letter, a numeric digit, or a special character');
+          return;
+      }
+  
+      if (password !== confirmPassword) {
           toast.error('Passwords do not match');
-        } else {
+      } else {
           try {
-            const res = await register({ name, email, password }).unwrap();
-            dispatch(setCredentials({ ...res }));
-            navigate('/profile');
+              const res = await register({ name, email, password }).unwrap();
+              dispatch(setCredentials({ ...res }));
+              navigate('/');
           } catch (err) {
-            toast.error(err?.data?.message || err.error);
+              toast.error(err?.data?.message || err.error);
           }
-        }
+      }
       };
     
     return (
