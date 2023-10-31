@@ -8,6 +8,7 @@ import Loader from '../components/Loader';
 import { useUpdateUserMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
 
+
 const ProfileScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -28,33 +29,41 @@ const ProfileScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
-    //password complexity: Minumum 8 character, At least one upper, At least one lower, At least one digit
-    // Requires symbols such as !@#$%^&*
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
-
-    if (!passwordRegex.test(password)) {
-      toast.error('Password does not meet complexity requirements');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
   
-    } else {
-      try {
-        const res = await updateProfile({
-          _id: userInfo._id,
-          name,
-          email,
-          password,
-        }).unwrap();
-        console.log(res);
-        dispatch(setCredentials(res));
-        toast.success('Profile updated successfully');
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
+    // Check if the password fields are not empty and contain a new password
+    const isPasswordChanged = password !== '' && confirmPassword !== '';
+  
+    if (isPasswordChanged) {
+      // Add your password complexity validation here
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+
+
+
+      if (password !== confirmPassword) {
+        toast.error('Passwords do not match');
+        return;
+      } else if (!passwordRegex.test(password)) {
+        toast.error('Password does not meet complexity requirements');
+        return;
       }
+    }
+  
+    try {
+      const userData = {
+        _id: userInfo._id,
+        name,
+      };
+  
+      // Only include password fields if they are intended to be updated
+      if (isPasswordChanged) {
+        userData.password = password;
+      }
+  
+      const res = await updateProfile(userData).unwrap();
+      dispatch(setCredentials(res));
+      toast.success('Profile updated successfully');
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
     }
   };
   return (
