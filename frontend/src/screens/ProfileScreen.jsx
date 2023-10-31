@@ -58,15 +58,26 @@ const ProfileScreen = () => {
   
     if (isPasswordChanged) {
       // Add your password complexity validation here
-      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
 
 
+      if (password.length < 12) {
+        toast.error('Password must be at least 12 characters long');
+        return;
+      }
+      // Check complexity
+      let checksPassed = 0;
+      if (/[A-Z]/.test(password)) checksPassed++; // Uppercase letter
+      if (/[a-z]/.test(password)) checksPassed++; // Lowercase letter
+      if (/\d/.test(password)) checksPassed++; // Numeric digit
+      if (/\W/.test(password)) checksPassed++; // Special character
+  
+      if (checksPassed < 2) {
+          toast.error('Password must contain at least two of the following: an uppercase letter, a lowercase letter, a numeric digit, or a special character');
+          return;
+      }
 
       if (password !== confirmPassword) {
         toast.error('Passwords do not match');
-        return;
-      } else if (!passwordRegex.test(password)) {
-        toast.error('Password does not meet complexity requirements');
         return;
       }
     }
