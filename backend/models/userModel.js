@@ -32,8 +32,21 @@ const userSchema = mongoose.Schema({
             },
             message: 'Password does not meet complexity requirements',
         },
-
     },
+    personalSettings: {
+        pomodoro: {
+            type: Number,
+            default: 25,
+        },
+        short: {
+            type: Number,
+            default: 5,
+        },
+        long: {
+            type: Number,
+            default: 15,
+        }
+    }
 },
 {
     timestamps: true
