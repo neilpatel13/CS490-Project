@@ -27,6 +27,16 @@ const ProfileScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    //password complexity: Minumum 8 character, At least one upper, At least one lower, At least one digit
+        // Requires symbols such as !@#$%^&*
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+          toast.error('Password does not meet complexity requirements');
+          return;
+        }
+
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
     } else {
