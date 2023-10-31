@@ -17,9 +17,9 @@ const ProfileScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   // State for Pomodoro Timer settings
-  const [pomodoroTime, setPomodoroTime] = useState(25);
-  const [shortBreakTime, setShortBreakTime] = useState(5);
-  const [longBreakTime, setLongBreakTime] = useState(15);
+  const [pomodoroTime, setPomodoroTime] = useState();
+  const [shortBreakTime, setShortBreakTime] = useState();
+  const [longBreakTime, setLongBreakTime] = useState();
 
 
 
@@ -30,9 +30,12 @@ const ProfileScreen = () => {
   const [updateProfile, { isLoading }] = useUpdateUserMutation();
 
   useEffect(() => {
-    setName(userInfo.name);
-    setEmail(userInfo.email);
-  }, [userInfo.email, userInfo.name]);
+      setName(userInfo.name);
+      setEmail(userInfo.email);
+      setPomodoroTime(userInfo.pomodoro);
+      setShortBreakTime(userInfo.short);
+      setLongBreakTime(userInfo.long);
+  }, [userInfo.email, userInfo.name, userInfo.pomodoro, userInfo.short, userInfo.long]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -59,6 +62,9 @@ const ProfileScreen = () => {
       const userData = {
         _id: userInfo._id,
         name,
+        pomodoro: pomodoroTime,
+        short: shortBreakTime,
+        long: longBreakTime,
       };
   
       // Only include password fields if they are intended to be updated
