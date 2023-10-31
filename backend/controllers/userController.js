@@ -81,7 +81,7 @@ const getUserProfile = asyncHandler(async(req, res) => {
     res.status(200).json(user);
 })
 
-// @desc    Update user profile
+// @desc    C
 // route    PUT /api/users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async(req, res) => {
@@ -108,10 +108,25 @@ const updateUserProfile = asyncHandler(async(req, res) => {
     }
 });
 
+const checkCurrentPassword = asyncHandler(async(req, res) => {
+    const { email, currentPassword } = req.body;
+    
+    const user = await User.findOne({ email });
+
+    if(user && (await user.matchPassword(currentPassword))) {
+        res.status(200).json({ message: 'Current password is correct' });
+    } else {
+        res.status(401);
+        throw new Error('Current password is incorrect');
+    }
+});
+
+
 export {
     authUser,
     registerUser,
     logoutUser,
     getUserProfile,
-    updateUserProfile
+    updateUserProfile,
+    checkCurrentPassword
 };
