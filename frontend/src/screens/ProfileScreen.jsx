@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 
 
 const ProfileScreen = () => {
-  const [email, setEmail] = useState('');
+  //const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const[currentPassword, setCurrntPassword] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +34,7 @@ const ProfileScreen = () => {
 
   useEffect(() => {
       setName(userInfo.name);
-      setEmail(userInfo.email);
+      //setEmail(userInfo.email);
       setPomodoroTime(userInfo.pomodoro);
       setShortBreakTime(userInfo.short);
       setLongBreakTime(userInfo.long);
@@ -114,7 +114,7 @@ const ProfileScreen = () => {
             onChange={(e) => setName(e.target.value)}
           ></Form.Control>
         </Form.Group>
-        <Form.Group className='my-2' controlId='email'>
+        {/* <Form.Group className='my-2' controlId='email'>
           <Form.Label>Email Address</Form.Label>
           <Form.Control
             type='email'
@@ -122,7 +122,7 @@ const ProfileScreen = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           ></Form.Control>
-        </Form.Group>
+        </Form.Group> */}
         <Form.Group className='my-2' controlId='currentPassword'>
           <Form.Label>Current Password</Form.Label>
           <Form.Control
