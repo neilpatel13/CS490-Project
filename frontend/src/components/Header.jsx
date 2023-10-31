@@ -19,7 +19,7 @@ const Header = () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
-      navigate('/');
+      navigate('/login');
     } catch (err) {
       console.error(err);
     }
@@ -50,7 +50,7 @@ const Header = () => {
                 <>
               
 
-              <LinkContainer to='/'>
+              <LinkContainer to='/login'>
               <Nav.Link>
                 <FaSignInAlt /> Sign In
               </Nav.Link>
