@@ -108,7 +108,7 @@ const updateUserProfile = asyncHandler(async(req, res) => {
     }
 });
 
-const checkCurrentPassword = asyncHandler(async(req, res) => {
+const checkPassword = asyncHandler(async(req, res) => {
     const { email, currentPassword } = req.body;
     
     const user = await User.findOne({ email });
@@ -128,5 +128,5 @@ export {
     logoutUser,
     getUserProfile,
     updateUserProfile,
-    checkCurrentPassword
+    checkPassword
 };
