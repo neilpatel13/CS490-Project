@@ -54,6 +54,9 @@ const registerUser = asyncHandler(async(req, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
+            pomodoro: user.pomodoro,
+            short: user.pomodoro,
+            long: user.long,
         });
     } else {
         res.status(400);
@@ -79,7 +82,10 @@ const getUserProfile = asyncHandler(async(req, res) => {
     const user = {
         _id: req.user._id,
         name: req.user.name,
-        email: req.user.email
+        email: req.user.email,
+        pomodoro: req.user.pomodoro,
+        short: req.user.short,
+        long: req.user.long,
     }
     res.status(200).json(user);
 })

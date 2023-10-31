@@ -52,14 +52,11 @@ const ProfileScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-  
     // Check if the password fields are not empty and contain a new password
     const isPasswordChanged = password !== '' && confirmPassword !== '';
   
     if (isPasswordChanged) {
-      // Add your password complexity validation here
-
-
+      
       if (password.length < 12) {
         toast.error('Password must be at least 12 characters long');
         return;
