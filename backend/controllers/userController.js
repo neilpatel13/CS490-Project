@@ -42,7 +42,7 @@ const registerUser = asyncHandler(async(req, res) => {
     const user = await User.create({
         name,
         email,
-        password
+        password,
     });
 
     if(user) {
@@ -50,13 +50,13 @@ const registerUser = asyncHandler(async(req, res) => {
         res.status(201).json({
             _id: user._id,
             name: user.name,
-            email: user.email
+            email: user.email,
         });
     } else {
         res.status(400);
         throw new Error('Invalid user data');
     }
-})
+});
 
 // @desc    Logout user
 // route    POST /api/users/logout
@@ -106,7 +106,7 @@ const updateUserProfile = asyncHandler(async(req, res) => {
         res.status(404);
         throw new Error('User not found');
     }
-})
+});
 
 export {
     authUser,
