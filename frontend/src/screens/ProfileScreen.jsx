@@ -148,20 +148,6 @@ const ProfileScreen = () => {
         </Form.Group>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <Button type='submit' variant='primary' className='mt-3'>
           Update
         </Button>
