@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import{Link, useNavigate} from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Button, Row, Col, FormLabel } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRegisterMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
 import { toast } from 'react-toastify';
+import '../components/styles.css'
+import emailIcon from '../assets/iconEmail.svg'
 
 const RegisterScreen = () => {
     const [name, setName] = useState('');
@@ -62,9 +64,11 @@ const RegisterScreen = () => {
     
     return (
         <FormContainer>
-            <h1>Sign Up</h1>
+            <Form.Group controlId='Sign Up'style={{color: '#000', fontFamily:'DM Sans', fontSize:'30px', fontStyle:'normal', fontWeight:700, lineHeight: 'normal'}}>
+                <FormLabel>Sign Up</FormLabel>
+            </Form.Group>
             <Form onSubmit={submitHandler}>
-                <Form.Group className='my-2' controlId='name'>
+                <Form.Group className='fontStyle' controlId='name'>
                     <Form.Label>Name</Form.Label>
                     <Form.Control
                         type='name'
@@ -74,9 +78,16 @@ const RegisterScreen = () => {
                         ></Form.Control>
                 </Form.Group>
 
-                <Form.Group className='my-2' controlId='email'>
-                    <Form.Label>Email</Form.Label>
+                <Form.Group className='fontStyle' controlId='email'>
+                    <img src={emailIcon}/>
+                    <Form.Label> Email/username</Form.Label>
                     <Form.Control
+                        color='#1F1F1F'
+                        fontFamily='DM Sans'
+                        fontSize= '16px'
+                        fontStyle= 'normal'
+                        fontWeight= '500'
+                        lineHeight= 'normal'
                         type='email'
                         placeholder='Enter Email'
                         value={email}
@@ -84,9 +95,15 @@ const RegisterScreen = () => {
                         ></Form.Control>
                 </Form.Group>
 
-                <Form.Group className='my-2' controlId='password'>
+                <Form.Group className='fontStyle' controlId='password' >
                     <Form.Label>Password</Form.Label>
                     <Form.Control
+                        color='#1F1F1F'
+                        fontFamily='DM Sans'
+                        fontSize= '16px'
+                        fontStyle= 'normal'
+                        fontWeight= '500'
+                        lineHeight= 'normal'
                         type='password'
                         placeholder='Enter Password'
                         value={password}
@@ -94,7 +111,7 @@ const RegisterScreen = () => {
                         ></Form.Control>
                 </Form.Group>
 
-                <Form.Group className='my-2' controlId='confirmPassword'>
+                <Form.Group className='fontStyle' controlId='confirmPassword'>
                     <Form.Label>Confirm Password</Form.Label>
                     <Form.Control
                         type='password'
@@ -104,17 +121,17 @@ const RegisterScreen = () => {
                         ></Form.Control>
                 </Form.Group>
 
-                <Button type='submit' variant='primary' className='mt-3'>
+                <Button type='submit' variant='primary' className='customButton'>
                     Sign Up
                 </Button>
 
-                {isLoading && <Loader/>}
+                {isLoading }
 
             </Form>
             
             <Row className='py-3'>
                 <Col>
-                    Already Have An Account? Login <Link to={'/login'}>here</Link>
+                    Already have an account? <Link to={'/login'}>Sign in here!</Link>
                 </Col>
             </Row>
         </FormContainer>

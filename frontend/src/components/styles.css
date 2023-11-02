@@ -1,0 +1,23 @@
+.customButton {
+    width: 270px;
+    height: 60px;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #6284FF 0%, #4B6DE9 100%);
+    box-shadow: 0px 4px 80px 0px rgba(98, 132, 255, 0.20);
+    color: #FFF;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+  .fontStyle{
+    color: #545454;
+    font-family: DM Sans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
