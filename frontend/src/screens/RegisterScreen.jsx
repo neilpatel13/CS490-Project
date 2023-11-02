@@ -8,6 +8,7 @@ import { setCredentials } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 import '../components/styles.css'
 import emailIcon from '../assets/iconEmail.svg'
+import lock from '../assets/lock.svg'
 
 const RegisterScreen = () => {
     const [name, setName] = useState('');
@@ -96,6 +97,7 @@ const RegisterScreen = () => {
                 </Form.Group>
 
                 <Form.Group className='fontStyle' controlId='password' >
+                    <img src={lock}/>
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                         color='#1F1F1F'
@@ -112,6 +114,7 @@ const RegisterScreen = () => {
                 </Form.Group>
 
                 <Form.Group className='fontStyle' controlId='confirmPassword'>
+                    <img src={lock}/>
                     <Form.Label>Confirm Password</Form.Label>
                     <Form.Control
                         type='password'
