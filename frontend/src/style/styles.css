@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Fredoka&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap');
+
+.blackBox{
+  width: 850px;
+  height: 1024px;
+  flex-shrink: 0;
+  border-radius: 0px 10px 10px 0px;
+  right: 590px;
+  left: 0;
+  position: absolute;
+  background: #252628;
+}
+  
+.signUpRectangle{
+  border-radius: 10;
+  width: 646px;
+  height: 904px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #FFF;
+  box-shadow: 2px 5px 50px 0px rgba(36, 37, 40, 0.10);
+  top: 60px;
+  right: 60px;
+  bottom: 60px;
+  left: 734px;
+  position: absolute;
+}
+
+.signUpLogo{
+  fill: #000;
+  flex-shrink: 0;
+  max-width: 542px;
+  height: 542px;
+  position: absolute;
+  top: 287px;
+  bottom: 195px;
+  left: 96px;
+  right: 212px;
+}
+
+
+.customButton {
+  width: 270px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #6284FF 0%, #4B6DE9 100%);
+  box-shadow: 0px 4px 80px 0px rgba(98, 132, 255, 0.20);
+  color: #FFF;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  left: 188px;
+  right: 188px;
+  bottom: 176px;
+  position: absolute;
+
+}
+
+.customRectangle{
+  color: #1F1F1F;
+  font-family: DM Sans;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  width: 566px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 1px solid #DADADA;
+  background: #FFF;
+  position: absolute;
+  left: 40px;
+  right: 40px;
+}
+.customRectangle2{
+  width: 566px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #F5F7F9;
+  bottom: 40px;
+  right: 40px;
+  left: 40px;
+  position: absolute;
+}
+
+.fontStyle{
+  color: #545454;
+  font-family: DM Sans;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;;
+}
+
+.fontStyle2{
+  color: #000;
+  text-align: center;
+  font-family: DM Sans;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+  margin-top: 20px;
+  margin-left: 127px;
+  margin-right: 138px;
+}
