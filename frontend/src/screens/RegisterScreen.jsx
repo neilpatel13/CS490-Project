@@ -64,7 +64,7 @@ const RegisterScreen = () => {
       };
     
     return (
-        <div style={{background: '#fff', width: '1440px', height: '1024px'}} >
+        <div style={{background: '#fff', width: '1440px', height: '1024px', position: 'relative'}} >
             <div id='Black Box' className='blackBox'></div>
             <div id='Crush It' style={{right:'369px',bottom:'791px',left:'253px',top:'160px',position:'absolute',color: '#fff', fontFamily:'Fredoka', fontSize:'60px', fontStyle:'normal', fontWeight: '500', lineHeight: 'normal'}}>
                 Crush It
