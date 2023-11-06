@@ -53,7 +53,7 @@ const LoginScreen = () => {
                 </Form.Group>
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId='email'>
-                <img style={{height:'2.3vh', position:'absolute', left: '40px', top:'15%', right: '588px'}} src={emailIcon}/>
+                <img style={{height:'2vh', position:'absolute', left: '40px', top:'15%', right: '588px'}} src={emailIcon}/>
                     <Form.Label className='fontStyle' style={{position: 'absolute', left:'64px', top: '15%' }}>
                         Email Address/username
                     </Form.Label>
@@ -69,7 +69,7 @@ const LoginScreen = () => {
                 </Form.Group>
 
                 <Form.Group controlId='password'>
-                <img style={{height:'2.3vh', position:'absolute', left: '40px', top: '30%'}} src={lock}/>
+                <img style={{height:'2vh', position:'absolute', left: '40px', top: '30%'}} src={lock}/>
                     <Form.Label className='fontStyle' style={{left: '64px',top: '30%',position: 'absolute'}} >
                         Password
                     </Form.Label>

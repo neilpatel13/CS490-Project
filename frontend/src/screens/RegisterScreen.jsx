@@ -76,7 +76,7 @@ const RegisterScreen = () => {
                 </Form.Group>
                 <Form onSubmit={submitHandler}>
                     <Form.Group controlId='name'>
-                        <img style={{height:'2.3vh', position:'absolute', left: '40px', top:'15%', right: '588px'}} src={emailIcon}/>
+                        <img style={{height:'2vh', position:'absolute', left: '40px', top:'15%', right: '588px'}} src={emailIcon}/>
                         <Form.Label className='fontStyle' style={{position: 'absolute', left:'64px', top: '15%' }} >
                             Name
                         </Form.Label>
@@ -91,7 +91,7 @@ const RegisterScreen = () => {
                     </Form.Group>
 
                     <Form.Group controlId='email'>
-                        <img style={{height:'2.3vh', position:'absolute', left: '40px', top: '30%'}} src={emailIcon}/>
+                        <img style={{height:'2vh', position:'absolute', left: '40px', top: '30%'}} src={emailIcon}/>
                         <Form.Label className='fontStyle' style={{top: '30%', position: 'absolute', left: '64px'}} > 
                             Email/username
                         </Form.Label>
@@ -106,7 +106,7 @@ const RegisterScreen = () => {
                     </Form.Group>
 
                     <Form.Group  controlId='password' >
-                        <img style={{height:'2.3vh', position:'absolute', left: '40px', top: '45%'}} src={lock}/>
+                        <img style={{height:'2vh', position:'absolute', left: '40px', top: '45%'}} src={lock}/>
                         <Form.Label className='fontStyle'style={{left: '64px',top: '45%', position: 'absolute'}} >
                             Password
                         </Form.Label>
@@ -121,7 +121,7 @@ const RegisterScreen = () => {
                     </Form.Group>
 
                     <Form.Group controlId='confirmPassword'>
-                        <img style={{height:'2.3vh', position:'absolute', left: '40px', top:'60%'}} src={lock}/>
+                        <img style={{height:'2vh', position:'absolute', left: '40px', top:'60%'}} src={lock}/>
                         <Form.Label className='fontStyle'style={{position:'absolute', top: '60%', left:'64px'}} >
                             Confirm Password
                         </Form.Label>
