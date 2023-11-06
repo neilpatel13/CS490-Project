@@ -64,25 +64,25 @@ const RegisterScreen = () => {
       };
     
     return (
-        <div style={{background: '#fff', width: '1440px', height: '1024px', position: 'relative'}} >
+        <div style={{background: '#fff', width: '100vw', height: '95vh', position: 'relative'}} >
             <div id='Black Box' className='blackBox'></div>
-            <div id='Crush It' style={{right:'369px',bottom:'791px',left:'253px',top:'160px',position:'absolute',color: '#fff', fontFamily:'Fredoka', fontSize:'60px', fontStyle:'normal', fontWeight: '500', lineHeight: 'normal'}}>
+            <div id='crushIt' style={{left:'24vw',top:'12vh',position:'absolute',color: '#fff', fontFamily:'Fredoka', fontSize:'7vh', fontStyle:'normal', fontWeight: '500', lineHeight: 'normal'}}>
                 Crush It
             </div>
             <img className='signUpLogo'  src={logo} alt='Someone Working!'/>
             <Container className='signUpRectangle'>
                 <Form.Group controlId='Sign Up'>
-                    <FormLabel style={{top:'40px', left: '40px', right: '497px', bottom: '825px', position: 'absolute',color: '#000', fontFamily:'DM Sans', fontSize:'30px', fontStyle:'normal', fontWeight:700, lineHeight: 'normal'}}>Sign Up</FormLabel>
+                    <FormLabel style={{top:'5vh', left: '2.7vw', position: 'absolute',color: '#000', fontFamily:'DM Sans', fontSize:'3.5vh', fontStyle:'normal', fontWeight:700, lineHeight: 'normal'}}>Sign Up</FormLabel>
                 </Form.Group>
                 <Form onSubmit={submitHandler}>
                     <Form.Group controlId='name'>
-                        <img style={{position:'absolute', left: '40px', top:'129px', right: '588px'}} src={emailIcon}/>
-                        <Form.Label className='fontStyle' style={{position: 'absolute', left:'64px', top: '129px' }} >
+                        <img style={{height:'2.3vh', position:'absolute', left: '40px', top:'15%', right: '588px'}} src={emailIcon}/>
+                        <Form.Label className='fontStyle' style={{position: 'absolute', left:'64px', top: '15%' }} >
                             Name
                         </Form.Label>
                         <Form.Control 
                             className='customRectangle'
-                            style={{top: '154px'}}
+                            style={{top: '19%'}}
                             type='name'
                             placeholder='Enter Name'
                             value={name}onChange={(e) => setName(e.target.value)}
@@ -91,12 +91,12 @@ const RegisterScreen = () => {
                     </Form.Group>
 
                     <Form.Group controlId='email'>
-                        <img style={{position:'absolute', left: '40px',top: '250px'}} src={emailIcon}/>
-                        <Form.Label className='fontStyle' style={{top: '250px', position: 'absolute', left: '64px'}} > 
+                        <img style={{height:'2.3vh', position:'absolute', left: '40px', top: '30%'}} src={emailIcon}/>
+                        <Form.Label className='fontStyle' style={{top: '30%', position: 'absolute', left: '64px'}} > 
                             Email/username
                         </Form.Label>
                         <Form.Control
-                            style={{top: '275px'}}
+                            style={{top: '34%'}}
                             className='customRectangle'
                             type='email'
                             placeholder='Enter Email'
@@ -106,12 +106,12 @@ const RegisterScreen = () => {
                     </Form.Group>
 
                     <Form.Group  controlId='password' >
-                        <img style={{position:'absolute', left: '40px', top: '371px'}} src={lock}/>
-                        <Form.Label className='fontStyle'style={{left: '64px',top: '371px',position: 'absolute'}} >
+                        <img style={{height:'2.3vh', position:'absolute', left: '40px', top: '45%'}} src={lock}/>
+                        <Form.Label className='fontStyle'style={{left: '64px',top: '45%', position: 'absolute'}} >
                             Password
                         </Form.Label>
                         <Form.Control
-                            style={{top: '396px'}}
+                            style={{top: '49%'}}
                             className='customRectangle'
                             type='password'
                             placeholder='Enter Password'
@@ -121,12 +121,12 @@ const RegisterScreen = () => {
                     </Form.Group>
 
                     <Form.Group controlId='confirmPassword'>
-                        <img style={{position:'absolute', left: '40px', top:'492px'}} src={lock}/>
-                        <Form.Label className='fontStyle'style={{position:'absolute', top: '492px', left:'64px'}} >
+                        <img style={{height:'2.3vh', position:'absolute', left: '40px', top:'60%'}} src={lock}/>
+                        <Form.Label className='fontStyle'style={{position:'absolute', top: '60%', left:'64px'}} >
                             Confirm Password
                         </Form.Label>
                         <Form.Control
-                            style={{top: '521px'}}
+                            style={{top: '64%'}}
                             className='customRectangle'
                             type='password'
                             placeholder='Confirm Password'
@@ -135,7 +135,7 @@ const RegisterScreen = () => {
                             ></Form.Control>
                     </Form.Group>
 
-                    <Button type='submit' variant='primary' className='customButton'>
+                    <Button type='submit' style={{top: '75%'}} variant='primary' className='customButton'>
                         Sign Up
                     </Button>
 

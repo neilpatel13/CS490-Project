@@ -41,25 +41,25 @@ const LoginScreen = () => {
     
     return (
 
-        <div style={{background: '#fff', width: '1440px', height: '1024px', position: 'relative'}} >
+        <div style={{background: '#fff', width: '100vw', height: '95vh', position: 'relative'}} >
             <div id='Black Box' className='blackBox'></div>
-                <div id='Crush It' style={{right:'369px',bottom:'791px',left:'253px',top:'160px',position:'absolute',color: '#fff', fontFamily:'Fredoka', fontSize:'60px', fontStyle:'normal', fontWeight: '500', lineHeight: 'normal'}}>
+                <div id='crushIt' style={{left:'24vw',top:'12vh', position:'absolute',color: '#fff', fontFamily:'Fredoka', fontSize:'7vh', fontStyle:'normal', fontWeight: '500', lineHeight: 'normal'}}>
                     Crush It
                 </div>
             <img className='signUpLogo'  src={logo} alt='Someone Working!'/>
             <Container className='signUpRectangle'>
             <Form.Group controlId='Sign In'>
-                    <FormLabel style={{top:'40px', left: '40px', right: '497px', bottom: '825px', position: 'absolute',color: '#000', fontFamily:'DM Sans', fontSize:'30px', fontStyle:'normal', fontWeight:700, lineHeight: 'normal'}}>Sign in</FormLabel>
+                    <FormLabel style={{top:'5vh', left: '2.7vw',  position: 'absolute',color: '#000', fontFamily:'DM Sans', fontSize:'3.5vh', fontStyle:'normal', fontWeight:700, lineHeight: 'normal'}}>Sign in</FormLabel>
                 </Form.Group>
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId='email'>
-                <img style={{position:'absolute', left: '40px', top:'129px', right: '588px'}} src={emailIcon}/>
-                    <Form.Label className='fontStyle' style={{position: 'absolute', left:'64px', top: '129px' }}>
+                <img style={{height:'2.3vh', position:'absolute', left: '40px', top:'15%', right: '588px'}} src={emailIcon}/>
+                    <Form.Label className='fontStyle' style={{position: 'absolute', left:'64px', top: '15%' }}>
                         Email Address/username
                     </Form.Label>
                     <Form.Control
                         className='customRectangle'
-                        style={{top: '154px'}}
+                        style={{top: '19%'}}
                         type='email'
                         placeholder='Enter email'
                         value={email}
@@ -69,12 +69,12 @@ const LoginScreen = () => {
                 </Form.Group>
 
                 <Form.Group controlId='password'>
-                <img style={{position:'absolute', left: '40px', top: '250px'}} src={lock}/>
-                    <Form.Label className='fontStyle'style={{left: '64px',top: '250px',position: 'absolute'}} >
+                <img style={{height:'2.3vh', position:'absolute', left: '40px', top: '30%'}} src={lock}/>
+                    <Form.Label className='fontStyle' style={{left: '64px',top: '30%',position: 'absolute'}} >
                         Password
                     </Form.Label>
                     <Form.Control
-                        style={{top: '275px'}}
+                        style={{top: '34%'}}
                         className='customRectangle'
                         type='password'
                         placeholder='Enter Password'
@@ -83,7 +83,7 @@ const LoginScreen = () => {
                         ></Form.Control>
                 </Form.Group>
 
-                <Button type='submit' variant='primary' className='customButton'>
+                <Button type='submit' variant='primary' className='customButton' style={{top: '47%'}}>
                     Sign in
                 </Button>
 
