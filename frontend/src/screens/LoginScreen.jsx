@@ -84,7 +84,7 @@ const LoginScreen = () => {
                 </Form.Group>
 
                 <Button type='submit' variant='primary' className='customButton' style={{top: '47%'}}>
-                    Sign in
+                    Sign In
                 </Button>
 
                 {isLoading && <Loader />}
