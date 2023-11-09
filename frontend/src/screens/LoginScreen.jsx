@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Button, FormLabel, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import FormContainer from '../components/FormContainer';
 import { useLoginMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
+import '../style/styles.css'
+import emailIcon from '../assets/iconEmail.svg'
+import lock from '../assets/lock.svg'
+import logo from '../assets/mainLogo.svg'
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
@@ -38,23 +41,41 @@ const LoginScreen = () => {
     
     return (
 
-        <FormContainer>
-
-            <h1>Sign In</h1>
+        <div style={{background: '#fff', width: '100vw', height: '95vh', position: 'relative'}} >
+            <div id='Black Box' className='blackBox'></div>
+                <div id='crushIt' style={{left:'24vw',top:'12vh', position:'absolute',color: '#fff', fontFamily:'Fredoka', fontSize:'7vh', fontStyle:'normal', fontWeight: '500', lineHeight: 'normal'}}>
+                    Crush It
+                </div>
+            <img className='signUpLogo'  src={logo} alt='Someone Working!'/>
+            <Container className='signUpRectangle'>
+            <Form.Group controlId='Sign In'>
+                    <FormLabel style={{top:'5vh', left: '2.7vw',  position: 'absolute',color: '#000', fontFamily:'DM Sans', fontSize:'3.5vh', fontStyle:'normal', fontWeight:700, lineHeight: 'normal'}}>Sign in</FormLabel>
+                </Form.Group>
             <Form onSubmit={submitHandler}>
-                <Form.Group className='my-2' controlId='email'>
-                    <Form.Label>Email Address/username</Form.Label>
+                <Form.Group controlId='email'>
+                <img style={{height:'2vh', position:'absolute', left: '40px', top:'15%', right: '588px'}} src={emailIcon}/>
+                    <Form.Label className='fontStyle' style={{position: 'absolute', left:'64px', top: '15%' }}>
+                        Email Address/username
+                    </Form.Label>
                     <Form.Control
+                        className='customRectangle'
+                        style={{top: '19%'}}
                         type='email'
                         placeholder='Enter email'
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        ></Form.Control>
+                        >
+                        </Form.Control>
                 </Form.Group>
 
-                <Form.Group className='my-2' controlId='password'>
-                    <Form.Label>Password</Form.Label>
+                <Form.Group controlId='password'>
+                <img style={{height:'2vh', position:'absolute', left: '40px', top: '30%'}} src={lock}/>
+                    <Form.Label className='fontStyle' style={{left: '64px',top: '30%',position: 'absolute'}} >
+                        Password
+                    </Form.Label>
                     <Form.Control
+                        style={{top: '34%'}}
+                        className='customRectangle'
                         type='password'
                         placeholder='Enter Password'
                         value={password}
@@ -62,20 +83,21 @@ const LoginScreen = () => {
                         ></Form.Control>
                 </Form.Group>
 
-                <Button type='submit' variant='primary' className='mt-3'>
-                    Sign in
+                <Button type='submit' variant='primary' className='customButton' style={{top: '47%'}}>
+                    Sign In
                 </Button>
-                </Form>
-                
+
                 {isLoading && <Loader />}
 
-                <Row className='py-3'>
-                    <Col>
-                    Need An Account? <Link to={'/register'}> Sign Up</Link>
-                    </Col>
-                </Row>
-        </FormContainer>
+                </Form>
 
+                <div className='customRectangle2'>
+                    <div className='fontStyle2'>
+                    Need An Account? <Link to={'/register'}> Sign Up</Link>
+                    </div>
+                </div>
+            </Container>
+        </div>
     );
 };
 export default LoginScreen;
