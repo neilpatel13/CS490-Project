@@ -9,7 +9,8 @@ import { useUpdateUserMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
 //import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-
+import logo from '../assets/mainLogo.svg'
+import lo from '../assets/logout.svg'
 
 
 const ProfileScreen = () => {
@@ -101,102 +102,114 @@ const ProfileScreen = () => {
     }
   };
   return (
-    <FormContainer>
-      <h1>Update Profile</h1>
+    <div id='backgound' style={{background: '#fff', width: '100vw', height: '100vh', position: 'relative'}} >
+      <div id='topBar' className='topBar'> 
+          <p id='profile' style={{ left:'1%', top:'22%', position:'absolute'}} >Profile</p>
+      </div>
 
-      <Form onSubmit={submitHandler}>
-        <Form.Group className='my-2' controlId='name'>
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type='name'
-            placeholder='Enter name'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        {/* <Form.Group className='my-2' controlId='email'>
-          <Form.Label>Email Address</Form.Label>
-          <Form.Control
-            type='email'
-            placeholder='Enter email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
-        </Form.Group> */}
-        <Form.Group className='my-2' controlId='currentPassword'>
-          <Form.Label>Current Password</Form.Label>
-          <Form.Control
-            type='password'
-            placeholder='Current Password'
-            value={currentPassword}
-            onChange={(e) => setCurrntPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group className='my-2' controlId='password'>
-          <Form.Label>New Password</Form.Label>
-          <Form.Control
-            type='password'
-            placeholder='New Password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group className='my-2' controlId='confirmPassword'>
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type='password'
-            placeholder='Confirm New Password'
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        {/* Pomodoro Timer settings */}
-        <Form.Group className="my-2" controlId="pomodoroTime">
-          <Form.Label>Pomodoro Timer (minutes)</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Pomodoro Timer"
-            value={pomodoroTime}
-            onChange={(e) => setPomodoroTime(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="my-2" controlId="shortBreakTime">
-          <Form.Label>Short Break (minutes)</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Short Break"
-            value={shortBreakTime}
-            onChange={(e) => setShortBreakTime(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="my-2" controlId="longBreakTime">
-          <Form.Label>Long Break (minutes)</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Long Break"
-            value={longBreakTime}
-            onChange={(e) => setLongBreakTime(e.target.value)}
-          />
-        </Form.Group>
-
-
-        {/* Buttons */}
-        <Link to="/"> {/* This will navigate to the home page */}
-        <Button type="button" variant="secondary" className="mt-3">
-          Cancel
-        </Button>
-        </Link>
-        <Button type="submit" variant="primary" className="mt-3">
-          Update
+      <div id='sideBar' className='blackSideBar'>
+        <div id='text' style={{top:'3%', position: 'relative'}}>Cursh It</div>
+        <div id='line' style={{left:'15%',background: '#3E3F42', height:'1px', width:'70%',top:'6%', position: 'relative'}}> </div>
+        <img style={{top:'10%', position:'relative', flexShrink: 0}} src={logo} alt='Someone Working!'/>
+        <div id='moreText' className='fontStyle3'> It’s time to plan your day!</div>
+        <Button type='submit' variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px'}}>
+          Plan Day
         </Button>
 
-        {isLoading && <Loader />}
-      </Form>
-    </FormContainer>
+        <Button type='submit' variant='primary' className='logoutButton' style={{fontFamily:'DM Sans', fontSize:'12px'}}>
+          <img src={lo} alt='logout'/>Log out
+        </Button>
+      </div>
+
+
+      {/* 
+      <FormContainer>
+        <h1>Update Profile</h1>
+
+        <Form onSubmit={submitHandler}>
+          <Form.Group className='my-2' controlId='name'>
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type='name'
+              placeholder='Enter name'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className='my-2' controlId='currentPassword'>
+            <Form.Label>Current Password</Form.Label>
+            <Form.Control
+              type='password'
+              placeholder='Current Password'
+              value={currentPassword}
+              onChange={(e) => setCurrntPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className='my-2' controlId='password'>
+            <Form.Label>New Password</Form.Label>
+            <Form.Control
+              type='password'
+              placeholder='New Password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group className='my-2' controlId='confirmPassword'>
+            <Form.Label>Confirm Password</Form.Label>
+            <Form.Control
+              type='password'
+              placeholder='Confirm New Password'
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group> */}
+
+          {/* <Form.Group className="my-2" controlId="pomodoroTime">
+            <Form.Label>Pomodoro Timer (minutes)</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Pomodoro Timer"
+              value={pomodoroTime}
+              onChange={(e) => setPomodoroTime(e.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group className="my-2" controlId="shortBreakTime">
+            <Form.Label>Short Break (minutes)</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Short Break"
+              value={shortBreakTime}
+              onChange={(e) => setShortBreakTime(e.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group className="my-2" controlId="longBreakTime">
+            <Form.Label>Long Break (minutes)</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Long Break"
+              value={longBreakTime}
+              onChange={(e) => setLongBreakTime(e.target.value)}
+            />
+          </Form.Group>
+
+
+          <Link to="/"> 
+          <Button type="button" variant="secondary" className="mt-3">
+            Cancel
+          </Button>
+          </Link>
+          <Button type="submit" variant="primary" className="mt-3">
+            Update
+          </Button>
+
+          {isLoading && <Loader />}
+        </Form>
+      </FormContainer> */}
+
+    </div>
     
   );
 };
