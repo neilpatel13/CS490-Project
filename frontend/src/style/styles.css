@@ -110,3 +110,11 @@ body {
   position: absolute;
   top: 37%;
 }
+
+.link{
+  position: absolute;
+  bottom: 30%;
+  left: 40%;
+  font-size: 1.7vh;
+  text-align: center;
+}
