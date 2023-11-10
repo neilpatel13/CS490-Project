@@ -9,7 +9,7 @@ body {
 .topBar{
   background: #fff;
   width: 86vw;
-  height: 7vh;
+  height: 8vh;
   right: 0%;
   box-shadow: 2px 5px 50px 0px rgba(32, 44, 85, 0.08);
   top: 0%;
@@ -17,12 +17,37 @@ body {
   flex-shrink: 0;
   color: #000;
   font-family: DM Sans;
-  font-size: 20px;
+  font-size: 3.5vh;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
   text-align: justify;
-  }
+  left: 14%;
+}
+
+
+
+.container1{
+  border-radius: 10px;
+  background: #FFF;
+  box-shadow: 2px 5px 50px 0px rgba(36, 37, 40, 0.10);
+  color: #545454;
+  font-family: DM Sans;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+  left: 15%;
+  padding: 1vw;
+
+}
+
+.colStyle1{
+  border-radius: 12px;
+  border: 1px solid #DADADA;
+  background: #FFF;
+}
 
 .blackSideBar{
   width: 14vw;
@@ -50,6 +75,7 @@ body {
   line-height: normal;
   position: relative;
   top: 10%;
+
 }
 
 .planDayButton{

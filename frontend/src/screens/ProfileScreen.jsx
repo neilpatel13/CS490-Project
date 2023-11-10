@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 // import { Link, useNavigate } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import FormContainer from '../components/FormContainer';
 import { toast } from 'react-toastify';
@@ -11,7 +11,9 @@ import { setCredentials } from '../slices/authSlice';
 import { Link } from 'react-router-dom';
 import logo from '../assets/mainLogo.svg'
 import lo from '../assets/logout.svg'
-
+import usr from '../assets/profile.svg'
+import lock from '../assets/lock.svg'
+import cl from '../assets/lock.svg'
 
 const ProfileScreen = () => {
   //const [email, setEmail] = useState('');
@@ -107,7 +109,104 @@ const ProfileScreen = () => {
           <p id='profile' style={{ left:'1%', top:'22%', position:'absolute'}} >Profile</p>
       </div>
 
-      <div id='sideBar' className='blackSideBar'>
+      <div style={{color: "#000",fontFamily: "DM Sans", fontSize: "2.2vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal", position:'absolute', left:'14.8%', top:'11%'}}>
+        User Info
+      </div>
+
+      <Container id='userInfo' className='container1' style={{top:'16%'}}>
+      <Row >
+        <Col md="12 ">
+          <Form>
+            <Row>
+              <Col >
+                <Form.Group controlId="firstName" >
+                  <Form.Label> <img src={usr} alt="usr" /> First Name</Form.Label>
+                  <Form.Control type="text" placeholder=""  />
+                </Form.Group>
+              </Col>
+              <Col >
+                <Form.Group controlId="lastName">
+                  <Form.Label> <img src={usr} alt="usr" /> Last Name</Form.Label>
+                  <Form.Control type="text" placeholder=""  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
+
+
+    <div id='password' style={{color: "#000",fontFamily: "DM Sans", fontSize: "2.2vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal", position:'absolute', left:'14.8%', top:'32%'}}>
+        Change Password
+    </div>
+    <Container id='changePassword' className='container1' style={{top:'38%'}}>
+      <Row >
+        <Col md="12" >
+          <Form>
+            <Row>
+              <Col >
+                <Form.Group controlId="currentPassword" >
+                  <Form.Label> <img src={lock} alt="lock" /> Current Password</Form.Label>
+                  <Form.Control type="password" placeholder=""  />
+                </Form.Group>
+              </Col>
+              <Col >
+                <Form.Group controlId="New Password">
+                  <Form.Label> <img src={lock} alt="lock" /> New Password</Form.Label>
+                  <Form.Control type="password" placeholder=""  />
+                </Form.Group>
+              </Col>
+              <Col >
+                <Form.Group controlId="Confirm Password">
+                  <Form.Label> <img src={lock} alt="lock" /> Confirm New Password</Form.Label>
+                  <Form.Control type="password" placeholder=""  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
+
+    <div id='password' style={{color: "#000",fontFamily: "DM Sans", fontSize: "2.2vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal", position:'absolute', left:'14.8%', top:'57%'}}>
+    Pomodoro Timer (Minutes)
+    </div>
+    <Container id='Pomodoro Timer' className='container1' style={{top:'63%'}}>
+      <Row >
+        <Col md="12" >
+          <Form>
+            <Row>
+              <Col >
+                <Form.Group controlId="Pomodoro" >
+                  <Form.Label> <img src={cl} alt="Clock" /> Pomodoro</Form.Label>
+                  <Form.Control type="password" placeholder=""  />
+                </Form.Group>
+              </Col>
+              <Col >
+                <Form.Group controlId="New Password">
+                  <Form.Label> <img src={cl} alt="Clock" /> Short Break </Form.Label>
+                  <Form.Control type="password" placeholder=""  />
+                </Form.Group>
+              </Col>
+              <Col >
+                <Form.Group controlId="Confirm Password">
+                  <Form.Label> <img src={cl} alt="Clock" /> Long Break</Form.Label>
+                  <Form.Control type="password" placeholder=""  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
+
+    <Button type='submit' variant='primary' className='customButton' style={{top: '70%'}}>
+        Save
+    </Button>
+
+
+    <div id='sideBar' className='blackSideBar'>
         <div id='text' style={{top:'3%', position: 'relative'}}>Cursh It</div>
         <div id='line' style={{left:'15%',background: '#3E3F42', height:'1px', width:'70%',top:'6%', position: 'relative'}}> </div>
         <img style={{top:'10%', position:'relative', flexShrink: 0}} src={logo} alt='Someone Working!'/>
