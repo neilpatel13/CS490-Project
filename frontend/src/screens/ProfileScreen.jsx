@@ -14,6 +14,12 @@ import lo from '../assets/logout.svg'
 import usr from '../assets/profile.svg'
 import lock from '../assets/lock.svg'
 import cl from '../assets/clock.svg'
+import { logout } from '../slices/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { useLogoutMutation } from '../slices/userApiSlice';
+
+
+
 
 const ProfileScreen = () => {
   //const [email, setEmail] = useState('');
@@ -30,6 +36,8 @@ const ProfileScreen = () => {
 
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -51,7 +59,17 @@ const ProfileScreen = () => {
   };
  */
   
+const [logoutApiCall] = useLogoutMutation();
 
+  const logoutHandler = async () => {
+    try {
+      await logoutApiCall().unwrap();
+      dispatch(logout());
+      navigate('/login');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -251,8 +269,8 @@ const ProfileScreen = () => {
             </Button>
           </Link>
 
-          
-          <Button type='button' variant='primary' className='logoutButton' style={{fontFamily:'DM Sans', fontSize:'12px'}}>
+
+          <Button onClick={logoutHandler} type='button' variant='primary' className='logoutButton' style={{fontFamily:'DM Sans', fontSize:'12px'}}>
             <img src={lo} alt='logout'/>Log out
           </Button>
 
@@ -282,71 +300,8 @@ const ProfileScreen = () => {
               placeholder='Current Password'
               value={currentPassword}
               onChange={(e) => setCurrntPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group className='my-2' controlId='password'>
-            <Form.Label>New Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='New Password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-
-          <Form.Group className='my-2' controlId='confirmPassword'>
-            <Form.Label>Confirm Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Confirm New Password'
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group> */}
-
-          {/* <Form.Group className="my-2" controlId="pomodoroTime">
-            <Form.Label>Pomodoro Timer (minutes)</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Pomodoro Timer"
-              value={pomodoroTime}
-              onChange={(e) => setPomodoroTime(e.target.value)}
-            />
-          </Form.Group>
-
-          <Form.Group className="my-2" controlId="shortBreakTime">
-            <Form.Label>Short Break (minutes)</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Short Break"
-              value={shortBreakTime}
-              onChange={(e) => setShortBreakTime(e.target.value)}
-            />
-          </Form.Group>
-
-          <Form.Group className="my-2" controlId="longBreakTime">
-            <Form.Label>Long Break (minutes)</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Long Break"
-              value={longBreakTime}
-              onChange={(e) => setLongBreakTime(e.target.value)}
-            />
-          </Form.Group>
-
-
-          <Link to="/"> 
-          <Button type="button" variant="secondary" className="mt-3">
-            Cancel
-          </Button>
-          </Link>
-          <Button type="submit" variant="primary" className="mt-3">
-            Update
-          </Button>
-
-          {isLoading && <Loader />}
-        </Form>
-      </FormContainer> */}
+            ></Form.Control> 
+          */}
 
     </div>
     
