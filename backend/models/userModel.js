@@ -15,6 +15,18 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    confirmed: {
+        type: String,
+        defaultValue: false
+    },
+    profileImage: {
+        data : {
+            type: Buffer,
+        },
+        contentType: {
+            type: String
+        }
+    }
 },
 {
     timestamps: true

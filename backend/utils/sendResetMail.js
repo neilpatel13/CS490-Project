@@ -1,30 +1,41 @@
 import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
+import _ from 'lodash';
 
-const sendResetEmail = (email, resetToken) => {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'your-email@gmail.com',
-            pass: 'your-email-password',
-        },
-    });
-
-    const resetLink = `https://website.com/reset-password?token=${resetToken}`;
-
-    const mailOptions = {
-        from: 'your-email@gmail.com',
-        to: email,
-        subject: 'Password Reset',
-        html: `<p>Click the following link to reset your password:</p><a href="${resetLink}">${resetLink}</a>`,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Error sending reset email: ', error);
-        } else {
-            console.log('Reset email sent: ' + info.response);
-        }
-    });
-};
+const sendResetEmail = (user) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASSWORD,
+            },
+        });
+    
+        jwt.sign(
+            {
+                user: _.pick(user, 'id'),
+            },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: '1d',
+            },
+            (err, emailToken) => {
+              console.log("emailToken") 
+              const url = `http://localhost:5000/api/users/resetPassword/${user._id}/${emailToken}`;
+    
+              transporter.sendMail({
+                to: user.email,
+                subject: 'Confirm Email',
+                html: `Please click this link to reset your password: <a href="${url}">${url}</a>`,
+              });
+            },
+          );
+        return user
+    }
+    catch(e) {
+        console.log(e)
+    }
+}
 
 export default sendResetEmail;
