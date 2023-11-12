@@ -95,7 +95,6 @@ const getUserProfile = asyncHandler(async(req, res) => {
 // @access  Private
 const updateUserProfile = asyncHandler(async(req, res) => {
     const user = await User.findById(req.user._id);
-
     if (user) {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
@@ -124,9 +123,9 @@ const updateUserProfile = asyncHandler(async(req, res) => {
 });
 
 const checkPassword = asyncHandler(async(req, res) => {
-    const { email, currentPassword } = req.body;
-    
-    const user = await User.findOne({ email });
+    const { _id ,currentPassword } = req.body;
+
+    const user = await User.findOneById({_id});
 
     if(user && (await user.matchPassword(currentPassword))) {
         res.status(200).json({ message: 'Current password is correct' });

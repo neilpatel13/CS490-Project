@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 //import FormContainer from '../components/FormContainer';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
-import { useUpdateUserMutation } from '../slices/userApiSlice';
+import { useCheckPasswordMutation, useUpdateUserMutation } from '../slices/userApiSlice';
 import { setCredentials } from '../slices/authSlice';
 //import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -24,7 +24,7 @@ import { useLogoutMutation } from '../slices/userApiSlice';
 const ProfileScreen = () => {
   //const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const[currentPassword, setCurrntPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -42,22 +42,18 @@ const ProfileScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   const [updateProfile, { isLoading }] = useUpdateUserMutation();
+  const [checkPassword] = useCheckPasswordMutation();
 
   useEffect(() => {
       setName(userInfo.name);
-      //setEmail(userInfo.email);
+      //setFirstname(userInfo.first);
+      //setLastname(userInfo.last);
       setPomodoroTime(userInfo.pomodoro);
       setShortBreakTime(userInfo.short);
       setLongBreakTime(userInfo.long);
   }, [userInfo.email, userInfo.name, userInfo.pomodoro, userInfo.short, userInfo.long]);
 
-  //const history = useHistory();
 
-/**
- * const handleCancelClick = () => {
-    history.push('/');
-  };
- */
   
 const [logoutApiCall] = useLogoutMutation();
 
@@ -73,10 +69,21 @@ const [logoutApiCall] = useLogoutMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    // Check if the password fields are not empty and contain a new password
+    //Check if the password fields are not empty and contain a new password
     const isPasswordChanged = password !== '' && confirmPassword !== '';
   
     if (isPasswordChanged) {
+
+      //Check and see if current password is matches the record
+      try{
+        const data = {_id: userInfo._id, currentPassword}
+        const res = await checkPassword(data).unwrap();
+        console.log(res);
+
+      }catch(err){
+        toast.error('Incorrect current password.');
+        return;
+      } 
       
       if (password.length < 12) {
         toast.error('Password must be at least 12 characters long');
@@ -98,8 +105,16 @@ const [logoutApiCall] = useLogoutMutation();
         toast.error('Passwords do not match');
         return;
       }
+      
+      if(currentPassword == confirmPassword){
+        toast.error('New Password cannot be same as old');
+        return;
+      }
     }
+
+
   
+
     try {
       const userData = {
         _id: userInfo._id,
@@ -168,7 +183,9 @@ const [logoutApiCall] = useLogoutMutation();
                     <Form.Label> <img src={lock} alt="lock" /> Current Password</Form.Label>
                     <Form.Control 
                       type='password' 
-                      placeholder='Current Password' 
+                      placeholder='Current Password'
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
                       />
                   </Form.Group>
                 </Col>
