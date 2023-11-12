@@ -38,4 +38,5 @@ const sendVerificationEmail = (user) => {
     
 };
 
+
 export default sendVerificationEmail;

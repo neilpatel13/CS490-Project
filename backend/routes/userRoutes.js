@@ -13,6 +13,7 @@ import {
  } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
+
 console.log("here1")
 router.post('/uploadImage/:email', uploadImage);
 router.post('/', registerUser);
