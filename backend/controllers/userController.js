@@ -12,7 +12,6 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const app = express();
-
 // @desc    Auth user/set token
 // route    POST /api/users/auth
 // @access  Public
