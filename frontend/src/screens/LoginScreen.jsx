@@ -77,6 +77,7 @@ const LoginScreen = () => {
                         style={{top: '34%'}}
                         className='customRectangle'
                         type='password'
+                        data-testid="password-input"
                         placeholder='Enter Password'
                         value={password}
                         onChange={ (e) => setPassword(e.target.value)}
