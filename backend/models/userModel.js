@@ -49,8 +49,19 @@ const userSchema = mongoose.Schema({
     long: {
         type: Number,
         default: 15,
+    },
+    confirmed: {
+        type: String,
+        defaultValue: false
+    },
+    profileImage: {
+        data : {
+            type: Buffer,
+        },
+        contentType: {
+            type: String
+        }
     }
-
 },
 {
     timestamps: true
@@ -67,6 +78,7 @@ userSchema.pre('save', async function(next) {
 userSchema.methods.matchPassword = async function  (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 }
+
 
 const User = mongoose.model('User', userSchema);
 
