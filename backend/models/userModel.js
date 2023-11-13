@@ -2,9 +2,14 @@ import mongoose from "mongoose";
 import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema({
-    name: {
+    first: {
         type: String,
-        required: true,
+        default: '',
+
+    },
+    last:{
+        type: String,
+        default: '',
     },
     email: {
         type: String,
@@ -14,7 +19,38 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true,
+        validate: {
+            validator: function (v) {
+                // Check length
+                if (v.length < 12) {
+                    return false;
+                }
+
+                // Check complexity
+                let checksPassed = 0;
+                if (/[A-Z]/.test(v)) checksPassed++; // Uppercase letter
+                if (/[a-z]/.test(v)) checksPassed++; // Lowercase letter
+                if (/\d/.test(v)) checksPassed++; // Numeric digit
+                if (/\W/.test(v)) checksPassed++; // Special character
+
+                return checksPassed >= 2;
+            },
+            message: 'Password does not meet complexity requirements',
+        },
     },
+    pomodoro: {
+            type: Number,
+            default: 25,
+    },
+    short: {
+        type: Number,
+        default: 5,
+    },
+    long: {
+        type: Number,
+        default: 15,
+    }
+
 },
 {
     timestamps: true
