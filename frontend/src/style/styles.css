@@ -218,6 +218,7 @@ body {
   top: 37%;
 }
 
+
 .fontStyle3{
   color: #FFF;
   text-align: center;
@@ -247,4 +248,12 @@ body {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+
+.link{
+  position: absolute;
+  bottom: 30%;
+  left: 40%;
+  font-size: 1.7vh;
+  text-align: center;
+
 }
