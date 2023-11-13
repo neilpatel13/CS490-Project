@@ -19,7 +19,8 @@ const authUser = asyncHandler(async(req, res) => {
         generateToken(res, user._id);
         res.status(201).json({
             _id: user._id,
-            name: user.name,
+            first: user.first,
+            last: user.last,
             email: user.email,
             pomodoro: user.pomodoro,
             short: user.short,
@@ -35,7 +36,7 @@ const authUser = asyncHandler(async(req, res) => {
 // route    POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async(req, res) => {
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
     const userExists = await User.findOne({email});
     if (userExists) {
         res.status(400);
@@ -43,7 +44,6 @@ const registerUser = asyncHandler(async(req, res) => {
     }
 
     const user = await User.create({
-        name,
         email,
         password,
     });
@@ -52,7 +52,8 @@ const registerUser = asyncHandler(async(req, res) => {
         generateToken(res, user._id);
         res.status(201).json({
             _id: user._id,
-            name: user.name,
+            first: user.first,
+            last: user.last,
             email: user.email,
             pomodoro: user.pomodoro,
             short: user.pomodoro,
@@ -81,7 +82,8 @@ const logoutUser = asyncHandler(async(req, res) => {
 const getUserProfile = asyncHandler(async(req, res) => {
     const user = {
         _id: req.user._id,
-        name: req.user.name,
+        first: req.user.first,
+        last: req.user.last,
         email: req.user.email,
         pomodoro: req.user.pomodoro,
         short: req.user.short,
@@ -96,7 +98,8 @@ const getUserProfile = asyncHandler(async(req, res) => {
 const updateUserProfile = asyncHandler(async(req, res) => {
     const user = await User.findById(req.user._id);
     if (user) {
-        user.name = req.body.name || user.name;
+        user.first = req.body.first || user.first;
+        user.last = req.body.last || user.last;
         user.email = req.body.email || user.email;
         user.pomodoro = req.body.pomodoro || user.pomodoro;
         user.short = req.body.short || user.short;
@@ -110,7 +113,8 @@ const updateUserProfile = asyncHandler(async(req, res) => {
 
         res.status(200).json({
             _id: updatedUser._id,
-            name: updatedUser.name,
+            first: updatedUser.first,
+            last: updatedUser.last,
             email: updatedUser.email,
             pomodoro: updatedUser.pomodoro,
             short: updatedUser.short,

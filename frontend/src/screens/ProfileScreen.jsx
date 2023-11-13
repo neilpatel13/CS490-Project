@@ -23,7 +23,8 @@ import { useLogoutMutation } from '../slices/userApiSlice';
 
 const ProfileScreen = () => {
   //const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -45,13 +46,12 @@ const ProfileScreen = () => {
   const [checkPassword] = useCheckPasswordMutation();
 
   useEffect(() => {
-      setName(userInfo.name);
-      //setFirstname(userInfo.first);
-      //setLastname(userInfo.last);
+      setFirstname(userInfo.first);
+      setLastname(userInfo.last);
       setPomodoroTime(userInfo.pomodoro);
       setShortBreakTime(userInfo.short);
       setLongBreakTime(userInfo.long);
-  }, [userInfo.email, userInfo.name, userInfo.pomodoro, userInfo.short, userInfo.long]);
+  }, [userInfo.first, userInfo.last, userInfo.pomodoro, userInfo.short, userInfo.long]);
 
 
   
@@ -118,7 +118,8 @@ const [logoutApiCall] = useLogoutMutation();
     try {
       const userData = {
         _id: userInfo._id,
-        name,
+        first: firstname,
+        last: lastname,
         pomodoro: pomodoroTime,
         short: shortBreakTime,
         long: longBreakTime,
@@ -154,13 +155,21 @@ const [logoutApiCall] = useLogoutMutation();
                 <Col >
                   <Form.Group controlId="firstName" >
                     <Form.Label> <img src={usr} alt="usr" /> First Name</Form.Label>
-                    <Form.Control type="text" placeholder=""  />
+                    <Form.Control 
+                      type="text" 
+                      value={firstname} 
+                      placeholder="First Name"  
+                      onChange={(e) => setFirstname(e.target.value)}  />
                   </Form.Group>
                 </Col>
                 <Col >
                   <Form.Group controlId="lastName">
                     <Form.Label> <img src={usr} alt="usr" /> Last Name</Form.Label>
-                    <Form.Control type="text" placeholder=""  />
+                    <Form.Control 
+                      type="text" 
+                      value={lastname} 
+                      placeholder="Last Name"  
+                      onChange={(e) => setLastname(e.target.value)}/>
                   </Form.Group>
                 </Col>
               </Row>
