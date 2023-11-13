@@ -6,6 +6,63 @@ body {
     height: 95vh;
 }
 
+
+/* Cutom Container*/
+.topBar{
+  background: #fff;
+  width: 86vw;
+  height: 8vh;
+  right: 0%;
+  box-shadow: 2px 5px 50px 0px rgba(32, 44, 85, 0.08);
+  top: 0%;
+  position: absolute;   
+  flex-shrink: 0;
+  color: #000;
+  font-family: DM Sans;
+  font-size: 3.5vh;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: justify;
+  left: 14%;
+}
+
+
+
+.container1{
+  border-radius: 10px;
+  background: #FFF;
+  box-shadow: 2px 5px 50px 0px rgba(36, 37, 40, 0.10);
+  color: #545454;
+  font-family: DM Sans;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+  left: 15%;
+  padding: 1vw;
+
+}
+
+
+.blackSideBar{
+  width: 14vw;
+  height: 100vh;
+  flex-shrink: 0;
+  background: #252628;
+  box-shadow: 2px 5px 50px 0px rgba(32, 44, 85, 0.08);
+  position: relative;
+  color: #FFF;
+  text-align: center;
+  font-family: Fredoka;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+
 .blackBox{
   width: 62vw;
   height: 100vh;
@@ -16,7 +73,7 @@ body {
   position: absolute;
   background: #252628;
 }
-  
+
 .signUpRectangle{
   border-radius: 10;
   width: 40vw;
@@ -31,34 +88,6 @@ body {
   position: absolute;
 }
 
-.signUpLogo{
-  fill: #000;
-  flex-shrink: 0;
-  width: 60vw;
-  height: 60vh;
-  position: absolute;
-  top: 30vh;
-}
-
-
-.customButton {
-  width: 30%;
-  height: 6%;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #6284FF 0%, #4B6DE9 100%);
-  box-shadow: 0px 4px 80px 0px rgba(98, 132, 255, 0.20);
-  color: #FFF;
-  text-align: center;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 2vh;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  left: 35%;
-  position: absolute;
-
-}
 
 .customRectangle{
   color: #1F1F1F;
@@ -89,6 +118,84 @@ body {
   position: absolute;
 }
 
+.colStyle1{
+  border-radius: 12px;
+  border: 1px solid #DADADA;
+  background: #FFF;
+}
+
+.signUpLogo{
+  fill: #000;
+  flex-shrink: 0;
+  width: 60vw;
+  height: 60vh;
+  position: absolute;
+  top: 30vh;
+}
+
+/* Buttons */
+.planDayButton{
+  border-radius: 14px;
+  border: 1px solid #FFF;
+  box-shadow: 0px 4px 80px 0px rgba(98, 132, 255, 0.20);
+  background-color: transparent;
+  position: relative;
+  top: 13%;
+  width: 70%;
+}
+
+.logoutButton{
+  border-radius: 10px;
+  border: 1px solid #FFF;
+  background-color: transparent;
+  box-shadow: 0px 4px 80px 0px rgba(98, 132, 255, 0.20);
+  top: 37%;
+  position: relative;
+}
+
+
+.customButton {
+  width: 30%;
+  height: 6%;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #6284FF 0%, #4B6DE9 100%);
+  box-shadow: 0px 4px 80px 0px rgba(98, 132, 255, 0.20);
+  color: #FFF;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 2vh;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  left: 35%;
+  position: absolute;
+
+}
+
+
+.customButton2{
+  width: 30%;
+  height: 6%;
+  flex-shrink: 0;
+  color: #6284FF;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 2vh;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  left: 35%;
+  position: absolute;
+  border-radius: 10px;
+  border: 1px solid #6284FF;
+  background: #FFF;
+  box-shadow: 0px 4px 80px 0px rgba(98, 132, 255, 0.20);
+
+}
+
+
+/*Font Styles*/
 .fontStyle{
   color: #545454;
   font-family: DM Sans;
@@ -111,10 +218,42 @@ body {
   top: 37%;
 }
 
+
+.fontStyle3{
+  color: #FFF;
+  text-align: center;
+  font-family: DM Sans;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  position: relative;
+  top: 10%;
+
+}
+
+.fontStyle4{
+  color: #1F1F1F;
+  font-family: DM Sans;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.fontStyle5{
+  color: #545454;
+  font-family: DM Sans;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
 .link{
   position: absolute;
   bottom: 30%;
   left: 40%;
   font-size: 1.7vh;
   text-align: center;
+
 }

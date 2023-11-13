@@ -30,6 +30,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+
+    checkPassword : builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/check-password`,
+        method: 'POST',
+        body: data,
+      })
+  }),
   }),
 });
 
@@ -38,4 +46,5 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useUpdateUserMutation,
+  useCheckPasswordMutation
 } = userApiSlice;

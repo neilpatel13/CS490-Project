@@ -9,9 +9,9 @@ import '../style/styles.css'
 import emailIcon from '../assets/iconEmail.svg'
 import lock from '../assets/lock.svg'
 import logo from '../assets/mainLogo.svg'
+import Loader from '../components/Loader';
 
 const RegisterScreen = () => {
-    const [name, setName] = useState('');
     const[email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -54,7 +54,7 @@ const RegisterScreen = () => {
           toast.error('Passwords do not match');
       } else {
           try {
-              const res = await register({ name, email, password }).unwrap();
+              const res = await register({ email, password }).unwrap();
               dispatch(setCredentials({ ...res }));
               navigate('/');
           } catch (err) {
@@ -75,22 +75,6 @@ const RegisterScreen = () => {
                     <FormLabel style={{top:'5vh', left: '2.7vw', position: 'absolute',color: '#000', fontFamily:'DM Sans', fontSize:'3.5vh', fontStyle:'normal', fontWeight:700, lineHeight: 'normal'}}>Sign Up</FormLabel>
                 </Form.Group>
                 <Form onSubmit={submitHandler}>
-                    {/*
-                    <Form.Group controlId='name'>
-                        <img style={{height:'2vh', position:'absolute', left: '40px', top:'15%', right: '588px'}} src={emailIcon}/>
-                        <Form.Label className='fontStyle' style={{position: 'absolute', left:'64px', top: '15%' }} >
-                            Name
-                        </Form.Label>
-                        <Form.Control 
-                            className='customRectangle'
-                            style={{top: '19%'}}
-                            type='name'
-                            placeholder='Enter Name'
-                            value={name}onChange={(e) => setName(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
-                */}
 
                     <Form.Group controlId='email'>
                         <img style={{height:'2vh', position:'absolute', left: '40px', top: '15%'}} src={emailIcon}/>
@@ -141,7 +125,7 @@ const RegisterScreen = () => {
                         Sign Up
                     </Button>
 
-                    {isLoading }
+                    {isLoading && <Loader />}
 
                 </Form>
                 

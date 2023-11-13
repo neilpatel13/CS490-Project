@@ -41,7 +41,7 @@ const LoginScreen = () => {
     
     return (
 
-        <div style={{background: '#fff', width: '100vw', height: '95vh', position: 'relative'}} >
+        <div style={{background: '#fff', width: '100vw', height: '100vh', position: 'relative'}} >
             <div id='Black Box' className='blackBox'></div>
                 <div id='crushIt' style={{left:'24vw',top:'12vh', position:'absolute',color: '#fff', fontFamily:'Fredoka', fontSize:'7vh', fontStyle:'normal', fontWeight: '500', lineHeight: 'normal'}}>
                     Crush It
