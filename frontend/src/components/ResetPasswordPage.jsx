@@ -1,11 +1,13 @@
-// src/components/ResetPasswordPage.jsx
+// ResetPasswordPage.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-const ResetPasswordPage = ({ match }) => {
+const ResetPasswordPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
+    const { token } = useParams();
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -15,7 +17,7 @@ const ResetPasswordPage = ({ match }) => {
         }
 
         try {
-            await axios.post('/api/users/reset-password/' + match.params.token, { password });
+            await axios.post(`/api/users/reset-password/${token}`, { password });
             setMessage('Password successfully reset');
         } catch (error) {
             setMessage('Error resetting password');
