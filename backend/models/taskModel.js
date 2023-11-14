@@ -17,13 +17,13 @@ const taskSchema = mongoose.Schema({
     priority: {
         type: String,
         required: true,
-        enum: ['Top Priority', 'Important', 'Other']
+        enum: ['top priority', 'important', 'other']
     },
     state: {
         type: String,
         required: true,
-        enum: ['Not Started', 'In Progress', 'Complete', 'Rolled Over'],
-        default: 'Not Started'
+        enum: ['not started', 'in progress', 'complete', 'rolled over'],
+        default: 'not started'
     },
     timers: {
         type: Number,
