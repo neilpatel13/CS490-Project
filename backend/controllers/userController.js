@@ -141,41 +141,30 @@ const checkPassword = asyncHandler(async(req, res) => {
     }
 });
 
-const forgotPassword = asyncHandler(async (req, res) => {
+const resetPassword = asyncHandler(async (req, res) => {
     const { token } = req.params;
     const { password } = req.body;
-    const { email } = req.body;
-    const user = await User.findOne({ email });
+
+    const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() }
+    });
 
     if (!user) {
-        res.status(404);
-        throw new Error('User not found');
+        res.status(400);
+        throw new Error('Password reset token is invalid or has expired');
     }
 
-    const token = crypto.randomBytes(20).toString('hex');
-    user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
     await user.save();
 
-    const resetUrl = `http://localhost:3000/reset-password/${token}`;
-    const message = `You are receiving this email because you (or someone else) have requested the reset of a password. Please click on the following link, or paste this into your browser to complete the process: \n\n ${resetUrl}`;
-
-    try {
-        await sendEmail({
-            email: user.email,
-            subject: 'Password Reset Token',
-            message,
-        });
-
-        res.status(200).json({ message: 'Email sent' });
-    } catch (error) {
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
-        await user.save();
-        res.status(500).json({ message: 'Email could not be sent' });
-    }
+    res.status(200).json({ message: 'Password has been reset' });
 });
 
+// ... [export the new function along with the others]
 export {
     authUser,
     registerUser,
@@ -183,5 +172,6 @@ export {
     getUserProfile,
     updateUserProfile,
     checkPassword,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 };

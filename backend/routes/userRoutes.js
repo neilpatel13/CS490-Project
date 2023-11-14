@@ -7,7 +7,8 @@ import {
     getUserProfile,
     updateUserProfile,
     checkPassword,
-    forgotPassword // new import
+    forgotPassword, // new import
+    resetPassword // new import
 } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -17,6 +18,6 @@ router.post('/logout', logoutUser);
 router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
 router.post('/check-password', checkPassword);
 router.post('/forgot-password', forgotPassword); // new route
-router.post('/reset-password/:token', userController.resetPassword); // new route
+router.post('/reset-password/:token', resetPassword); // new route
 
 export default router;
