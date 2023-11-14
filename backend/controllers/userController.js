@@ -150,7 +150,8 @@ const updateUserProfile = asyncHandler(async(req, res) => {
 const checkPassword = asyncHandler(async(req, res) => {
     const { _id ,currentPassword } = req.body;
 
-    const user = await User.findOneById({_id});
+    const user = await User.findById({_id});
+    console.log(user);
 
     if(user && (await user.matchPassword(currentPassword))) {
         res.status(200).json({ message: 'Current password is correct' });
