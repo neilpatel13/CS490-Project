@@ -37,6 +37,15 @@ const handleTaskClick = (taskId) => {
     ));
 };
 
+//handling priority 
+const groupedTasks = tasks.reduce((acc,task) => {
+  if(!acc[task.priority]){
+    acc[task.priority] = [];
+  }
+    acc[task.priority].push(task);
+    return acc;
+}, {});
+
 //logout api call
     const [logoutApiCall] = useLogoutMutation();
 
@@ -86,28 +95,55 @@ const handleTaskClick = (taskId) => {
         sx={{bgcolor:'#FFF'}}
         >
             <div id='innerBox' className='taskInnerRectangle'>
-                Top priority
+            <div className="sectionHeader">Top Priority</div>
+              {groupedTasks['Top Priority'] &&
+                groupedTasks['Top Priority'].map((task) => (
+                  <div key={task.id} className="taskCard">
+                    <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
+                      <div className="taskTitle">{task.taskName}</div>
+                    </div>
+                    {expandedTask === task.id && (
+                      <div className="taskDetails">
+                        <p>Number of Pomodoro Timers: {task.timer}</p>
+                        <p>Notes: {task.notes}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
             <div id='innerBoxOne' className='taskInnerRectangle'>
                 <div className="sectionHeader">Important</div>
-                {tasks.map((task) => (
-                        <div key={task.id} className="taskCard">
-                          <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
-                            <div className="taskTitle">
-                            {task.taskName}
-                            </div>
-                            </div>
-                            {expandedTask === task.id &&(
-                                <div className="taskDetails"> 
-                                    <p>Number of Pomodoro Timers: {task.timer}</p>
-                                    <p>Notes: {task.notes}</p>
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                {groupedTasks['Important'] &&
+                groupedTasks['Important'].map((task) => (
+                  <div key={task.id} className="taskCard">
+                    <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
+                      <div className="taskTitle">{task.taskName}</div>
+                    </div>
+                    {expandedTask === task.id && (
+                      <div className="taskDetails">
+                        <p>Number of Pomodoro Timers: {task.timer}</p>
+                        <p>Notes: {task.notes}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
             <div id='innerBoxTwo' className='taskInnerRectangle'>
-                Other
+            <div className="sectionHeader">Other</div>
+                {groupedTasks['Other'] &&
+                groupedTasks['Other'].map((task) => (
+                  <div key={task.id} className="taskCard">
+                    <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
+                      <div className="taskTitle">{task.taskName}</div>
+                    </div>
+                    {expandedTask === task.id && (
+                      <div className="taskDetails">
+                        <p>Number of Pomodoro Timers: {task.timer}</p>
+                        <p>Notes: {task.notes}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
         </Box>
       </div>

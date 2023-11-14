@@ -106,12 +106,13 @@ body {
   margin-top: 10px;
   padding: 10px;
   display:flex;
+  flex-direction: column;
   width: 25vw;
-  height:20vh;
   border-radius: 8px;
   flex-grow: 1;
   flex-shrink: 0;
   background:#F5F7F9;
+  overflow: auto;
 }
 /* just added these*/
 .sectionHeader{
