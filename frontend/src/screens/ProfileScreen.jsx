@@ -188,7 +188,7 @@ const [logoutApiCall] = useLogoutMutation();
       <Container id='changePassword' className='container1' style={{top:'38%'}}>
         <Row >
           <Col md="12" >
-            <Form>
+          <Form data-testid="password-form" onSubmit={submitHandler}>
               <Row>
                 <Col >
                   <Form.Group controlId="currentPassword" >
