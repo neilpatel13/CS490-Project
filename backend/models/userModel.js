@@ -50,14 +50,13 @@ const userSchema = mongoose.Schema({
         type: Number,
         default: 15,
     },
-    // New fields for password reset
-    resetPasswordToken: String,
-    resetPasswordExpires: Date,
     isVerified: {
         type: Boolean,
         default: false,
-      },
-      verificationToken: String,
+    },
+    verificationToken: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
       
 },
 {

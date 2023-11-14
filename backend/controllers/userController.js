@@ -37,9 +37,9 @@ const authUser = asyncHandler(async(req, res) => {
 // @desc    Register a new user
 // route    POST /api/users
 // @access  Public
-const registerUser = asyncHandler(async(req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const userExists = await User.findOne({email});
+    const userExists = await User.findOne({ email });
     if (userExists) {
         res.status(400);
         throw new Error('User already exists');
@@ -51,7 +51,7 @@ const registerUser = asyncHandler(async(req, res) => {
         verificationToken: crypto.randomBytes(20).toString('hex'), // Generate a verification token
     });
 
-    if(user) {
+    if (user) {
         const verifyUrl = `http://localhost:3000/verify-email/${user.verificationToken}`; // Adjust the URL as needed
         const message = `Hi,\n\nPlease click on the following link to verify your email: \n\n${verifyUrl}\n\nIf you did not request this, please ignore this email.`;
 

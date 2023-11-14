@@ -9,6 +9,7 @@ import ProfileScreen from './screens/ProfileScreen.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import HomeScreen from './screens/HomeScreen.jsx';
 import ForgotPassword from './screens/ForgotPassword.jsx';
+import EmailVerification from './components/EmailVerification';
 
 // Other imports...
 
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/register" element={<RegisterScreen />} />
+        <Route path="/verify-email/:token" element={<EmailVerification />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<ProfileScreen />} />
