@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcryptjs';
+import Task from './taskModel.js'; // Import Task model
 
 const taskSchema = mongoose.Schema({
     title: { type: String, required: true },
@@ -66,7 +67,7 @@ const userSchema = mongoose.Schema({
     verificationToken: String,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    tasks: [taskSchema],
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }],
 },
 {
     timestamps: true

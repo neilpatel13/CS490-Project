@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Task from '../models/taskModel.js';
+import User from '../models/userModel.js';
 
 // Add a new task
 export const addTask = asyncHandler(async (req, res) => {
@@ -20,6 +21,14 @@ export const addTask = asyncHandler(async (req, res) => {
     });
 
     const createdTask = await task.save();
+
+    // Update user's tasks
+    const user = await User.findById(req.user._id);
+    if (user) {
+        user.tasks.push(createdTask);
+        await user.save();
+    }
+
     res.status(201).json(createdTask);
 });
 
@@ -56,14 +65,17 @@ export const updateNumberOfTimers = asyncHandler(async (req, res) => {
     const task = await Task.findById(req.params.id);
 
     if (task) {
-        task.numberOfTimers = req.body.numberOfTimers;
-        const updatedTask = await task.save();
+        task.timers = req.body.numberOfTimers;
+        await task.save();
+        const updatedTask = await Task.findById(task._id); // Fetch the updated task
         res.json(updatedTask);
     } else {
         res.status(404);
         throw new Error('Task not found');
     }
 });
+
+
 
 // Get tasks for a specific date
 export const getTasksByDate = asyncHandler(async (req, res) => {
