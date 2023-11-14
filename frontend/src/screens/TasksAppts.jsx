@@ -12,10 +12,18 @@ import { useLogoutMutation } from '../slices/userApiSlice';
 import * as React from 'react';
 import {useState} from 'react';
 import TaskAddingDialog from '../components/TaskDialog';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+
 
     const handleClickOpen = () => {
         setDialogOpen(true);
