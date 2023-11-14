@@ -48,11 +48,22 @@ const registerUser = asyncHandler(async(req, res) => {
     const user = await User.create({
         email,
         password,
+        verificationToken: crypto.randomBytes(20).toString('hex'),
     });
 
     if(user) {
-        generateToken(res, user._id);
-        res.status(201).json({
+        const verifyUrl = `http://localhost:3000/verify-email/${user.verificationToken}`;
+        const message = `Hi,\n\nPlease click on the following link to verify your email: \n\n${verifyUrl}\n\nIf you did not request this, please ignore this email.`;
+
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Email Verification',
+                message,
+            });
+
+            generateToken(res, user._id);
+            res.status(201).json({
             _id: user._id,
             first: user.first,
             last: user.last,
@@ -60,7 +71,14 @@ const registerUser = asyncHandler(async(req, res) => {
             pomodoro: user.pomodoro,
             short: user.pomodoro,
             long: user.long,
-        });
+            message: 'Verification email sent. Please check your email to verify your account.',
+            });
+        } catch (error) {
+            user.verificationToken = undefined; // Remove the token if email sending fails
+            await user.save();
+            res.status(500);
+            throw new Error('Email could not be sent');
+        }
     } else {
         res.status(400);
         throw new Error('Invalid user data');
@@ -197,6 +215,22 @@ const resetPassword = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Password has been reset' });
 });
 
+const verifyEmail = asyncHandler(async (req, res) => {
+    const { token } = req.params;
+    const user = await User.findOne({ verificationToken: token });
+  
+    if (!user) {
+      res.status(400);
+      throw new Error('Invalid or expired email verification token');
+    }
+  
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+  
+    res.status(200).json({ message: 'Email verified successfully' });
+  });
+
 export {
     authUser,
     registerUser,
@@ -205,5 +239,6 @@ export {
     updateUserProfile,
     checkPassword,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    verifyEmail
 };
