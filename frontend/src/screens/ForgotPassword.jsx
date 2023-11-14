@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Button, FormLabel, Container } from 'react-bootstrap';
+import axios from 'axios';
 import '../style/styles.css'
 import emailIcon from '../assets/iconEmail.svg'
 import logo from '../assets/mainLogo.svg'
@@ -10,8 +11,15 @@ const ForgotPassword = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        console.log('submit');
-        };
+        try {
+            await axios.post('/api/users/forgot-password', { email }); // Adjust the URL based on your API endpoint
+            // Show success message or navigate to another page
+            navigate('/password-reset-requested'); // Redirect or handle UI change
+        } catch (error) {
+            // Handle error (show error message)
+            console.error('Error during password reset request', error);
+        }
+    };
    
     return (
 

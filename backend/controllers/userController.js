@@ -1,6 +1,8 @@
 import asyncHandler from 'express-async-handler'
 import generateToken from '../utils/generateToken.js';
 import User from '../models/userModel.js'
+import crypto from 'crypto'; // new import
+import sendEmail from '../utils/sendEmail.js'; // new import
 
 // @desc    Auth user/set token
 // route    POST /api/users/auth
@@ -74,7 +76,7 @@ const logoutUser = asyncHandler(async(req, res) => {
         expires: new Date(0),
     });
     res.status(200).json({ message: 'User logged out' });
-})
+});
 
 // @desc    Get user profile
 // route    POST /api/users/profile
@@ -90,7 +92,7 @@ const getUserProfile = asyncHandler(async(req, res) => {
         long: req.user.long,
     }
     res.status(200).json(user);
-})
+});
 
 // @desc    C
 // route    PUT /api/users/profile
@@ -139,6 +141,40 @@ const checkPassword = asyncHandler(async(req, res) => {
     }
 });
 
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found');
+    }
+
+    const token = crypto.randomBytes(20).toString('hex');
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    const resetUrl = `http://localhost:3000/reset-password/${token}`;
+    const message = `You are receiving this email because you (or someone else) have requested the reset of a password. Please click on the following link, or paste this into your browser to complete the process: \n\n ${resetUrl}`;
+
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: 'Password Reset Token',
+            message,
+        });
+
+        res.status(200).json({ message: 'Email sent' });
+    } catch (error) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+        res.status(500).json({ message: 'Email could not be sent' });
+    }
+});
 
 export {
     authUser,
@@ -146,5 +182,6 @@ export {
     logoutUser,
     getUserProfile,
     updateUserProfile,
-    checkPassword
+    checkPassword,
+    forgotPassword
 };
