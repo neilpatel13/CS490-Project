@@ -46,12 +46,15 @@ const ProfileScreen = () => {
   const [checkPassword] = useCheckPasswordMutation();
 
   useEffect(() => {
-      setFirstname(userInfo.first);
-      setLastname(userInfo.last);
-      setPomodoroTime(userInfo.pomodoro);
-      setShortBreakTime(userInfo.short);
-      setLongBreakTime(userInfo.long);
-  }, [userInfo.first, userInfo.last, userInfo.pomodoro, userInfo.short, userInfo.long]);
+  if (userInfo) {
+    setFirstname(userInfo.first || '');
+    setLastname(userInfo.last || '');
+    setPomodoroTime(userInfo.pomodoro || '');
+    setShortBreakTime(userInfo.short || '');
+    setLongBreakTime(userInfo.long || '');
+  }
+}, [userInfo]);
+
 
 
   
