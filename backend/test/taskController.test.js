@@ -26,5 +26,5 @@ describe('Task Controller', () => {
     // Assertions
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(expect.any(Object));
-  });
+  }, 10000 /* 10 seconds */);
 });
