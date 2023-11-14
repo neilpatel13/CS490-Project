@@ -10,6 +10,8 @@ import PrivateRoute from './components/PrivateRoute.jsx';
 import HomeScreen from './screens/HomeScreen.jsx';
 import ForgotPassword from './screens/ForgotPassword.jsx';
 import EmailVerification from './components/EmailVerification';
+import TasksAppts from './screens/TasksAppts.jsx';
+
 
 // Other imports...
 
@@ -26,6 +28,7 @@ const App = () => {
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<ProfileScreen />} />
+          <Route path='/tasks' element={<TasksAppts />} />
         </Route>
         {/* Add other routes here */}
         {/* <Route path="*" element={<NotFoundPage />} /> */}
