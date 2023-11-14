@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Fredoka&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap');
 
-html {}
 body {
     height: 95vh;
 }
@@ -76,7 +75,7 @@ body {
 
 .signUpRectangle{
   border-radius: 10;
-  width: 40vw;
+  width: 39% !important;
   height: 85vh;
   flex-shrink: 0;
   border-radius: 10px;
@@ -155,6 +154,7 @@ body {
   font-size: 0.876rem;
 }
 /**/
+
 .customRectangle{
   color: #1F1F1F;
   font-family: DM Sans;
@@ -162,7 +162,7 @@ body {
   font-style: normal;
   font-weight: 500;
   line-height: normal;
-  width: 87%;
+  width: 87% !important;
   height: 6%;
   flex-shrink: 0;
   border-radius: 7px;
