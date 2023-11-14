@@ -3,6 +3,10 @@ import Task from '../models/taskModel.js';
 
 // Add a new task
 export const addTask = asyncHandler(async (req, res) => {
+    if (!req.user) {
+        res.status(401);
+        throw new Error('Not authorized, no user found');
+    }
     const { title, priority, notes, numberOfTimers, date } = req.body;
 
     const task = new Task({
