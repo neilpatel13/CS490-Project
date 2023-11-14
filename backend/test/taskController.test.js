@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { addTask } = require('../controllers/taskController');
 
 describe('Task Controller', () => {
@@ -11,7 +12,7 @@ describe('Task Controller', () => {
         date: new Date()
       },
       user: {
-        _id: 'mockUserId'
+        _id: new mongoose.Types.ObjectId()
       }
     };
     const res = {
