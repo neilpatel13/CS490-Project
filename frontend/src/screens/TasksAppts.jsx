@@ -1,81 +1,39 @@
 import logo from '../assets/mainLogo.svg';
 import lo from '../assets/logout.svg';
-import usr from '../assets/profile.svg';
-import lock from '../assets/lock.svg';
-import cl from '../assets/clock.svg';
+///import usr from '../assets/profile.svg';
+///import lock from '../assets/lock.svg';
+///import cl from '../assets/clock.svg';
 import { Link } from 'react-router-dom';
 import {Button, Box,
-     Fab,TextField,
-     Dialog,DialogActions,
-     DialogContent,DialogContentText,
-     DialogTitle} from '@mui/material';
+     Fab} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { logout } from '../slices/authSlice';
 import { useLogoutMutation } from '../slices/userApiSlice';
 import * as React from 'react';
 import {useState} from 'react';
-
+import TaskAddingDialog from '../components/TaskDialog';
 const TasksAppts = () => {
-
-//task adding with dialog modal
-    const[open, setOpen ] = useState(false);
-    const [taskName, setTaskName] = useState('');
-    const [timer, setTimer ] = useState('');
-    const [notes, setNotes] = useState('');
-    const [expandedTask, setExpandedTask] = useState('');
+    const [tasks, setTasks] = useState([]);
+    const[dialogOpen, setDialogOpen ] = useState(false);
+    const[expandedTask, setExpandedTask] = useState(null);
 
     const handleClickOpen = () => {
-        setOpen(true);
+        setDialogOpen(true);
     };
     const handleClose = () =>{
-        setOpen(false);
+        setDialogOpen(false);
     };
 
-//saving the user input
-
-const handleInputChange = (event, field) =>{
-    const value = event.target.vaalue;
-
-    switch(field){
-        case 'taskName':
-            setTaskName(value);
-            break;
-        case 'timer':
-            setTimer(value);
-            break;
-        case 'notes':
-            setNotes(value);
-            break;
-        default:
-        break;
+    const onAddTask = (newTask) => {
+        setTasks((prevTasks) => [...prevTasks,newTask]);
     }
-};
 
 //toggle expanded task
 const handleTaskClick = (taskId) => {
     setExpandedTask((prevExpandedTask) =>
-    prevExpandedTask === taskId ? null : taskId
-    );
+    (prevExpandedTask === taskId ? null : taskId
+    ));
 };
-
-const handleSubmit = () => {
-    if(taskName.trim()==='' || timer.trim() ===''){
-        return;
-    }
-    const newTask ={
-        id: Date.now(),
-        taskName,
-        timer,
-        notes,
-    };
-    onAddTask(newTask);
-
-    setTaskName('');
-    setTimer('');
-    setNotes('');
-
-    handleClose();
-}
 
 //logout api call
     const [logoutApiCall] = useLogoutMutation();
@@ -114,52 +72,7 @@ const handleSubmit = () => {
       <Fab onClick={handleClickOpen} size="small" color="primary" aria-label="add" sx={{width:'39px', height:'39px',  flexShrink:0}}>
         <AddIcon />
     </Fab>
-    <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add Task</DialogTitle>
-        <DialogContent>
-            <DialogContentText>
-                Enter your task
-            </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="task"
-                    label="Task"
-                    fullWidth
-                    variant="standard"
-                    />
-        </DialogContent>
-        <DialogContent>
-            <DialogContentText>
-                How many pomodoro timers?
-            </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="timer"
-                    label="Number of Pomodoro Timers"
-                    fullWidth
-                    variant="standard"
-                    />
-        </DialogContent>
-        <DialogContent>
-            <DialogContentText>
-                Add Notes
-            </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="notes"
-                    label="Notes"
-                    fullWidth
-                    variant="standard"
-                    />
-        </DialogContent>
-        <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button Click={handleClose}>Save</Button>
-        </DialogActions>
-    </Dialog>
+    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask}/>
       </div>
       <div id='taskBox' className='taskRectangle'>
         <Box
@@ -175,6 +88,19 @@ const handleSubmit = () => {
             </div>
             <div id='innerBoxOne' className='taskInnerRectangle'>
                 Important
+                <ul>
+                {tasks.map((task) => (
+                        <li key={task.id} onClick={() => handleTaskClick(task.id)}>
+                            {task.taskName}
+                            {expandedTask === task.id &&(
+                                <div>
+                                    <p>Number of Pomodoro Timers: {task.timer}</p>
+                                    <p>Notes: {task.notes}</p>
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
             </div>
             <div id='innerBoxTwo' className='taskInnerRectangle'>
                 Other
