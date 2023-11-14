@@ -75,6 +75,20 @@ export const updateNumberOfTimers = asyncHandler(async (req, res) => {
     }
 });
 
+export const updatePriority = asyncHandler(async (req, res) => {
+    const task = await Task.findById(req.params.id);
+
+    if (task) {
+        task.priority = req.body.priority;
+        await task.save();
+        const updatedTask = await Task.findById(task._id); // Fetch the updated task
+        res.json(updatedTask);
+    } else {
+        res.status(404);
+        throw new Error('Task not found');
+    }
+});
+
 
 
 // Get tasks for a specific date
