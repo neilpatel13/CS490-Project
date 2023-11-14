@@ -96,11 +96,6 @@ const LoginScreen = () => {
                     Need An Account? <Link to={'/register'}> Sign Up</Link>
                     </div>
                 </div>
-
-            <div className='link'>
-                    <Link to={'/forgot'}>Forgot Password?</Link>
-            </div>
-
             </Container>
         </div>
     );

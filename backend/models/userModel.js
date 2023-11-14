@@ -1,15 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcryptjs';
 
-const taskSchema = mongoose.Schema({
-    title: { type: String, required: true },
-    state: { type: String, required: true, enum: ['not started', 'in progress', 'complete', 'rolled over'] },
-    priority: { type: String, required: true, enum: ['Top Priority', 'Important', 'Other'] },
-    timers: { type: Number, default: 1 },
-    notes: { type: String, default: '' },
-    date: { type: Date, required: true }
-});
-
 const userSchema = mongoose.Schema({
     first: {
         type: String,
@@ -58,15 +49,8 @@ const userSchema = mongoose.Schema({
     long: {
         type: Number,
         default: 15,
-    },
-    isVerified: {
-        type: Boolean,
-        default: false,
-    },
-    verificationToken: String,
-    resetPasswordToken: String,
-    resetPasswordExpires: Date,
-    tasks: [taskSchema],
+    }
+
 },
 {
     timestamps: true
