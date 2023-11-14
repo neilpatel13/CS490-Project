@@ -46,12 +46,15 @@ const ProfileScreen = () => {
   const [checkPassword] = useCheckPasswordMutation();
 
   useEffect(() => {
-      setFirstname(userInfo.first);
-      setLastname(userInfo.last);
-      setPomodoroTime(userInfo.pomodoro);
-      setShortBreakTime(userInfo.short);
-      setLongBreakTime(userInfo.long);
-  }, [userInfo.first, userInfo.last, userInfo.pomodoro, userInfo.short, userInfo.long]);
+  if (userInfo) {
+    setFirstname(userInfo.first || '');
+    setLastname(userInfo.last || '');
+    setPomodoroTime(userInfo.pomodoro || '');
+    setShortBreakTime(userInfo.short || '');
+    setLongBreakTime(userInfo.long || '');
+  }
+}, [userInfo]);
+
 
 
   
@@ -284,7 +287,7 @@ const [logoutApiCall] = useLogoutMutation();
 
 
       <div id='sideBr' className='blackSideBar'>
-          <div id='text' style={{top:'3%', position: 'relative'}}>Cursh It</div>
+          <div id='text' style={{top:'3%', position: 'relative'}}>Crush It</div>
           <div id='line' style={{left:'15%',background: '#3E3F42', height:'1px', width:'70%',top:'6%', position: 'relative'}}> </div>
           <img style={{top:'10%', position:'relative', flexShrink: 0}} src={logo} alt='Someone Working!'/>
           <div id='moreText' className='fontStyle3'> It’s time to plan your day!</div>

@@ -76,7 +76,7 @@ body {
 
 .signUpRectangle{
   border-radius: 10;
-  width: 40vw;
+  width: 39% !important;
   height: 85vh;
   flex-shrink: 0;
   border-radius: 10px;
@@ -88,7 +88,6 @@ body {
   position: absolute;
 }
 
-
 .customRectangle{
   color: #1F1F1F;
   font-family: DM Sans;
@@ -96,7 +95,7 @@ body {
   font-style: normal;
   font-weight: 500;
   line-height: normal;
-  width: 87%;
+  width: 87% !important;
   height: 6%;
   flex-shrink: 0;
   border-radius: 7px;
@@ -218,6 +217,7 @@ body {
   top: 37%;
 }
 
+
 .fontStyle3{
   color: #FFF;
   text-align: center;
@@ -247,4 +247,13 @@ body {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+}
+
+.link{
+  position: absolute;
+  bottom: 30%;
+  left: 40%;
+  font-size: 1.7vh;
+  text-align: center;
+
 }
