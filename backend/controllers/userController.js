@@ -48,11 +48,11 @@ const registerUser = asyncHandler(async(req, res) => {
     const user = await User.create({
         email,
         password,
-        verificationToken: crypto.randomBytes(20).toString('hex'),
+        verificationToken: crypto.randomBytes(20).toString('hex'), // Generate a verification token
     });
 
     if(user) {
-        const verifyUrl = `http://localhost:3000/verify-email/${user.verificationToken}`;
+        const verifyUrl = `http://localhost:3000/verify-email/${user.verificationToken}`; // Adjust the URL as needed
         const message = `Hi,\n\nPlease click on the following link to verify your email: \n\n${verifyUrl}\n\nIf you did not request this, please ignore this email.`;
 
         try {
@@ -62,16 +62,16 @@ const registerUser = asyncHandler(async(req, res) => {
                 message,
             });
 
-            generateToken(res, user._id);
+            // Send a response without a token, as the user is not yet verified
             res.status(201).json({
-            _id: user._id,
-            first: user.first,
-            last: user.last,
-            email: user.email,
-            pomodoro: user.pomodoro,
-            short: user.pomodoro,
-            long: user.long,
-            message: 'Verification email sent. Please check your email to verify your account.',
+                _id: user._id,
+                first: user.first,
+                last: user.last,
+                email: user.email,
+                pomodoro: user.pomodoro,
+                short: user.short,
+                long: user.long,
+                message: 'Verification email sent. Please check your email to verify your account.',
             });
         } catch (error) {
             user.verificationToken = undefined; // Remove the token if email sending fails
@@ -84,6 +84,7 @@ const registerUser = asyncHandler(async(req, res) => {
         throw new Error('Invalid user data');
     }
 });
+
 
 // @desc    Logout user
 // route    POST /api/users/logout
@@ -216,20 +217,19 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
-    const { token } = req.params;
-    const user = await User.findOne({ verificationToken: token });
-  
+    const user = await User.findOne({ verificationToken: req.params.token });
+
     if (!user) {
-      res.status(400);
-      throw new Error('Invalid or expired email verification token');
+        res.status(400);
+        throw new Error('Invalid or expired verification token');
     }
-  
+
     user.isVerified = true;
-    user.verificationToken = undefined;
+    user.verificationToken = undefined; // Clear the verification token
     await user.save();
-  
+
     res.status(200).json({ message: 'Email verified successfully' });
-  });
+});
 
 export {
     authUser,
