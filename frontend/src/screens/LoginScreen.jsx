@@ -48,8 +48,8 @@ const LoginScreen = () => {
                 </div>
             <img className='signUpLogo'  src={logo} alt='Someone Working!'/>
             <Container className='signUpRectangle'>
-            <Form.Group controlId='Sign In'>
-                    <FormLabel style={{top:'5vh', left: '2.7vw',  position: 'absolute',color: '#000', fontFamily:'DM Sans', fontSize:'3.5vh', fontStyle:'normal', fontWeight:700, lineHeight: 'normal'}}>Sign in</FormLabel>
+            <Form.Group controlId='Sign In'> /*changed*/
+                    <Form.Label style={{top:'5vh', left: '2.7vw',  position: 'absolute',color: '#000', fontFamily:'DM Sans', fontSize:'3.5vh', fontStyle:'normal', fontWeight:700, lineHeight: 'normal'}}>Sign in</Form.Label>
                 </Form.Group>
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId='email'>
