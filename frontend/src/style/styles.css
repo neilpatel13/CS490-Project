@@ -87,6 +87,74 @@ body {
   position: absolute;
 }
 
+.taskRectangle{
+  border-radius: 10;
+  width: 40vw;
+  height: 72vh;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #FFF;
+  box-shadow: 2px 5px 50px 0px rgba(36, 37, 40, 0.10);
+  top: 25vh;
+  left: 15vw;
+  bottom: 10px;
+  position: absolute;
+}
+.taskInnerRectangle{
+  margin:10px;
+  margin-top: 10px;
+  padding: 10px;
+  display:flex;
+  flex-direction: column;
+  width: 25vw;
+  border-radius: 8px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  background:#F5F7F9;
+  overflow: auto;
+}
+/* just added these*/
+.sectionHeader{
+  font-weight: bold;
+  color: #000;
+  font-family: DM sans;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+.taskCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  padding: 15px;
+  transition: box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.taskHeader {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.taskTitle{
+  font-size: 1rem;
+  font-weight: bold;
+  color: #6284FF;
+  font-family: DM Sans;
+}
+
+.taskDetails{
+  padding-top: 10px;
+  font-size: 0.876rem;
+}
+/**/
+
 .customRectangle{
   color: #1F1F1F;
   font-family: DM Sans;
