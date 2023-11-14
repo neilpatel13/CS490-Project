@@ -5,7 +5,7 @@ import lo from '../assets/logout.svg';
 ///import cl from '../assets/clock.svg';
 import { Link } from 'react-router-dom';
 import {Button, Box,
-     Fab} from '@mui/material';
+     Fab,Typography} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { logout } from '../slices/authSlice';
 import { useLogoutMutation } from '../slices/userApiSlice';
@@ -14,8 +14,8 @@ import {useState} from 'react';
 import TaskAddingDialog from '../components/TaskDialog';
 const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
-    const[dialogOpen, setDialogOpen ] = useState(false);
-    const[expandedTask, setExpandedTask] = useState(null);
+    const [dialogOpen, setDialogOpen ] = useState(false);
+    const [expandedTask, setExpandedTask] = useState(null);
 
     const handleClickOpen = () => {
         setDialogOpen(true);
@@ -25,7 +25,9 @@ const TasksAppts = () => {
     };
 
     const onAddTask = (newTask) => {
+      console.log('Before adding task', tasks);
         setTasks((prevTasks) => [...prevTasks,newTask]);
+      console.log('after adding tasks', tasks);
     }
 
 //toggle expanded task
@@ -72,7 +74,7 @@ const handleTaskClick = (taskId) => {
       <Fab onClick={handleClickOpen} size="small" color="primary" aria-label="add" sx={{width:'39px', height:'39px',  flexShrink:0}}>
         <AddIcon />
     </Fab>
-    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask}/>
+    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask} />
       </div>
       <div id='taskBox' className='taskRectangle'>
         <Box
@@ -87,20 +89,22 @@ const handleTaskClick = (taskId) => {
                 Top priority
             </div>
             <div id='innerBoxOne' className='taskInnerRectangle'>
-                Important
-                <ul>
+                <div className="sectionHeader">Important</div>
                 {tasks.map((task) => (
-                        <li key={task.id} onClick={() => handleTaskClick(task.id)}>
+                        <div key={task.id} className="taskCard">
+                          <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
+                            <div className="taskTitle">
                             {task.taskName}
+                            </div>
+                            </div>
                             {expandedTask === task.id &&(
-                                <div>
+                                <div className="taskDetails"> 
                                     <p>Number of Pomodoro Timers: {task.timer}</p>
                                     <p>Notes: {task.notes}</p>
                                 </div>
                             )}
-                        </li>
+                        </div>
                     ))}
-                </ul>
             </div>
             <div id='innerBoxTwo' className='taskInnerRectangle'>
                 Other

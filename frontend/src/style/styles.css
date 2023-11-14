@@ -113,7 +113,47 @@ body {
   flex-shrink: 0;
   background:#F5F7F9;
 }
+/* just added these*/
+.sectionHeader{
+  font-weight: bold;
+  color: #000;
+  font-family: DM sans;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+.taskCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  padding: 15px;
+  transition: box-shadow 0.2s;
+  cursor: pointer;
+}
 
+.taskHeader {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.taskTitle{
+  font-size: 1rem;
+  font-weight: bold;
+  color: #6284FF;
+  font-family: DM Sans;
+}
+
+.taskDetails{
+  padding-top: 10px;
+  font-size: 0.876rem;
+}
+/**/
 .customRectangle{
   color: #1F1F1F;
   font-family: DM Sans;
