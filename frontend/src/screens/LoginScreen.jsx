@@ -24,7 +24,7 @@ const LoginScreen = () => {
 
     useEffect(() => {
         if (userInfo) { 
-            navigate('/');
+            navigate('/tasks');
         }
     }, [navigate, userInfo]);
 
@@ -83,8 +83,8 @@ const LoginScreen = () => {
                         ></Form.Control>
                 </Form.Group>
 
-                <Button type='submit' variant='primary' className='customButton' style={{top: '47%'}}>
-                    Sign In
+                <Button  className='customButton' type='submit' style={{top: '47%', borderRadius: '16px', fontFamily: 'DM sans', background:'linear-gradient(180deg, #6284FF 0%, #4B6DE9 100%)', boxShadow: '0px 4px 80px 0px rgba(98, 132, 255, 0.20)'}}>
+                    Sign in
                 </Button>
 
                 {isLoading && <Loader />}

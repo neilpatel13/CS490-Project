@@ -5,23 +5,30 @@ import lo from '../assets/logout.svg';
 ///import cl from '../assets/clock.svg';
 import { Link } from 'react-router-dom';
 import {Button, Box,
-     Fab,Typography} from '@mui/material';
+     Fab} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { logout } from '../slices/authSlice';
 import { useLogoutMutation } from '../slices/userApiSlice';
-import * as React from 'react';
+// import * as React from 'react';
 import {useState} from 'react';
+import {useSelector } from 'react-redux';
 import TaskAddingDialog from '../components/TaskDialog';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import usrLogo from '../assets/user.svg'
+
 
 const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
 
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const { userInfo } = useSelector((state) => state.auth);
+
 
 
 
@@ -55,7 +62,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
 }, {});
 
 //logout api call
-    const [logoutApiCall] = useLogoutMutation();
+const [logoutApiCall] = useLogoutMutation();
 
   const logoutHandler = async () => {
     try {
@@ -66,25 +73,33 @@ const groupedTasks = tasks.reduce((acc,task) => {
       console.error(err);
     }
   };
+
+
     return(
         <Box>
-        <div id='sideBr' className='blackSideBar'>
-        <div id='text' style={{top:'3%', position: 'relative'}}>Crush It</div>
-        <div id='line' style={{left:'15%',background: '#3E3F42', height:'1px', width:'70%',top:'6%', position: 'relative'}}> </div>
-        <img style={{top:'10%', position:'relative', flexShrink: 0}} src={logo} alt='Someone Working!'/>
-        <div id='moreText' className='fontStyle3'> It’s time to plan your day!</div>
-        
-        <Link to="/">
-          <Button type='button' variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px'}}>
-            Plan Day
-          </Button>
-        </Link>
+          <div id='topBar' className='topBar'>
+          <p id='name' style={{fontSize:'15px', right:'3%', position: 'absolute', textAlign:'center', top:'28%'}}>{userInfo.first} {userInfo.last}</p>
+          <a href='/profile'>
+            <img src={usrLogo} alt='eclipse' style={{right:'10%', position:'absolute',  top: '22%', flexShrink: '0'}}/>
+          </a>
+          </div>
+          <div id='sideBr' className='blackSideBar'>
+            <div id='text' style={{top:'3%', position: 'relative'}}>Crush It</div>
+            <div id='line' style={{left:'15%',background: '#3E3F42', height:'1px', width:'70%',top:'6%', position: 'relative'}}> </div>
+            <img style={{top:'10%', position:'relative', flexShrink: 0}} src={logo} alt='Someone Working!'/>
+            <div id='moreText' className='fontStyle3'> It’s time to plan your day!</div>
+            
+            <Link to="/tasks">
+              <Button type='button' variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px', border: '1px solid #FFF', color: '#fff'}}>
+                Plan Day
+              </Button>
+            </Link>
 
 
-        <Button onClick={logoutHandler} type='button' variant='primary' className='logoutButton' style={{fontFamily:'DM Sans', fontSize:'12px'}}>
-          <img src={lo} alt='logout'/>Log out
-        </Button>
-      </div>
+            <Button onClick={logoutHandler} type='button' variant='primary' className='logoutButton' style={{fontFamily:'DM Sans', fontSize:'12px', border: '1px solid #FFF'}}>
+              <img src={lo} alt='logout'/>Log out
+            </Button>
+        </div>
     <Box>
     <div id='password' style={{color: "#000",fontFamily: "DM Sans", fontSize: "4vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal", position:'absolute', left:'14.8%', top:'20%'}}>
       Tasks
