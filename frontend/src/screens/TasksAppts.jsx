@@ -127,7 +127,7 @@ const [logoutApiCall] = useLogoutMutation();
                     </div>
                     {expandedTask === task.id && (
                       <div className="taskDetails">
-                        <p>Number of Pomodoro Timers: {task.timer}</p>
+                        <p>Number of Pomodoro Timers 25 mins each: {task.timer}</p>
                         <p>Notes: {task.notes}</p>
                       </div>
                     )}
