@@ -125,9 +125,14 @@ const [logoutApiCall] = useLogoutMutation();
                 groupedTasks['Top Priority'].map((task) => (
                   <div key={task.id} className="taskCard">
                     <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
-                      <div className="taskTitle" style={{ display:'flex', alignItems:'center' }}>
+                      {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
+                      <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
+                      <div className="taskTitle" >
                         {task.taskName}
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%' ,marginLeft:'22rem'}}/>
+                        </div>
+                        <div style={{ position: 'absolute', left: '400px'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%'}}/>
+                        </div>
                       </div>
                     </div>
                     {expandedTask === task.id && (
@@ -145,9 +150,13 @@ const [logoutApiCall] = useLogoutMutation();
                 groupedTasks['Important'].map((task) => (
                   <div key={task.id} className="taskCard">
                     <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
-                      <div className="taskTitle">
+                    <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
+                      <div className="taskTitle" >
                         {task.taskName}
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%' ,marginLeft:'22rem'}}/>
+                        </div>
+                        <div style={{ position: 'absolute', left: '400px'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%'}}/>
+                        </div>
                       </div>
                     </div>
                     {expandedTask === task.id && (
@@ -165,10 +174,14 @@ const [logoutApiCall] = useLogoutMutation();
                 groupedTasks['Other'].map((task) => (
                   <div key={task.id} className="taskCard">
                     <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
-                      <div className="taskTitle">
+                    <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
+                      <div className="taskTitle" >
                         {task.taskName}
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%' ,marginLeft:'22rem'}}/>
                         </div>
+                        <div style={{ position: 'absolute', left: '400px'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%'}}/>
+                        </div>
+                      </div>
                     </div>
                     {expandedTask === task.id && (
                       <div className="taskDetails">
