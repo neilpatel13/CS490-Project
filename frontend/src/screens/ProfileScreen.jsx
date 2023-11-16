@@ -145,7 +145,7 @@ const [logoutApiCall] = useLogoutMutation();
     <div id='backgound' style={{background: '#fff', width: '100vw', height: '100vh', position: 'relative'}} >
       <div id='topBar' className='topBar'> 
           <p id='profile' style={{ left:'1%', top:'22%', position:'absolute'}} >Profile</p>
-          <p id='name' style={{fontSize:'15px', right:'3%', position: 'absolute', textAlign:'center', top:'28%'}}>{firstname} {lastname}</p>
+          <p id='name' style={{fontSize:'15px', right:'3%', position: 'absolute', textAlign:'center', top:'28%'}}>{userInfo.first} {userInfo.last}</p>
           <a href='/profile'>
             <img src={usrLogo} alt='eclipse' style={{right:'10%', position:'absolute',  top: '22%', flexShrink: '0'}}/>
           </a>
