@@ -90,7 +90,7 @@ body {
 }
 
 .taskRectangle{
-  border-radius: 10;
+  border-radius: 10px; /*forgot px at the end*/
   width: 40vw;
   height: 72vh;
   flex-shrink: 0;
@@ -101,14 +101,38 @@ body {
   left: 15vw;
   bottom: 10px;
   position: absolute;
+  overflow-y: auto; /*testing a in task scroll*/
 }
+
+/*adding some scroll bar customization */
+.taskRectangle::-webkit-scrollbar {
+  width: 5px;
+}
+
+.taskRectangle::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.taskRectangle::-webkit-scrollbar-thumb {
+  background: #6284FF;
+  border-radius: 10px;
+}
+
+.taskRectangle::-webkit-scrollbar-thumb:hover {
+  background: #4B6DE9;
+}
+
+/**/
+
+
 .taskInnerRectangle{
   margin:10px;
   margin-top: 10px;
   padding: 10px;
   display:flex;
   flex-direction: column;
-  width: 25vw;
+  width: 88%; /* trying to have this fill out the box more, was 25vh */
   border-radius: 8px;
   flex-grow: 1;
   flex-shrink: 0;
@@ -145,7 +169,7 @@ body {
 }
 
 .taskTitle{
-  font-size: 1rem;
+  font-size: 1.2rem; /*changing the fontSize cause the tasks looked a bit small*/
   font-weight: bold;
   color: #6284FF;
   font-family: DM Sans;

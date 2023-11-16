@@ -16,7 +16,7 @@ import TaskAddingDialog from '../components/TaskDialog';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import usrLogo from '../assets/user.svg'
-
+import OpenWithIcon from '@mui/icons-material/OpenWith';
 
 const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
@@ -100,21 +100,23 @@ const [logoutApiCall] = useLogoutMutation();
               <img src={lo} alt='logout'/>Log out
             </Button>
         </div>
-    <Box>
-    <div id='password' style={{color: "#000",fontFamily: "DM Sans", fontSize: "4vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal", position:'absolute', left:'14.8%', top:'20%'}}>
+  <Box> 
+  <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position:'absolute', left:'14.8%', top: '18%' }}>
+    <div id='taskHeading' style={{color: "#000",fontFamily: "DM Sans", fontSize: "4vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal"}}>
       Tasks
-      <Fab onClick={handleClickOpen} size="small" color="primary" aria-label="add" sx={{width:'39px', height:'39px',  flexShrink:0}}>
-        <AddIcon />
-    </Fab>
-    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask} />
       </div>
+      <Fab onClick={handleClickOpen} size="small" color="primary" aria-label="add" sx={{width:'30px', height:'30px', marginLeft:'10px'}}>
+        <AddIcon fontSize="1.25rem" />
+    </Fab>
+    </div>
+    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask} />
       <div id='taskBox' className='taskRectangle'>
         <Box
         display="flex"
         spacing={4}
         flexDirection="column"
         justifyContent="space-between"
-        alignItems="flex-start"
+        alignItems="center" //made a change here, was 'flex-start'
         sx={{bgcolor:'#FFF'}}
         >
             <div id='innerBox' className='taskInnerRectangle'>
@@ -123,7 +125,10 @@ const [logoutApiCall] = useLogoutMutation();
                 groupedTasks['Top Priority'].map((task) => (
                   <div key={task.id} className="taskCard">
                     <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
-                      <div className="taskTitle">{task.taskName}</div>
+                      <div className="taskTitle" style={{ display:'flex', alignItems:'center' }}>
+                        {task.taskName}
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%' ,marginLeft:'22rem'}}/>
+                      </div>
                     </div>
                     {expandedTask === task.id && (
                       <div className="taskDetails">
@@ -140,7 +145,10 @@ const [logoutApiCall] = useLogoutMutation();
                 groupedTasks['Important'].map((task) => (
                   <div key={task.id} className="taskCard">
                     <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
-                      <div className="taskTitle">{task.taskName}</div>
+                      <div className="taskTitle">
+                        {task.taskName}
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%' ,marginLeft:'22rem'}}/>
+                      </div>
                     </div>
                     {expandedTask === task.id && (
                       <div className="taskDetails">
@@ -157,7 +165,10 @@ const [logoutApiCall] = useLogoutMutation();
                 groupedTasks['Other'].map((task) => (
                   <div key={task.id} className="taskCard">
                     <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
-                      <div className="taskTitle">{task.taskName}</div>
+                      <div className="taskTitle">
+                        {task.taskName}
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%' ,marginLeft:'22rem'}}/>
+                        </div>
                     </div>
                     {expandedTask === task.id && (
                       <div className="taskDetails">
