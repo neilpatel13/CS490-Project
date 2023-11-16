@@ -121,7 +121,7 @@ const RegisterScreen = () => {
                             ></Form.Control>
                     </Form.Group>
 
-                    <Button type='submit' style={{top: '63%'}} variant='primary' className='customButton'>
+                    <Button type='submit' style={{top: '63%', borderRadius: '16px', fontFamily: 'DM sans', background:'linear-gradient(180deg, #6284FF 0%, #4B6DE9 100%)', boxShadow: '0px 4px 80px 0px rgba(98, 132, 255, 0.20)'}} variant='primary' className='customButton'>
                         Sign Up
                     </Button>
 

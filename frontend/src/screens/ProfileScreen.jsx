@@ -14,6 +14,7 @@ import lo from '../assets/logout.svg'
 import usr from '../assets/profile.svg'
 import lock from '../assets/lock.svg'
 import cl from '../assets/clock.svg'
+import usrLogo from '../assets/user.svg'
 import { logout } from '../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useLogoutMutation } from '../slices/userApiSlice';
@@ -46,14 +47,14 @@ const ProfileScreen = () => {
   const [checkPassword] = useCheckPasswordMutation();
 
   useEffect(() => {
-  if (userInfo) {
-    setFirstname(userInfo.first || '');
-    setLastname(userInfo.last || '');
-    setPomodoroTime(userInfo.pomodoro || '');
-    setShortBreakTime(userInfo.short || '');
-    setLongBreakTime(userInfo.long || '');
-  }
-}, [userInfo]);
+    if (userInfo) {
+      setFirstname(userInfo.first || '');
+      setLastname(userInfo.last || '');
+      setPomodoroTime(userInfo.pomodoro || '');
+      setShortBreakTime(userInfo.short || '');
+      setLongBreakTime(userInfo.long || '');
+    }
+  }, [userInfo]);
 
 
 
@@ -144,6 +145,10 @@ const [logoutApiCall] = useLogoutMutation();
     <div id='backgound' style={{background: '#fff', width: '100vw', height: '100vh', position: 'relative'}} >
       <div id='topBar' className='topBar'> 
           <p id='profile' style={{ left:'1%', top:'22%', position:'absolute'}} >Profile</p>
+          <p id='name' style={{fontSize:'15px', right:'3%', position: 'absolute', textAlign:'center', top:'28%'}}>{firstname} {lastname}</p>
+          <a href='/profile'>
+            <img src={usrLogo} alt='eclipse' style={{right:'10%', position:'absolute',  top: '22%', flexShrink: '0'}}/>
+          </a>
       </div>
 
       <div style={{color: "#000",fontFamily: "DM Sans", fontSize: "2.2vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal", position:'absolute', left:'14.8%', top:'11%'}}>
@@ -272,12 +277,12 @@ const [logoutApiCall] = useLogoutMutation();
         </Row>
       </Container>
 
-      <Button id='submit' type='submit' variant='primary' className='customButton' style={{width:'17vw',bottom:'10%', left: '60%'}}>
+      <Button id='submit' type='submit' variant='primary' className='customButton' style={{width:'17vw',bottom:'10%', left: '60%', borderRadius: '16px', fontFamily: 'DM Sans, sans-serif'}}>
           Save
       </Button>
 
       <Link to="/">
-        <Button id='cancel' type='button' variant='primary' className='customButton2' style={{width:'17vw',bottom: '10%', left: '35%'}}>
+        <Button id='cancel' type='submit' variant='primary' className='customButton2' style={{width:'17vw',bottom: '10%', left: '35%', background:'#FFF', color: '#6284FF', fontFamily:'DM Sans, sans-serif', borderRadius: '16px', boxShadow:'2px 5px 50px 0px rgba(36, 37, 40, 0.10)'}}>
           Cancel
         </Button>
       </Link>
@@ -292,14 +297,14 @@ const [logoutApiCall] = useLogoutMutation();
           <img style={{top:'10%', position:'relative', flexShrink: 0}} src={logo} alt='Someone Working!'/>
           <div id='moreText' className='fontStyle3'> It’s time to plan your day!</div>
           
-          <Link to="/">
-            <Button type='button' variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px'}}>
+          <Link to="/tasks">
+            <Button type='button' variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px', backgroundColor: 'transparent', border: '1px solid #FFF'}}>
               Plan Day
             </Button>
           </Link>
 
 
-          <Button onClick={logoutHandler} type='button' variant='primary' className='logoutButton' style={{fontFamily:'DM Sans', fontSize:'12px'}}>
+          <Button onClick={logoutHandler} type='button' variant='primary' className='logoutButton' style={{fontFamily:'DM Sans', fontSize:'12px', backgroundColor: 'transparent', border: '1px solid #FFF'}}>
             <img src={lo} alt='logout'/>Log out
           </Button>
 
