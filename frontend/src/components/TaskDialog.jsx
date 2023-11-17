@@ -7,7 +7,7 @@ import {Button,
 
     const TaskAddingDialog = ({open, handleClose,onAddTask }) =>{
         const [taskName, setTaskName] = useState('');
-        const [timer, setTimer] = useState('');
+        const [timer, setTimer] = useState(null);
         const [notes, setNotes] = useState('');
         const [priority, setPriority] = useState('');
 
@@ -36,6 +36,16 @@ import {Button,
 
         const handlePriorityChange = (event) => {
             setPriority(event.target.value);
+        };
+
+        //recent change
+        const handleNumberChange = (event) => {
+            const value = event.target.value;
+            if(!isNaN(value) && value >= 0) {
+                setTimer(value==='' ? null : value);
+            } else {
+                setTimer('0');
+            }
         };
 
         const handleSubmit = () => {
@@ -88,10 +98,11 @@ import {Button,
                     margin="dense"
                     id="timer"
                     label="Number of timers"
+                    type="number"
                     fullWidth
                     variant="standard"
-                    value={timer}
-                    onChange={(event) => handleInputChange(event,'timer')}
+                    value={timer === null? '' : timer} //
+                    onChange={handleNumberChange} /*recent change*/
                     />
         </DialogContent>
         <DialogContent>
