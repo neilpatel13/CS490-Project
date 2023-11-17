@@ -17,6 +17,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import usrLogo from '../assets/user.svg'
 import OpenWithIcon from '@mui/icons-material/OpenWith';
+// adding dnd import 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
@@ -119,6 +121,8 @@ const [logoutApiCall] = useLogoutMutation();
         alignItems="center" //made a change here, was 'flex-start'
         sx={{bgcolor:'#FFF'}}
         >
+      {/* added drag drop context here */}
+        <DragDropContext> 
             <div id='innerBox' className='taskInnerRectangle'>
             <div className="sectionHeader">Top Priority</div>
               {groupedTasks['Top Priority'] &&
@@ -192,6 +196,7 @@ const [logoutApiCall] = useLogoutMutation();
                   </div>
                 ))}
             </div>
+          </DragDropContext>
         </Box>
       </div>
       </Box>
