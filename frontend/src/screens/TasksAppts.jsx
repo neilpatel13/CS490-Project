@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import usrLogo from '../assets/user.svg'
 import OpenWithIcon from '@mui/icons-material/OpenWith';
+import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 // adding dnd import 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -128,21 +129,28 @@ const [logoutApiCall] = useLogoutMutation();
               {groupedTasks['Top Priority'] &&
                 groupedTasks['Top Priority'].map((task) => (
                   <div key={task.id} className="taskCard">
-                    <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
+                    <div className="taskHeader">
                       {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
                       <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
                       <div className="taskTitle" >
                         {task.taskName}
                         </div>
-                        <div style={{ position: 'absolute', left: '400px'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%'}}/>
+                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task.id)}>
+                        {expandedTask === task.id ? 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
+                        : 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
+                        </div>
                         </div>
                       </div>
                     </div>
                     {expandedTask === task.id && (
                       <div className="taskDetails">
-                        <p>Number of Pomodoro Timers 25 mins each: {task.timer}</p>
-                        <p>Notes: {task.notes}</p>
+                        <div id='break' className='taskBreak'/>
+                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
                       </div>
                     )}
                   </div>
@@ -153,20 +161,27 @@ const [logoutApiCall] = useLogoutMutation();
                 {groupedTasks['Important'] &&
                 groupedTasks['Important'].map((task) => (
                   <div key={task.id} className="taskCard">
-                    <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
+                    <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                      <div className="taskTitle" >
+                    <div className="taskTitle" >
                         {task.taskName}
                         </div>
-                        <div style={{ position: 'absolute', left: '400px'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%'}}/>
+                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task.id)}>
+                        {expandedTask === task.id ? 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
+                        : 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
+                        </div>
                         </div>
                       </div>
                     </div>
                     {expandedTask === task.id && (
                       <div className="taskDetails">
-                        <p>Number of Pomodoro Timers: {task.timer}</p>
-                        <p>Notes: {task.notes}</p>
+                        <div id='break' className='taskBreak'/>
+                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
                       </div>
                     )}
                   </div>
@@ -177,20 +192,27 @@ const [logoutApiCall] = useLogoutMutation();
                 {groupedTasks['Other'] &&
                 groupedTasks['Other'].map((task) => (
                   <div key={task.id} className="taskCard">
-                    <div className="taskHeader" onClick={() => handleTaskClick(task.id)}>
+                    <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                      <div className="taskTitle" >
+                    <div className="taskTitle" >
                         {task.taskName}
                         </div>
-                        <div style={{ position: 'absolute', left: '400px'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '0.80rem', top: '15.75%'}}/>
+                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task.id)}>
+                        {expandedTask === task.id ? 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
+                        : 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
+                        </div>
                         </div>
                       </div>
                     </div>
                     {expandedTask === task.id && (
                       <div className="taskDetails">
-                        <p>Number of Pomodoro Timers: {task.timer}</p>
-                        <p>Notes: {task.notes}</p>
+                        <div id='break' className='taskBreak'/>
+                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
                       </div>
                     )}
                   </div>

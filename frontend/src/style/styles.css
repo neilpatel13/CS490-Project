@@ -178,7 +178,20 @@ body {
 .taskDetails{
   padding-top: 10px;
   font-size: 0.876rem;
+  font-family: DM Sans;
+  color: #1F1F1F;
+  font-weight: 500;
 }
+
+/* trying to add the lines under section headers */
+
+.taskBreak{
+  height: 1px;
+  width: 100%;
+  background-color: #E2EAF1;
+  margin-bottom: 10px;
+}
+
 /**/
 
 .customRectangle{
