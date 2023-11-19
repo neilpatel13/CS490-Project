@@ -281,7 +281,7 @@ const [logoutApiCall] = useLogoutMutation();
           Save
       </Button>
 
-      <Link to="/">
+      <Link to="/tasks">
         <Button id='cancel' type='submit' variant='primary' className='customButton2' style={{width:'17vw',bottom: '10%', left: '35%', background:'#FFF', color: '#6284FF', fontFamily:'DM Sans, sans-serif', borderRadius: '16px', boxShadow:'2px 5px 50px 0px rgba(36, 37, 40, 0.10)'}}>
           Cancel
         </Button>
