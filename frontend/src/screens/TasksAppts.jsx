@@ -20,6 +20,8 @@ import OpenWithIcon from '@mui/icons-material/OpenWith';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 // adding dnd import 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import TimerModal from '../components/FocusTime';
+
 
 const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
@@ -27,14 +29,25 @@ const TasksAppts = () => {
     const [expandedTask, setExpandedTask] = useState(null);
 
 
+    // adding some logic for focus time here
+    const [modalOpen, setModalOpen] = useState(false);
+    const [currentTask, setCurrentTask] = useState(null);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const { userInfo } = useSelector((state) => state.auth);
 
+//function for opening the focus time modal
+const handleTitleClick = (task) => {
+  setCurrentTask(task);
+  setModalOpen(true);
+};
+ const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
-
-
+//dialog functions for adding tasks
     const handleClickOpen = () => {
         setDialogOpen(true);
     };
@@ -113,6 +126,7 @@ const [logoutApiCall] = useLogoutMutation();
     </Fab>
     </div>
     <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask} />
+    {currentTask && <TimerModal open={modalOpen} handleClose={handleModalClose} task={currentTask} />}
       <div id='taskBox' className='taskRectangle'>
         <Box
         display="flex"
@@ -132,7 +146,7 @@ const [logoutApiCall] = useLogoutMutation();
                     <div className="taskHeader">
                       {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
                       <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                      <div className="taskTitle" >
+                      <div className="taskTitle" onClick={() => handleTitleClick(task)}>
                         {task.taskName}
                         </div>
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
@@ -163,7 +177,7 @@ const [logoutApiCall] = useLogoutMutation();
                   <div key={task.id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                    <div className="taskTitle" >
+                    <div className="taskTitle" onClick={() => handleTitleClick(task)}>
                         {task.taskName}
                         </div>
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
@@ -194,7 +208,7 @@ const [logoutApiCall] = useLogoutMutation();
                   <div key={task.id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                    <div className="taskTitle" >
+                    <div className="taskTitle" onClick={() => handleTitleClick(task)}>
                         {task.taskName}
                         </div>
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
