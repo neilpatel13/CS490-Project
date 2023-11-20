@@ -128,18 +128,16 @@ const formatEndTime = (time) => {
 
 
   return(
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open}>
       <button className="closeButton" onClick={handleClose}>
         <HighlightOffOutlinedIcon />
       </button>
     <DialogContent>
-      <div className="tabStyles">
       <Tabs value={tabValue} onChange={handleTabChange}>
         <Tab label="Pomodoro"/>
         <Tab label="Short Break" />
         <Tab label="Long Break" />
       </Tabs>
-      </div>
       {tabValue ===0 && (
         <div>
         <div id="timer-backdrop" className="timerBackdrop">
