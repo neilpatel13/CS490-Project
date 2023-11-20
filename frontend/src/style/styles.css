@@ -194,6 +194,62 @@ body {
 
 /**/
 
+/* style components for focus time */
+
+.focusContainer{
+  width: 600px;
+  height: 609px;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #FFF; 
+  box-shadow: 2px 5px 50px 0px rgba(36, 37, 40, 0.10);
+  position: absolute;
+}
+
+  .timerBackdrop{
+    display: flex;
+    flex-direction: column ;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 41.5%;
+    border-radius: 8px;
+    background: #F5F7F9;
+  }
+
+  .timerAppearance{
+    color: #1F1F1F;
+    font-family: DM Sans;
+    font-size: 3.5rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  /* had to use px here for padding and margin but it seems to be working */
+  .timerButton{
+    width: 30%;
+    height: 20%;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #6284FF 0%, #4B6DE9 100%);
+    box-shadow: 0px 4px 80px 0px rgba(98, 132, 255, 0.20);
+    color: #FFF;
+    text-align: center;
+    font-family: DM Sans;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border: none;
+    cursor: pointer;
+    padding: 10px; 
+    margin-bottom: 10px;
+  }
+/**/
+
 .customRectangle{
   color: #1F1F1F;
   font-family: 'DM Sans', sans-serif;
