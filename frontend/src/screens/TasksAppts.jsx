@@ -4,13 +4,12 @@ import lo from '../assets/logout.svg';
 ///import lock from '../assets/lock.svg';
 ///import cl from '../assets/clock.svg';
 import { Link } from 'react-router-dom';
-import {Button, Box,
-     Fab} from '@mui/material';
+import {Box, Button, Fab, Select, MenuItem} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { logout } from '../slices/authSlice';
 import { useLogoutMutation } from '../slices/userApiSlice';
 // import * as React from 'react';
-import {useState} from 'react';
+import {React ,useState} from 'react';
 import {useSelector } from 'react-redux';
 import TaskAddingDialog from '../components/TaskDialog';
 import { useDispatch } from 'react-redux';
@@ -18,18 +17,26 @@ import { useNavigate } from 'react-router-dom';
 import usrLogo from '../assets/user.svg'
 import OpenWithIcon from '@mui/icons-material/OpenWith';
 
+
+
 const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
-
+    const [selectedDate, setSelectedDate] = useState({
+      month: '',
+      day: '',
+      year: '',
+    });
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const { userInfo } = useSelector((state) => state.auth);
 
-
+    const handleDateChange = (field, value) => {
+      setSelectedDate((prev) => ({ ...prev, [field]: value }));
+    };
 
 
     const handleClickOpen = () => {
@@ -51,6 +58,8 @@ const handleTaskClick = (taskId) => {
     (prevExpandedTask === taskId ? null : taskId
     ));
 };
+
+
 
 //handling priority 
 const groupedTasks = tasks.reduce((acc,task) => {
@@ -195,6 +204,37 @@ const [logoutApiCall] = useLogoutMutation();
         </Box>
       </div>
       </Box>
+      <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position: 'absolute', left: '14.8%', top: '5%' }}>
+          <div id='dateSelector' style={{ color: "#000", fontFamily: "DM Sans", fontSize: "2vh", fontStyle: "normal", fontWeight: "500", lineHeight: "normal" }}>
+            Date Selector:
+            {/* Month Select */}
+            <Select
+              value={selectedDate.month}
+              onChange={(e) => handleDateChange('month', e.target.value)}
+              style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
+            >
+              <MenuItem value={'January'}>January</MenuItem>
+              <MenuItem value={'February'}>February</MenuItem>
+              {/* Add more months as needed */}
+            </Select>
+            {/* Day Select */}
+            <Select
+              value={selectedDate.day}
+              onChange={(e) => handleDateChange('day', e.target.value)}
+              style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
+            >
+              {/* Add days as needed */}
+            </Select>
+            {/* Year Select */}
+            <Select
+              value={selectedDate.year}
+              onChange={(e) => handleDateChange('year', e.target.value)}
+              style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
+            >
+              {/* Add years as needed */}
+            </Select>
+          </div>
+        </div>
       </Box>
     )
 }
