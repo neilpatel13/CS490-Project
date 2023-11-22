@@ -236,6 +236,13 @@ const [logoutApiCall] = useLogoutMutation();
         </Box>
       </div>
       </Box>
+             <Box>
+          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position:'absolute', left:'56.5%', top: '18%' }}>
+    <div id='taskHeading' style={{color: "#000",fontFamily: "DM Sans", fontSize: "4vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal"}}>
+      Appointments
+      </div>
+      </div>
+      </Box>
       </Box>
     )
 }
