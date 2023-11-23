@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Fab } from "@mui/material";
 import { DragDropContext } from "react-beautiful-dnd";
 import useGoogleCalendar from "./useGoogleCalendar";
@@ -7,7 +7,10 @@ import AddIcon from "@mui/icons-material/Add";
 const AppointmentComponent = () => {
   const { events, loading, initializeGoogleCalendar, listEventsofDay } =
     useGoogleCalendar();
-  console.log(events);
+
+  useEffect(() => {
+    console.log(events);
+  }, [events]);
   const [selectedDate, setSelectedDate] = useState(""); // Add state for selected date
 
   const handleDateChange = (date) => {
