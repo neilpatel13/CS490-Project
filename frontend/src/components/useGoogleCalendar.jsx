@@ -36,6 +36,7 @@ const useGoogleCalendar = () => {
       console.error("Error fetching events:", err);
     }
   };
+
   const listEventsofDay = async (selectedDate) => {
     try {
       // Convert the selectedDate to a UTC date object
