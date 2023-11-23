@@ -38,16 +38,21 @@ const useGoogleCalendar = () => {
   };
   const listEventsofDay = async (selectedDate) => {
     try {
-      const startOfDay = new Date(selectedDate);
-      startOfDay.setHours(0, 0, 0, 0); // Set time to the beginning of the day
+      // Convert the selectedDate to a UTC date object
+      const startOfDay = new Date(selectedDate + "T00:00:00Z");
+      const endOfDay = new Date(selectedDate + "T23:59:59Z");
 
-      const endOfDay = new Date(selectedDate);
-      endOfDay.setHours(23, 59, 59, 999); // Set time to the end of the day
+      // Convert startOfDay and endOfDay to UTC before making the API call
+      const startOfDayUTC = startOfDay.toISOString();
+      const endOfDayUTC = endOfDay.toISOString();
+
+      //console.log("startOfDay:", startOfDayUTC);
+      //console.log("endOfDay:", endOfDayUTC);
 
       const request = {
         calendarId: "primary",
-        timeMin: startOfDay.toISOString(),
-        timeMax: endOfDay.toISOString(),
+        timeMin: startOfDayUTC,
+        timeMax: endOfDayUTC,
         showDeleted: false,
         singleEvents: true,
         maxResults: 10,
@@ -60,6 +65,7 @@ const useGoogleCalendar = () => {
       console.error("Error fetching events:", err);
     }
   };
+
   const handleAuthClick = async () => {
     try {
       setLoading(true);
@@ -89,7 +95,7 @@ const useGoogleCalendar = () => {
   useEffect(() => {
     if (initialized) {
       // Load Google API client script only if initialized
-      function gapiLoaded() {
+      async function gapiLoaded() {
         gapi.load("client", initializeGapiClient);
       }
 
@@ -98,10 +104,10 @@ const useGoogleCalendar = () => {
           apiKey: API_KEY,
           discoveryDocs: [DISCOVERY_DOC],
         });
-        handleAuthClick(); // Initiating authentication on button click
+        await handleAuthClick(); // Initiating authentication on button click
       }
 
-      function gisLoaded() {
+      async function gisLoaded() {
         tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: CLIENT_ID,
           scope: SCOPES,
