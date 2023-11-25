@@ -178,7 +178,146 @@ body {
 .taskDetails{
   padding-top: 10px;
   font-size: 0.876rem;
+  font-family: DM Sans;
+  color: #1F1F1F;
+  font-weight: 500;
 }
+
+/* trying to add the lines under section headers */
+
+.taskBreak{
+  height: 1px;
+  width: 100%;
+  background-color: #E2EAF1;
+  margin-bottom: 10px;
+}
+
+/**/
+
+/* style components for focus time */
+
+/* .focusContainer{
+  width: 600px;
+  height: 609px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #FFF; 
+  box-shadow: 2px 5px 50px 0px rgba(36, 37, 40, 0.10);
+  position: absolute;
+} don't think i need this anymore and it was breaking stuff anyways*/
+
+  .timerBackdrop{
+    display: flex;
+    flex-direction: column ;
+    justify-content: center;
+    align-items: center;
+    width: 99%;
+    height: 41.5%;
+    border-radius: 8px;
+    background: #F5F7F9;
+  }
+
+  .timerAppearance{
+    color: #1F1F1F;
+    font-family: DM Sans;
+    font-size: 3.5rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  /* had to use px here for padding and margin but it seems to be working */
+  .timerButton{
+    width: 30%;
+    height: 20%;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #6284FF 0%, #4B6DE9 100%);
+    box-shadow: 0px 4px 80px 0px rgba(98, 132, 255, 0.20);
+    color: #FFF;
+    text-align: center;
+    font-family: DM Sans;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border: none;
+    cursor: pointer;
+    padding: 10px; 
+    margin-bottom: 10px;
+  }
+/* tabStyles isn't being used yet but if i can find an easy way to add it, i will */
+  .tabStyles{
+    color: #1F1F1F;
+    font-family: DM Sans;
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+
+  .focusTitle{
+    color: #000;
+    font-family: DM Sans;
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
+  }
+  .notesBackdrop{
+    display: flex;
+    flex-direction: column ;
+    justify-content: center;
+    align-items: flex-start;
+    width: 99%;
+    height: 41.5%;
+    border-radius: 8px;
+    background: #F5F7F9;
+    margin-bottom: 10px;
+    padding-left: 10px;
+  }
+
+  .notesFontStyle{
+    font-family: DM Sans;
+    font-style: normal;
+    line-height: normal;
+  }
+
+  .pomoBackdrop{
+    display:flex;
+    justify-content: space-evenly;
+    width: 99%;
+    height: 29%;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #252628;
+    border: 1px solid #6284FF;
+  }
+
+  .pomoFontStyle{
+    color: #FFF;
+    font-family: DM Sans;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+
+  .closeButton{
+    display: flex;
+    justify-content: flex-end;
+    color: #AEB9C8;
+    top: 0;
+    right: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
 /**/
 
 .customRectangle{

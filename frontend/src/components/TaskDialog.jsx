@@ -3,7 +3,7 @@ import {Button,
     TextField, Select,
     Dialog,DialogActions,
     DialogContent,DialogContentText,
-    DialogTitle, MenuItem} from '@mui/material';
+    DialogTitle, MenuItem, InputLabel} from '@mui/material';
 
     const TaskAddingDialog = ({open, handleClose,onAddTask }) =>{
         const [taskName, setTaskName] = useState('');
@@ -122,7 +122,8 @@ import {Button,
         </DialogContent>
         <DialogContent>
             <DialogContentText>
-                Select Priority
+                {/* changing the label here for testing purposes */}
+               <InputLabel id="priority-label">Select Priority</InputLabel>
             </DialogContentText>
             <Select
                 labelId="priority-label"
