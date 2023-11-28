@@ -245,9 +245,9 @@ const [logoutApiCall] = useLogoutMutation();
               onChange={(e) => handleDateChange('year', e.target.value)}
               style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
             >
-              {[...Array(10)].map((_, index) => (
-                <MenuItem key={index + 2022} value={index + 2022}>
-                  {index + 2022}
+              {[...Array(20)].map((_, index) => (
+                <MenuItem key={index + 2020} value={index + 2020}>
+                  {index + 2020}
                 </MenuItem>
               ))}
             </Select>
