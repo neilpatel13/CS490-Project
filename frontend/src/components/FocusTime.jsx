@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from 'react';
 // adding functionality to pull timer values from user profile
-import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux'; 
 import { Dialog, DialogTitle, DialogContent, Tab, Tabs, Button } from '@mui/material';
 import { current } from '@reduxjs/toolkit';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
@@ -12,14 +12,29 @@ const TimerModal = ({ open, handleClose, task }) => {
   const [tabValue, setTabValue] = useState(0);
   const timerValueRef = useRef(timerValue);
   // pulling timer values from user profile
-  const userProfile = useSelector(state => state.userProfile) || {pomodoroTime: 25, shortBreakTime: 5, longBreakTime: 15};
+  const userProfile = useSelector(state => state.userProfile) || {pomodoroTime: 1, shortBreakTime: 1, longBreakTime: 1}; //switch this back after testing
 // calculating timer finish times
   const[elapsedTime, setElapsedTime] = useState(0);
   const[startTime, setStartTime] = useState(null);
   const [finishTime, setFinishTime] = useState(null);
 //displaying pomo amounts
-  const [currentTimer, setCurrentTimer] = useState(1);
+  const [currentTimer, setCurrentTimer] = useState(0);
   const [totalTimers, setTotalTimers] = useState(task.timer);
+//keeps track of number of completed pomos
+const [pomodoroCount, setPomodoroCount] = useState(0);
+
+//this is to switch to break tabs after pomos finish
+useEffect(() => {
+  if(isRunning && timerValue ===0){
+    setIsRunning(false);
+    if (tabValue === 0) {
+      setPomodoroCount(prevCount => prevCount + 1);
+      setTabValue((pomodoroCount + 1) % 4 === 0 ? 2 : 1);
+    } else{
+      setTabValue(0);
+    }
+  }
+}, [isRunning, timerValue, pomodoroCount, tabValue]);
 
 // i dont remember what this does but its important
   useEffect(() => {
@@ -28,13 +43,16 @@ const TimerModal = ({ open, handleClose, task }) => {
 
 // these hooks are for keeping track of what pomo we are on, and reseting it on different tasks
   useEffect(() => {
-    if (timerValue ===0){
-      setCurrentTimer(currentTimer => currentTimer + 1);
-    }
-  }, [timerValue]);
+    if (timerValue ===0 && tabValue === 0){
+      if (currentTimer < totalTimers){
+        setCurrentTimer(currentTimer => currentTimer + 1);
+      }
+  }
+  }, [timerValue, tabValue]);
+
 
   useEffect(() => {
-    setCurrentTimer(1);
+    setCurrentTimer(0);
     setTotalTimers(task.timer);
   }, [task]);
 
@@ -94,6 +112,11 @@ const TimerModal = ({ open, handleClose, task }) => {
     const now =Date.now();
     setFinishTime(formatEndTime(now + timerValue * 1000));
   }, [timerValue, userProfile.pomodoroTime, userProfile.shortBreakTime, userProfile.longBreakTime]);
+
+//stops timer from auto running on opening a new focus time 
+useEffect(() => {
+  setIsRunning(false);
+}, [task, tabValue]);
 
 //this now also keeps track of elapsed time and helps us display the end time
   const handleStartStopClick = () => {
