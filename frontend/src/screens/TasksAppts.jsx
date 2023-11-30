@@ -42,9 +42,9 @@ const TasksAppts = () => {
     // Generate an array of years around the selected year
     const generateYearRange = () => {
     const selectedYear = parseInt(selectedDate.year, 10);
-    const startYear = selectedYear - 5;
+    const startYear = selectedYear - 10;
 
-    return Array.from({ length: 10 }, (_, index) => startYear + index);
+    return Array.from({ length: 20 }, (_, index) => startYear + index);
     };
 
     // Generate an array of months (1 to 12)
