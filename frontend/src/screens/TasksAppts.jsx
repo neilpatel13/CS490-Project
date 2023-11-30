@@ -4,8 +4,7 @@ import lo from '../assets/logout.svg';
 ///import lock from '../assets/lock.svg';
 ///import cl from '../assets/clock.svg';
 import { Link } from 'react-router-dom';
-import {Button, Box,
-     Fab} from '@mui/material';
+import {Box, Button, Fab, Select, MenuItem} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { logout } from '../slices/authSlice';
 import { useLogoutMutation } from '../slices/userApiSlice';
@@ -24,11 +23,18 @@ import TimerModal from '../components/FocusTime';
 // edit icon import 
 
 
+
+
 const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
-
+    const today = new Date();
+    const [selectedDate, setSelectedDate] = useState({
+      month: (today.getMonth() + 1).toString().padStart(2, '0'), // Adding 1 because months are zero-based
+      day: today.getDate().toString().padStart(2, '0'),
+      year: today.getFullYear().toString(),
+    });
 
     // adding some logic for focus time here
     const [modalOpen, setModalOpen] = useState(false);
@@ -47,8 +53,16 @@ const handleTitleClick = (task) => {
  const handleModalClose = () => {
     setModalOpen(false);
   };
+    //function for opening the focus time modal
+    const handleTitleClick = (task) => {
+      setCurrentTask(task);
+      setModalOpen(true);
+    };
+    const handleModalClose = () => {
+        setModalOpen(false);
+      };
 
-//dialog functions for adding tasks
+    //dialog functions for adding tasks
     const handleClickOpen = () => {
         setDialogOpen(true);
     };
@@ -68,6 +82,8 @@ const handleTaskClick = (taskId) => {
     (prevExpandedTask === taskId ? null : taskId
     ));
 };
+
+
 
 //handling priority 
 const groupedTasks = tasks.reduce((acc,task) => {
@@ -91,6 +107,61 @@ const [logoutApiCall] = useLogoutMutation();
     }
   };
 
+  const handleDateChange = (field, value) => {
+    setSelectedDate((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Generate an array of years around the selected year
+  const generateYearRange = () => {
+  const selectedYear = parseInt(selectedDate.year, 10);
+  const startYear = selectedYear - 10;
+
+  return Array.from({ length: 20 }, (_, index) => startYear + index);
+  };
+
+  // Generate an array of months (1 to 12)
+  const monthOptions = Array.from({ length: 12 }, (_, index) => (index + 1).toString().padStart(2, '0'));
+
+  // Generate an array of days (1 to 31)
+  const dayOptions = Array.from({ length: 31 }, (_, index) => (index + 1).toString().padStart(2, '0'));
+
+  const yearRange = generateYearRange();
+
+  const handleMonthDecrement = () => {
+    const currentMonth = parseInt(selectedDate.month, 10);
+    const newMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+    handleDateChange('month', newMonth.toString().padStart(2, '0'));
+  };
+
+  const handleMonthIncrement = () => {
+    const currentMonth = parseInt(selectedDate.month, 10);
+    const newMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+    handleDateChange('month', newMonth.toString().padStart(2, '0'));
+  };
+
+  const handleDayDecrement = () => {
+    const currentDay = parseInt(selectedDate.day, 10);
+    const newDay = currentDay === 1 ? 31 : currentDay - 1;
+    handleDateChange('day', newDay.toString().padStart(2, '0'));
+  };
+
+  const handleDayIncrement = () => {
+    const currentDay = parseInt(selectedDate.day, 10);
+    const newDay = currentDay === 31 ? 1 : currentDay + 1;
+    handleDateChange('day', newDay.toString().padStart(2, '0'));
+  };
+
+  const handleYearDecrement = () => {
+    const currentYear = parseInt(selectedDate.year, 10);
+    const newYear = currentYear - 1;
+    handleDateChange('year', newYear.toString());
+  };
+
+  const handleYearIncrement = () => {
+    const currentYear = parseInt(selectedDate.year, 10);
+    const newYear = currentYear + 1;
+    handleDateChange('year', newYear.toString());
+  };  
 
     return(
         <Box>
@@ -237,6 +308,73 @@ const [logoutApiCall] = useLogoutMutation();
         </Box>
       </div>
       </Box>
+      <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position: 'absolute', left: '14.8%', top: '5%' }}>
+        <div id='dateSelector' style={{ color: "#000", fontFamily: "DM Sans", fontSize: "2vh", fontStyle: "normal", fontWeight: "500", lineHeight: "normal" }}>
+          Date Selector:
+          {/* Left Arrow Button for Month */}
+          <Button onClick={handleMonthDecrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '10px' }}>
+            {'<'}
+          </Button>
+          {/* Month Select */}
+          <Select
+            value={selectedDate.month}
+            onChange={(e) => handleDateChange('month', e.target.value)}
+            style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
+          >
+            {monthOptions.map((month) => (
+              <MenuItem key={month} value={month}>
+                {month}
+              </MenuItem>
+            ))}
+          </Select>
+          {/* Right Arrow Button for Month */}
+          <Button onClick={handleMonthIncrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '5px' }}>
+            {'>'}
+          </Button>
+          {/* Left Arrow Button for Day */}
+          <Button onClick={handleDayDecrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '10px' }}>
+            {'<'}
+          </Button>
+          {/* Day Select */}
+          <Select
+            value={selectedDate.day}
+            onChange={(e) => handleDateChange('day', e.target.value)}
+            style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
+          >
+            {dayOptions.map((day) => (
+              <MenuItem key={day} value={day}>
+                {day}
+              </MenuItem>
+            ))}
+          </Select>
+          {/* Right Arrow Button for Day */}
+          <Button onClick={handleDayIncrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '5px' }}>
+            {'>'}
+          </Button>
+          {/* Left Arrow Button for Year */}
+          <Button onClick={handleYearDecrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '10px' }}>
+            {'<'}
+          </Button>
+          {/* Year Select */}
+          <Select
+            value={selectedDate.year}
+            onChange={(e) => handleDateChange('year', e.target.value)}
+            style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
+          >
+            {/* Generate the list of years dynamically around the selected year */}
+            {yearRange.map((year) => (
+              <MenuItem key={year} value={year}>
+                {year}
+              </MenuItem>
+            ))}
+          </Select>
+          {/* Right Arrow Button for Year */}
+          <Button onClick={handleYearIncrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '5px' }}>
+            {'>'}
+          </Button>
+          {/* ... (existing code) */}
+        </div>
+      </div>
       </Box>
     )
 }
