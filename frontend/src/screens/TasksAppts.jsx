@@ -26,7 +26,7 @@ const TasksAppts = () => {
     const [selectedDate, setSelectedDate] = useState({
       month: '',
       day: '',
-      year: '',
+      year: '2023',
     });
 
     const dispatch = useDispatch();
@@ -38,8 +38,15 @@ const TasksAppts = () => {
       setSelectedDate((prev) => ({ ...prev, [field]: value }));
     };
 
-    // Generate an array of years (adjust the range as needed)
-    const years = Array.from({ length: 20 }, (_, index) => new Date().getFullYear() + index);
+    // Generate an array of years around the selected year
+    const generateYearRange = () => {
+    const selectedYear = parseInt(selectedDate.year, 10);
+    const startYear = selectedYear - 5;
+
+    return Array.from({ length: 10 }, (_, index) => startYear + index);
+    };
+
+    const yearRange = generateYearRange();
 
     const handleClickOpen = () => {
         setDialogOpen(true);
@@ -247,8 +254,10 @@ const [logoutApiCall] = useLogoutMutation();
               onChange={(e) => handleDateChange('year', e.target.value)}
               style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
             >
-              {/* Generate the list of years dynamically */}
-              {years.map((year) => (
+              {/* Placeholder for the year */}
+              <MenuItem value=''>Select Year</MenuItem>
+              {/* Generate the list of years dynamically around the selected year */}
+              {yearRange.map((year) => (
                 <MenuItem key={year} value={year}>
                   {year}
                 </MenuItem>
