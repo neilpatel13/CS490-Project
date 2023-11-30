@@ -35,61 +35,6 @@ const TasksAppts = () => {
 
     const { userInfo } = useSelector((state) => state.auth);
 
-    const handleDateChange = (field, value) => {
-      setSelectedDate((prev) => ({ ...prev, [field]: value }));
-    };
-
-    // Generate an array of years around the selected year
-    const generateYearRange = () => {
-    const selectedYear = parseInt(selectedDate.year, 10);
-    const startYear = selectedYear - 10;
-
-    return Array.from({ length: 20 }, (_, index) => startYear + index);
-    };
-
-    // Generate an array of months (1 to 12)
-    const monthOptions = Array.from({ length: 12 }, (_, index) => (index + 1).toString().padStart(2, '0'));
-
-    // Generate an array of days (1 to 31)
-    const dayOptions = Array.from({ length: 31 }, (_, index) => (index + 1).toString().padStart(2, '0'));
-
-    const yearRange = generateYearRange();
-
-    const handleMonthDecrement = () => {
-      const currentMonth = parseInt(selectedDate.month, 10);
-      const newMonth = currentMonth === 1 ? 12 : currentMonth - 1;
-      handleDateChange('month', newMonth.toString().padStart(2, '0'));
-    };
-  
-    const handleMonthIncrement = () => {
-      const currentMonth = parseInt(selectedDate.month, 10);
-      const newMonth = currentMonth === 12 ? 1 : currentMonth + 1;
-      handleDateChange('month', newMonth.toString().padStart(2, '0'));
-    };
-
-    const handleDayDecrement = () => {
-      const currentDay = parseInt(selectedDate.day, 10);
-      const newDay = currentDay === 1 ? 31 : currentDay - 1;
-      handleDateChange('day', newDay.toString().padStart(2, '0'));
-    };
-  
-    const handleDayIncrement = () => {
-      const currentDay = parseInt(selectedDate.day, 10);
-      const newDay = currentDay === 31 ? 1 : currentDay + 1;
-      handleDateChange('day', newDay.toString().padStart(2, '0'));
-    };
-  
-    const handleYearDecrement = () => {
-      const currentYear = parseInt(selectedDate.year, 10);
-      const newYear = currentYear - 1;
-      handleDateChange('year', newYear.toString());
-    };
-  
-    const handleYearIncrement = () => {
-      const currentYear = parseInt(selectedDate.year, 10);
-      const newYear = currentYear + 1;
-      handleDateChange('year', newYear.toString());
-    };
     
     const handleClickOpen = () => {
         setDialogOpen(true);
@@ -135,6 +80,61 @@ const [logoutApiCall] = useLogoutMutation();
     }
   };
 
+  const handleDateChange = (field, value) => {
+    setSelectedDate((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Generate an array of years around the selected year
+  const generateYearRange = () => {
+  const selectedYear = parseInt(selectedDate.year, 10);
+  const startYear = selectedYear - 10;
+
+  return Array.from({ length: 20 }, (_, index) => startYear + index);
+  };
+
+  // Generate an array of months (1 to 12)
+  const monthOptions = Array.from({ length: 12 }, (_, index) => (index + 1).toString().padStart(2, '0'));
+
+  // Generate an array of days (1 to 31)
+  const dayOptions = Array.from({ length: 31 }, (_, index) => (index + 1).toString().padStart(2, '0'));
+
+  const yearRange = generateYearRange();
+
+  const handleMonthDecrement = () => {
+    const currentMonth = parseInt(selectedDate.month, 10);
+    const newMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+    handleDateChange('month', newMonth.toString().padStart(2, '0'));
+  };
+
+  const handleMonthIncrement = () => {
+    const currentMonth = parseInt(selectedDate.month, 10);
+    const newMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+    handleDateChange('month', newMonth.toString().padStart(2, '0'));
+  };
+
+  const handleDayDecrement = () => {
+    const currentDay = parseInt(selectedDate.day, 10);
+    const newDay = currentDay === 1 ? 31 : currentDay - 1;
+    handleDateChange('day', newDay.toString().padStart(2, '0'));
+  };
+
+  const handleDayIncrement = () => {
+    const currentDay = parseInt(selectedDate.day, 10);
+    const newDay = currentDay === 31 ? 1 : currentDay + 1;
+    handleDateChange('day', newDay.toString().padStart(2, '0'));
+  };
+
+  const handleYearDecrement = () => {
+    const currentYear = parseInt(selectedDate.year, 10);
+    const newYear = currentYear - 1;
+    handleDateChange('year', newYear.toString());
+  };
+
+  const handleYearIncrement = () => {
+    const currentYear = parseInt(selectedDate.year, 10);
+    const newYear = currentYear + 1;
+    handleDateChange('year', newYear.toString());
+  };  
 
     return(
         <Box>
