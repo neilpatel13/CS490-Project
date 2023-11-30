@@ -12,7 +12,7 @@ const TimerModal = ({ open, handleClose, task }) => {
   const [tabValue, setTabValue] = useState(0);
   const timerValueRef = useRef(timerValue);
   // pulling timer values from user profile
-  const userProfile = useSelector(state => state.userProfile) || {pomodoroTime: 1, shortBreakTime: 1, longBreakTime: 1}; //switch this back after testing
+  const { userInfo: { pomodoro, short, long } } = useSelector((state) => state.auth) || { userInfo: { pomodoro: 25, short: 5, long: 15 } }; //switch this back after testing
 // calculating timer finish times
   const[elapsedTime, setElapsedTime] = useState(0);
   const[startTime, setStartTime] = useState(null);
@@ -22,6 +22,9 @@ const TimerModal = ({ open, handleClose, task }) => {
   const [totalTimers, setTotalTimers] = useState(task.timer);
 //keeps track of number of completed pomos
 const [pomodoroCount, setPomodoroCount] = useState(0);
+
+
+
 
 //this is to switch to break tabs after pomos finish
 useEffect(() => {
@@ -42,6 +45,7 @@ useEffect(() => {
   }, [timerValue]); 
 
 // these hooks are for keeping track of what pomo we are on, and reseting it on different tasks
+//still figuring out what to do when the pomo count reaches the number of total pomos 
   useEffect(() => {
     if (timerValue ===0 && tabValue === 0){
       if (currentTimer < totalTimers){
@@ -56,24 +60,24 @@ useEffect(() => {
     setTotalTimers(task.timer);
   }, [task]);
 
-  // changing the default timer values to be populated by user preferences
+  // changing the default timer values to be populated by user preferences, it dont work yet
   useEffect(() => {
   switch (tabValue) {
       case 0:
-        setTimerValue(userProfile.pomodoroTime*60);
+        setTimerValue(pomodoro*60);
         break;
       case 1:
-        setTimerValue(userProfile.shortBreakTime*60);
+        setTimerValue(short*60);
         break;
       case 2:
-        setTimerValue(userProfile.longBreakTime*60);
+        setTimerValue(long*60);
         break;
       default:
-        setTimerValue(userProfile.pomodoroTime*60);
+        setTimerValue(pomodoro*60);
         break;
     }
     setTimerCount(1);
-  },[task, tabValue, userProfile.pomodoroTime, userProfile.shortBreakTime, userProfile.longBreakTime]);
+  },[task, tabValue, pomodoro, short, long]);
 
   useEffect(() => {
     let timer;
@@ -92,28 +96,28 @@ useEffect(() => {
       setTimerCount((prevCount) => prevCount - 1);
       switch (tabValue) {
         case 0:
-          setTimerValue(userProfile.pomodoroTime*60);
+          setTimerValue(pomodoro*60);
           break;
         case 1:
-          setTimerValue(userProfile.shortBreakTime*60);
+          setTimerValue(short*60);
           break;
         case 2:
-          setTimerValue(userProfile.longBreakTime*60);
+          setTimerValue(long*60);
           break;
         default:
-          setTimerValue(userProfile.pomodoroTime*60);
+          setTimerValue(pomodoro*60);
           break;
     }
     }
-  }, [timerValue, timerCount, tabValue, userProfile.pomodoroTime, userProfile.shortBreakTime, userProfile.longBreakTime]);
+  }, [timerValue, timerCount, tabValue, pomodoro, short, long]);
 
 //useEffect to get the initial finish time value on modal open
   useEffect(() => {
     const now =Date.now();
     setFinishTime(formatEndTime(now + timerValue * 1000));
-  }, [timerValue, userProfile.pomodoroTime, userProfile.shortBreakTime, userProfile.longBreakTime]);
+  }, [timerValue, pomodoro, short, long]);
 
-//stops timer from auto running on opening a new focus time 
+//stops timer from auto running on opening a new focus time or switching tabs
 useEffect(() => {
   setIsRunning(false);
 }, [task, tabValue]);
