@@ -38,6 +38,8 @@ const TasksAppts = () => {
       setSelectedDate((prev) => ({ ...prev, [field]: value }));
     };
 
+    // Generate an array of years (adjust the range as needed)
+    const years = Array.from({ length: 20 }, (_, index) => new Date().getFullYear() + index);
 
     const handleClickOpen = () => {
         setDialogOpen(true);
@@ -245,9 +247,10 @@ const [logoutApiCall] = useLogoutMutation();
               onChange={(e) => handleDateChange('year', e.target.value)}
               style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
             >
-              {[...Array(20)].map((_, index) => (
-                <MenuItem key={index + 2020} value={index + 2020}>
-                  {index + 2020}
+              {/* Generate the list of years dynamically */}
+              {years.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
                 </MenuItem>
               ))}
             </Select>
