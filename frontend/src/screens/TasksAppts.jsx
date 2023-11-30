@@ -55,6 +55,42 @@ const TasksAppts = () => {
 
     const yearRange = generateYearRange();
 
+    const handleMonthDecrement = () => {
+      const currentMonth = parseInt(selectedDate.month, 10);
+      const newMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+      handleDateChange('month', newMonth.toString().padStart(2, '0'));
+    };
+  
+    const handleMonthIncrement = () => {
+      const currentMonth = parseInt(selectedDate.month, 10);
+      const newMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+      handleDateChange('month', newMonth.toString().padStart(2, '0'));
+    };
+
+    const handleDayDecrement = () => {
+      const currentDay = parseInt(selectedDate.day, 10);
+      const newDay = currentDay === 1 ? 31 : currentDay - 1;
+      handleDateChange('day', newDay.toString().padStart(2, '0'));
+    };
+  
+    const handleDayIncrement = () => {
+      const currentDay = parseInt(selectedDate.day, 10);
+      const newDay = currentDay === 31 ? 1 : currentDay + 1;
+      handleDateChange('day', newDay.toString().padStart(2, '0'));
+    };
+  
+    const handleYearDecrement = () => {
+      const currentYear = parseInt(selectedDate.year, 10);
+      const newYear = currentYear - 1;
+      handleDateChange('year', newYear.toString());
+    };
+  
+    const handleYearIncrement = () => {
+      const currentYear = parseInt(selectedDate.year, 10);
+      const newYear = currentYear + 1;
+      handleDateChange('year', newYear.toString());
+    };
+    
     const handleClickOpen = () => {
         setDialogOpen(true);
     };
@@ -221,47 +257,74 @@ const [logoutApiCall] = useLogoutMutation();
       </div>
       </Box>
       <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position: 'absolute', left: '14.8%', top: '5%' }}>
-          <div id='dateSelector' style={{ color: "#000", fontFamily: "DM Sans", fontSize: "2vh", fontStyle: "normal", fontWeight: "500", lineHeight: "normal" }}>
-            Date Selector:
-            {/* Month Select */}
-            <Select
-              value={selectedDate.month}
-              onChange={(e) => handleDateChange('month', e.target.value)}
-              style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
-            >
-              {monthOptions.map((month) => (
-                <MenuItem key={month} value={month}>
-                  {month}
-                </MenuItem>
-              ))}
-            </Select>
-            {/* Day Select */}
-            <Select
-              value={selectedDate.day}
-              onChange={(e) => handleDateChange('day', e.target.value)}
-              style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
-            >
-              {dayOptions.map((day) => (
-                <MenuItem key={day} value={day}>
-                  {day}
-                </MenuItem>
-              ))}
-            </Select>
-            {/* Year Select */}
-            <Select
-              value={selectedDate.year}
-              onChange={(e) => handleDateChange('year', e.target.value)}
-              style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
-            >
-              {/* Generate the list of years dynamically around the selected year */}
-              {yearRange.map((year) => (
-                <MenuItem key={year} value={year}>
-                  {year}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
+        <div id='dateSelector' style={{ color: "#000", fontFamily: "DM Sans", fontSize: "2vh", fontStyle: "normal", fontWeight: "500", lineHeight: "normal" }}>
+          Date Selector:
+          {/* Left Arrow Button for Month */}
+          <Button onClick={handleMonthDecrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '10px' }}>
+            {'<'}
+          </Button>
+          {/* Month Select */}
+          <Select
+            value={selectedDate.month}
+            onChange={(e) => handleDateChange('month', e.target.value)}
+            style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
+          >
+            {monthOptions.map((month) => (
+              <MenuItem key={month} value={month}>
+                {month}
+              </MenuItem>
+            ))}
+          </Select>
+          {/* Right Arrow Button for Month */}
+          <Button onClick={handleMonthIncrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '5px' }}>
+            {'>'}
+          </Button>
+          {/* Left Arrow Button for Day */}
+          <Button onClick={handleDayDecrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '10px' }}>
+            {'<'}
+          </Button>
+          {/* Day Select */}
+          <Select
+            value={selectedDate.day}
+            onChange={(e) => handleDateChange('day', e.target.value)}
+            style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
+          >
+            {dayOptions.map((day) => (
+              <MenuItem key={day} value={day}>
+                {day}
+              </MenuItem>
+            ))}
+          </Select>
+          {/* Right Arrow Button for Day */}
+          <Button onClick={handleDayIncrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '5px' }}>
+            {'>'}
+          </Button>
+          {/* Left Arrow Button for Year */}
+          <Button onClick={handleYearDecrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '10px' }}>
+            {'<'}
+          </Button>
+          {/* Year Select */}
+          <Select
+            value={selectedDate.year}
+            onChange={(e) => handleDateChange('year', e.target.value)}
+            style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
+          >
+            {/* Placeholder for the year */}
+            <MenuItem value=''>Select Year</MenuItem>
+            {/* Generate the list of years dynamically around the selected year */}
+            {yearRange.map((year) => (
+              <MenuItem key={year} value={year}>
+                {year}
+              </MenuItem>
+            ))}
+          </Select>
+          {/* Right Arrow Button for Year */}
+          <Button onClick={handleYearIncrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '5px' }}>
+            {'>'}
+          </Button>
+          {/* ... (existing code) */}
         </div>
+      </div>
       </Box>
     )
 }
