@@ -23,10 +23,11 @@ const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
+    const today = new Date();
     const [selectedDate, setSelectedDate] = useState({
-      month: '',
-      day: '',
-      year: '2023',
+      month: (today.getMonth() + 1).toString().padStart(2, '0'), // Adding 1 because months are zero-based
+      day: today.getDate().toString().padStart(2, '0'),
+      year: today.getFullYear().toString(),
     });
 
     const dispatch = useDispatch();
@@ -45,6 +46,12 @@ const TasksAppts = () => {
 
     return Array.from({ length: 10 }, (_, index) => startYear + index);
     };
+
+    // Generate an array of months (1 to 12)
+    const monthOptions = Array.from({ length: 12 }, (_, index) => (index + 1).toString().padStart(2, '0'));
+
+    // Generate an array of days (1 to 31)
+    const dayOptions = Array.from({ length: 31 }, (_, index) => (index + 1).toString().padStart(2, '0'));
 
     const yearRange = generateYearRange();
 
@@ -222,19 +229,11 @@ const [logoutApiCall] = useLogoutMutation();
               onChange={(e) => handleDateChange('month', e.target.value)}
               style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
             >
-              <MenuItem value={'January'}>January</MenuItem>
-              <MenuItem value={'February'}>February</MenuItem>
-              <MenuItem value={'March'}>March</MenuItem>
-              <MenuItem value={'April'}>April</MenuItem>
-              <MenuItem value={'May'}>May</MenuItem>
-              <MenuItem value={'June'}>June</MenuItem>
-              <MenuItem value={'July'}>July</MenuItem>
-              <MenuItem value={'August'}>August</MenuItem>
-              <MenuItem value={'September'}>September</MenuItem>
-              <MenuItem value={'October'}>October</MenuItem>
-              <MenuItem value={'November'}>November</MenuItem>
-              <MenuItem value={'December'}>December</MenuItem>
-              {/* Add more months as needed */}
+              {monthOptions.map((month) => (
+                <MenuItem key={month} value={month}>
+                  {month}
+                </MenuItem>
+              ))}
             </Select>
             {/* Day Select */}
             <Select
@@ -242,9 +241,9 @@ const [logoutApiCall] = useLogoutMutation();
               onChange={(e) => handleDateChange('day', e.target.value)}
               style={{ marginLeft: '10px', fontFamily: 'DM Sans', fontSize: '12px' }}
             >
-              {[...Array(31)].map((_, index) => (
-                <MenuItem key={index + 1} value={index + 1}>
-                  {index + 1}
+              {dayOptions.map((day) => (
+                <MenuItem key={day} value={day}>
+                  {day}
                 </MenuItem>
               ))}
             </Select>
