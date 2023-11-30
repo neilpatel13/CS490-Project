@@ -18,7 +18,6 @@ import usrLogo from '../assets/user.svg'
 import OpenWithIcon from '@mui/icons-material/OpenWith';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 // adding dnd import 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TimerModal from '../components/FocusTime';
 // edit icon import 
 
@@ -45,7 +44,6 @@ const TasksAppts = () => {
 
     const { userInfo } = useSelector((state) => state.auth);
 
-<<<<<<< HEAD
     //function for opening the focus time modal
     const handleTitleClick = (task) => {
       setCurrentTask(task);
@@ -56,9 +54,6 @@ const TasksAppts = () => {
       };
 
     //dialog functions for adding tasks    
-=======
-    
->>>>>>> parent of ab73a52 (attempt to fix conflict p2)
     const handleClickOpen = () => {
         setDialogOpen(true);
     };
