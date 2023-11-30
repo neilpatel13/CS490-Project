@@ -45,14 +45,6 @@ const TasksAppts = () => {
 
     const { userInfo } = useSelector((state) => state.auth);
 
-//function for opening the focus time modal
-const handleTitleClick = (task) => {
-  setCurrentTask(task);
-  setModalOpen(true);
-};
- const handleModalClose = () => {
-    setModalOpen(false);
-  };
     //function for opening the focus time modal
     const handleTitleClick = (task) => {
       setCurrentTask(task);
@@ -62,7 +54,7 @@ const handleTitleClick = (task) => {
         setModalOpen(false);
       };
 
-    //dialog functions for adding tasks
+    //dialog functions for adding tasks    
     const handleClickOpen = () => {
         setDialogOpen(true);
     };
