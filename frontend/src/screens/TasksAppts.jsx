@@ -309,8 +309,6 @@ const [logoutApiCall] = useLogoutMutation();
             onChange={(e) => handleDateChange('year', e.target.value)}
             style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
           >
-            {/* Placeholder for the year */}
-            <MenuItem value=''>Select Year</MenuItem>
             {/* Generate the list of years dynamically around the selected year */}
             {yearRange.map((year) => (
               <MenuItem key={year} value={year}>
