@@ -34,8 +34,6 @@ const TasksAppts = () => {
     const navigate = useNavigate();
 
     const { userInfo } = useSelector((state) => state.auth);
-
-    
     const handleClickOpen = () => {
         setDialogOpen(true);
     };
