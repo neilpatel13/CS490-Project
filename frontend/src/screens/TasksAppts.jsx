@@ -18,7 +18,6 @@ import usrLogo from '../assets/user.svg'
 import OpenWithIcon from '@mui/icons-material/OpenWith';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 // adding dnd import 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TimerModal from '../components/FocusTime';
 // edit icon import 
 
@@ -201,7 +200,6 @@ const [logoutApiCall] = useLogoutMutation();
         sx={{bgcolor:'#FFF'}}
         >
       {/* added drag drop context here */}
-        <DragDropContext> 
             <div id='innerBox' className='taskInnerRectangle'>
             <div className="sectionHeader">Top Priority</div>
               {groupedTasks['Top Priority'] &&
@@ -296,7 +294,6 @@ const [logoutApiCall] = useLogoutMutation();
                   </div>
                 ))}
             </div>
-          </DragDropContext>
         </Box>
       </div>
       </Box>
