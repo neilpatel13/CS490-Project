@@ -8,11 +8,11 @@ export const addTask = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error('Not authorized, no user found');
     }
-    const { title, priority, notes, numberOfTimers, date } = req.body;
+    const { taskName, priority, notes, numberOfTimers, date } = req.body;
 
     const task = new Task({
         user: req.user._id,
-        title,
+        taskName,
         state: 'not started',
         priority,
         notes,

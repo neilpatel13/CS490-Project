@@ -10,7 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { logout } from '../slices/authSlice';
 import { useLogoutMutation } from '../slices/userApiSlice';
 // import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useSelector } from 'react-redux';
 import TaskAddingDialog from '../components/TaskDialog';
 import { useDispatch } from 'react-redux';
@@ -22,10 +22,10 @@ import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOu
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TimerModal from '../components/FocusTime';
 // edit icon import 
+import { useGetTasksQuery } from '../slices/taskApiSlice';
 
 
 const TasksAppts = () => {
-    const [tasks, setTasks] = useState([]);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
 
@@ -38,7 +38,15 @@ const TasksAppts = () => {
     const navigate = useNavigate();
 
     const { userInfo } = useSelector((state) => state.auth);
+//loading tasks if they exist 
+    const [tasks, setTasks] = useState([]);
+    const { data: initialTasks = [], isLoading, isError } = useGetTasksQuery();
 
+    useEffect(() => {
+      if (!isLoading && !isError){
+        setTasks(initialTasks);
+      }
+    }, [initialTasks, isLoading, isError]);
 //function for opening the focus time modal
 const handleTitleClick = (task) => {
   setCurrentTask(task);
