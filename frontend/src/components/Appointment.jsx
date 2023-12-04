@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Fab } from "@mui/material";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
-import useGoogleCalendar from "./useGoogleCalendar";
 import AddIcon from "@mui/icons-material/Add";
 
 const AppointmentComponent = () => {
@@ -24,6 +23,7 @@ const AppointmentComponent = () => {
   const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
   let tokenClient;
+
   const abortController = new AbortController();
 
   const handleAuthClick = async () => {
@@ -53,6 +53,18 @@ const AppointmentComponent = () => {
   };
 
   useEffect(() => {
+    const initialTimeSlot = [...Array(16)].map((_, index) => {
+      const hour = 5 + index;
+      if (hour < 5 || hour >= 21) {
+        return { hour: "", events: [] };
+      }
+      return {
+        hour:
+          hour === 12 ? "12 PM" : hour <= 11 ? `${hour} AM` : `${hour - 12} PM`,
+        events: [],
+      };
+    });
+    setTimeSlots(initialTimeSlot);
     if (initialized) {
       // Load Google API client script only if initialized
       async function gapiLoaded() {
@@ -204,6 +216,7 @@ const AppointmentComponent = () => {
         </div>
         <Fab
           onClick={initializeGoogleCalendar}
+          data-testid="connectCalendar"
           size="small"
           color="primary"
           aria-label="add"
@@ -213,6 +226,7 @@ const AppointmentComponent = () => {
         </Fab>
         <input
           type="date"
+          data-testid="appointmentDateInput"
           value={selectedDate}
           onChange={(e) => handleDateChange(e.target.value)}
         />
@@ -245,7 +259,11 @@ const AppointmentComponent = () => {
           >
             <DragDropContext onDragEnd={() => {}}>
               {timeSlots.map((timeSlot, index) => (
-                <div key={index} style={{ height: "40px", display: "flex" }}>
+                <div
+                  key={index}
+                  data-testid="time-slot"
+                  style={{ height: "40px", display: "flex" }}
+                >
                   <div style={{ width: "50px", height: "50px" }}>
                     {timeSlot.hour}
                   </div>
