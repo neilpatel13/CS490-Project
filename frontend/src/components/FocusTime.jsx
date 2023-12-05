@@ -156,7 +156,7 @@ const formatEndTime = (time) => {
 
   return(
     <Dialog open={open}>
-      <button className="closeButton" onClick={handleClose}>
+      <button className="closeButton" onClick={handleClose} aria-label="Close modal">
         <HighlightOffOutlinedIcon />
       </button>
     <DialogContent>
