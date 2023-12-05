@@ -30,11 +30,6 @@ const TasksAppts = () => {
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
     const today = new Date();
-    const [selectedDate, setSelectedDate] = useState({
-      month: (today.getMonth() + 1).toString().padStart(2, '0'), // Adding 1 because months are zero-based
-      day: today.getDate().toString().padStart(2, '0'),
-      year: today.getFullYear().toString(),
-    });
 
     // adding some logic for focus time here
     const [modalOpen, setModalOpen] = useState(false);
@@ -44,15 +39,21 @@ const TasksAppts = () => {
     const navigate = useNavigate();
 
     const { userInfo } = useSelector((state) => state.auth);
-//loading tasks if they exist 
-    const [tasks, setTasks] = useState([]);
-    const currentDate = new Date().toISOString().split('T')[0]; // Format current date as YYYY-MM-DD
-    const { data: initialTasks = [], isLoading, isError } = useGetTasksQuery(currentDate);
+    //loading tasks if they exist 
+
+    const [selectedDate, setSelectedDate] = useState({
+    year: today.getFullYear().toString(),
+    month: (today.getMonth() + 1).toString().padStart(2, '0'), // months are 0-indexed
+    day: today.getDate().toString().padStart(2, '0'),
+    });
+
+const { data: initialTasks, isLoading, isError } = useGetTasksQuery(selectedDate);
+const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
-      if (!isLoading && !isError){
-        setTasks(initialTasks);
-      }
+        if (!isLoading && !isError && initialTasks) {
+            setTasks(initialTasks);
+        }
     }, [initialTasks, isLoading, isError]);
 //function for opening the focus time modal
 const handleTitleClick = (task) => {
@@ -118,9 +119,9 @@ const [logoutApiCall] = useLogoutMutation();
   };
 
 
-  const handleDateChange = (field, value) => {
-    setSelectedDate((prev) => ({ ...prev, [field]: value }));
-  };
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
+};
 
   // Generate an array of years around the selected year
   const generateYearRange = () => {
@@ -325,7 +326,7 @@ const [logoutApiCall] = useLogoutMutation();
           {/* Month Select */}
           <Select
             value={selectedDate.month}
-            onChange={(e) => handleMonthChange(e.target.value)}
+            onChange={(e) => handleDateChange('month', e.target.value)}
             style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
           >
             {monthOptions.map((month) => (
