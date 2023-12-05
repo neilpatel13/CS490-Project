@@ -53,25 +53,26 @@ const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
-        if (!isLoading && !isError && initialTasks) {
-            const currentDate = new Date();
-            const selectedDateObj = new Date(formattedDate);
-
-            const filteredTasks = initialTasks.filter(task => {
-                const taskDate = new Date(task.date);
-
-                // Include tasks from past dates that are not 'complete'
-                if (taskDate < currentDate && task.state !== 'complete') {
-                    return true;
-                }
-
-                // Include tasks from the current or selected date
-                return taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0];
-            });
-
-            setTasks(filteredTasks);
-        }
+      if (!isLoading && !isError && initialTasks) {
+          const currentDate = new Date();
+          const selectedDateObj = new Date(formattedDate);
+  
+          const filteredTasks = initialTasks.filter(task => {
+              const taskDate = new Date(task.date);
+  
+              // Include tasks from past dates that are not 'complete'
+              if (taskDate < currentDate && task.state !== 'Complete') {
+                  return true;
+              }
+  
+              // Include tasks from the current or selected date
+              return taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0];
+          });
+  
+          setTasks(filteredTasks);
+      }
     }, [initialTasks, isLoading, isError, formattedDate]);
+  
   
   
 
@@ -263,7 +264,7 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                       </div>
                     </div>
-                    {expandedTask === task.id && (
+                    {expandedTask === task._id && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
@@ -277,7 +278,7 @@ const [logoutApiCall] = useLogoutMutation();
                 <div className="sectionHeader">Important</div>
                 {groupedTasks['Important'] &&
                 groupedTasks['Important'].map((task) => (
-                  <div key={task.id} className="taskCard">
+                  <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
                     <div className="taskTitle" onClick={() => handleTitleClick(task)}>
@@ -285,8 +286,8 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
-                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task.id)}>
-                        {expandedTask === task.id ? 
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
@@ -294,7 +295,7 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                       </div>
                     </div>
-                    {expandedTask === task.id && (
+                    {expandedTask === task._id && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
@@ -308,7 +309,7 @@ const [logoutApiCall] = useLogoutMutation();
             <div className="sectionHeader">Other</div>
                 {groupedTasks['Other'] &&
                 groupedTasks['Other'].map((task) => (
-                  <div key={task.id} className="taskCard">
+                  <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
                     <div className="taskTitle" onClick={() => handleTitleClick(task)}>
@@ -316,8 +317,8 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
-                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task.id)}>
-                        {expandedTask === task.id ? 
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
@@ -325,7 +326,7 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                       </div>
                     </div>
-                    {expandedTask === task.id && (
+                    {expandedTask === task._id && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
