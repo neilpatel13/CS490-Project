@@ -53,31 +53,24 @@ const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
-      if (!isLoading && !isError && initialTasks) {
-          const currentDate = new Date();
-          const selectedDateObj = new Date(formattedDate);
+        if (!isLoading && !isError && initialTasks) {
+            const currentDate = new Date();
+            const selectedDateObj = new Date(formattedDate);
 
-          const filteredTasks = initialTasks.filter(task => {
-              const taskDate = new Date(task.date);
+            const filteredTasks = initialTasks.filter(task => {
+                const taskDate = new Date(task.date);
 
-              // For the current day, include all tasks up to the current date
-              // and include incomplete tasks from past dates
-              if (selectedDateObj.toISOString().split('T')[0] === currentDate.toISOString().split('T')[0]) {
-                  return (taskDate <= currentDate && task.state !== 'Complete') || 
-                         (taskDate.toISOString().split('T')[0] === currentDate.toISOString().split('T')[0]);
-              }
+                // Include tasks from past dates that are not 'complete'
+                if (taskDate < currentDate && task.state !== 'complete') {
+                    return true;
+                }
 
-              // For past dates, only show tasks from that specific date
-              if (selectedDateObj < currentDate) {
-                  return taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0];
-              }
+                // Include tasks from the current or selected date
+                return taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0];
+            });
 
-              // For future dates, only show tasks specifically set for that date
-              return taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0];
-          });
-
-          setTasks(filteredTasks);
-      }
+            setTasks(filteredTasks);
+        }
     }, [initialTasks, isLoading, isError, formattedDate]);
   
   
