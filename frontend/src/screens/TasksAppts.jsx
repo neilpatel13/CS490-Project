@@ -54,11 +54,22 @@ const TasksAppts = () => {
 
     useEffect(() => {
       if (!isLoading && !isError && initialTasks) {
+          const currentDate = new Date();
           const selectedDateObj = new Date(formattedDate);
+
           const filteredTasks = initialTasks.filter(task => {
               const taskDate = new Date(task.date);
+
+              // For current and past dates, include tasks that are not 'complete'
+              if (selectedDateObj <= currentDate) {
+                  return (taskDate <= currentDate && task.state !== 'Complete') || 
+                         (taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0]);
+              }
+
+              // For future dates, only show tasks specifically set for that date
               return taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0];
           });
+
           setTasks(filteredTasks);
       }
   }, [initialTasks, isLoading, isError, formattedDate]);
