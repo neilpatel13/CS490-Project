@@ -45,18 +45,24 @@ const TasksAppts = () => {
       year: today.getFullYear().toString(),
       month: (today.getMonth() + 1).toString().padStart(2, '0'),
       day: today.getDate().toString().padStart(2, '0'),
-  });
+    });
+
 
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-
     const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
-      if (!isLoading && !isError && initialTasks) {
-          setTasks(initialTasks);
-      }
-  }, [initialTasks, isLoading, isError]);
+        if (!isLoading && !isError && initialTasks) {
+            const filteredTasks = initialTasks.filter(task => {
+                const taskDate = new Date(task.date);
+                const selectedDateObj = new Date(formattedDate);
+                return taskDate <= selectedDateObj;
+            });
+            setTasks(filteredTasks);
+        }
+    }, [initialTasks, isLoading, isError, formattedDate]);
+    
 //function for opening the focus time modal
 const handleTitleClick = (task) => {
   setCurrentTask(task);
