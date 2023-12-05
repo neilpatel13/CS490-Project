@@ -16,7 +16,7 @@ export const addTask = asyncHandler(async (req, res) => {
         state: 'not started',
         priority,
         notes,
-        numberOfTimers,
+        timer: numberOfTimers, // Map numberOfTimers to timer
         date,
     });
 
@@ -99,10 +99,10 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
 
     const tasks = await Task.find({
         user: req.user._id,
-        date: {
-            $gte: userDate,
-            $lt: nextDay
-        }
+        $or: [
+            { date: { $gte: userDate, $lt: nextDay } },
+            { date: { $lt: userDate }, state: { $ne: 'Complete' } }
+        ]
     });
 
     res.json(tasks);

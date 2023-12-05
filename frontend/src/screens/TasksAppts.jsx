@@ -19,22 +19,18 @@ import OpenWithIcon from '@mui/icons-material/OpenWith';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 // adding dnd import 
 import TimerModal from '../components/FocusTime';
-// edit icon import 
-import React, { useEffect, useState } from 'react';
+// edit icon import
+import React, { useEffect, useState, useContext } from 'react';
 import { useGetTasksQuery } from '../slices/taskApiSlice';
 
 
 
 
 const TasksAppts = () => {
+    const [triggerFetch, setTriggerFetch] = useState(false);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
     const today = new Date();
-    const [selectedDate, setSelectedDate] = useState({
-      month: (today.getMonth() + 1).toString().padStart(2, '0'), // Adding 1 because months are zero-based
-      day: today.getDate().toString().padStart(2, '0'),
-      year: today.getFullYear().toString(),
-    });
 
     // adding some logic for focus time here
     const [modalOpen, setModalOpen] = useState(false);
@@ -44,16 +40,19 @@ const TasksAppts = () => {
     const navigate = useNavigate();
 
     const { userInfo } = useSelector((state) => state.auth);
-//loading tasks if they exist 
-    const [tasks, setTasks] = useState([]);
-    const currentDate = new Date().toISOString().split('T')[0]; // Format current date as YYYY-MM-DD
-    const { data: initialTasks = [], isLoading, isError } = useGetTasksQuery(currentDate);
+    //loading tasks if they exist 
 
-    useEffect(() => {
-      if (!isLoading && !isError){
-        setTasks(initialTasks);
-      }
-    }, [initialTasks, isLoading, isError]);
+    const [selectedDate, setSelectedDate] = useState({
+      year: today.getFullYear().toString(),
+      month: (today.getMonth() + 1).toString().padStart(2, '0'),
+      day: today.getDate().toString().padStart(2, '0'),
+    });
+
+
+    const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
+    const [tasks, setTasks] = useState([]);
+
 //function for opening the focus time modal
 const handleTitleClick = (task) => {
   setCurrentTask(task);
@@ -71,19 +70,45 @@ const handleTitleClick = (task) => {
         setDialogOpen(false);
     };
 
+    const [lastUpdated, setLastUpdated] = useState(Date.now());
+
     const onAddTask = (newTask) => {
       console.log('Before adding task', tasks);
-        setTasks((prevTasks) => [...prevTasks,newTask]);
+      setTasks((prevTasks) => [...prevTasks, newTask]);
       console.log('after adding tasks', tasks);
+      setLastUpdated(Date.now());
     }
+
+    useEffect(() => {
+      const fetchTasks = async () => {
+      if (!isLoading && !isError && initialTasks) {
+          const currentDate = new Date();
+          const selectedDateObj = new Date(formattedDate);
+
+          const filteredTasks = initialTasks.filter(task => {
+              const taskDate = new Date(task.date);
+
+              // Include tasks that are not 'Complete' and are either from the past or the selected date
+              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+          });
+
+          setTasks(filteredTasks);
+      }
+    };
+
+    fetchTasks();
+  }, [triggerFetch, lastUpdated, initialTasks, isLoading, isError, formattedDate]);
 
 //toggle expanded task
 const handleTaskClick = (taskId) => {
-    setExpandedTask((prevExpandedTask) =>
-    (prevExpandedTask === taskId ? null : taskId
-    ));
+  setExpandedTask((prevExpandedTask) =>
+      prevExpandedTask === taskId ? null : taskId
+  );
 };
 
+const handleNewTaskAdded = () => {
+  setTriggerFetch(prev => !prev); // Toggle the trigger to re-fetch tasks
+};
 
 
 //handling priority 
@@ -119,8 +144,8 @@ const [logoutApiCall] = useLogoutMutation();
 
 
   const handleDateChange = (field, value) => {
-    setSelectedDate((prev) => ({ ...prev, [field]: value }));
-  };
+    setSelectedDate(prev => ({ ...prev, [field]: value }));
+};
 
   // Generate an array of years around the selected year
   const generateYearRange = () => {
@@ -207,7 +232,7 @@ const [logoutApiCall] = useLogoutMutation();
         <AddIcon fontSize="1.25rem" />
     </Fab>
     </div>
-    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask} />
+    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask} selectedDate={selectedDate} />
     {currentTask && <TimerModal open={modalOpen} handleClose={handleModalClose} task={currentTask} />}
       <div id='taskBox' className='taskRectangle'>
         <Box
@@ -221,9 +246,10 @@ const [logoutApiCall] = useLogoutMutation();
       {/* added drag drop context here */}
             <div id='innerBox' className='taskInnerRectangle'>
             <div className="sectionHeader">Top Priority</div>
+
               {groupedTasks['Top Priority'] &&
                 groupedTasks['Top Priority'].map((task) => (
-                  <div key={task.id} className="taskCard">
+                  <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                       {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
                       <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
@@ -232,8 +258,8 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
-                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task.id)}>
-                        {expandedTask === task.id ? 
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
@@ -241,7 +267,7 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                       </div>
                     </div>
-                    {expandedTask === task.id && (
+                    {expandedTask === task._id && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
@@ -255,7 +281,7 @@ const [logoutApiCall] = useLogoutMutation();
                 <div className="sectionHeader">Important</div>
                 {groupedTasks['Important'] &&
                 groupedTasks['Important'].map((task) => (
-                  <div key={task.id} className="taskCard">
+                  <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
                     <div className="taskTitle" onClick={() => handleTitleClick(task)}>
@@ -263,8 +289,8 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
-                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task.id)}>
-                        {expandedTask === task.id ? 
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
@@ -272,7 +298,7 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                       </div>
                     </div>
-                    {expandedTask === task.id && (
+                    {expandedTask === task._id && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
@@ -286,7 +312,7 @@ const [logoutApiCall] = useLogoutMutation();
             <div className="sectionHeader">Other</div>
                 {groupedTasks['Other'] &&
                 groupedTasks['Other'].map((task) => (
-                  <div key={task.id} className="taskCard">
+                  <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
                     <div className="taskTitle" onClick={() => handleTitleClick(task)}>
@@ -294,8 +320,8 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
-                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task.id)}>
-                        {expandedTask === task.id ? 
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
@@ -303,7 +329,7 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                       </div>
                     </div>
-                    {expandedTask === task.id && (
+                    {expandedTask === task._id && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
@@ -325,7 +351,7 @@ const [logoutApiCall] = useLogoutMutation();
           {/* Month Select */}
           <Select
             value={selectedDate.month}
-            onChange={(e) => handleMonthChange(e.target.value)}
+            onChange={(e) => handleDateChange('month', e.target.value)}
             style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
           >
             {monthOptions.map((month) => (
