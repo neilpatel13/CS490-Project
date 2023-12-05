@@ -45,7 +45,7 @@ const TasksAppts = () => {
       year: today.getFullYear().toString(),
       month: (today.getMonth() + 1).toString().padStart(2, '0'),
       day: today.getDate().toString().padStart(2, '0'),
-  });
+    });
 
 
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
@@ -54,14 +54,15 @@ const TasksAppts = () => {
 
     useEffect(() => {
       if (!isLoading && !isError && initialTasks) {
-          const currentDate = new Date();
+          const selectedDateObj = new Date(formattedDate);
           const filteredTasks = initialTasks.filter(task => {
               const taskDate = new Date(task.date);
-              return taskDate <= currentDate;
+              return taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0];
           });
           setTasks(filteredTasks);
       }
   }, [initialTasks, isLoading, isError, formattedDate]);
+  
   
 
 //function for opening the focus time modal
