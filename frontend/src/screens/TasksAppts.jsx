@@ -42,19 +42,21 @@ const TasksAppts = () => {
     //loading tasks if they exist 
 
     const [selectedDate, setSelectedDate] = useState({
-    year: today.getFullYear().toString(),
-    month: (today.getMonth() + 1).toString().padStart(2, '0'), // months are 0-indexed
-    day: today.getDate().toString().padStart(2, '0'),
-    });
+      year: today.getFullYear().toString(),
+      month: (today.getMonth() + 1).toString().padStart(2, '0'),
+      day: today.getDate().toString().padStart(2, '0'),
+  });
 
-const { data: initialTasks, isLoading, isError } = useGetTasksQuery(selectedDate);
-const [tasks, setTasks] = useState([]);
+    const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+
+    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
+    const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
-        if (!isLoading && !isError && initialTasks) {
-            setTasks(initialTasks);
-        }
-    }, [initialTasks, isLoading, isError]);
+      if (!isLoading && !isError && initialTasks) {
+          setTasks(initialTasks);
+      }
+  }, [initialTasks, isLoading, isError]);
 //function for opening the focus time modal
 const handleTitleClick = (task) => {
   setCurrentTask(task);
@@ -119,8 +121,8 @@ const [logoutApiCall] = useLogoutMutation();
   };
 
 
-  const handleDateChange = (newDate) => {
-    setSelectedDate(newDate);
+  const handleDateChange = (field, value) => {
+    setSelectedDate(prev => ({ ...prev, [field]: value }));
 };
 
   // Generate an array of years around the selected year
