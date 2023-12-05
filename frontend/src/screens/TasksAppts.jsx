@@ -19,14 +19,15 @@ import OpenWithIcon from '@mui/icons-material/OpenWith';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 // adding dnd import 
 import TimerModal from '../components/FocusTime';
-// edit icon import 
-import React, { useEffect, useState } from 'react';
+// edit icon import
+import React, { useEffect, useState, useContext } from 'react';
 import { useGetTasksQuery } from '../slices/taskApiSlice';
 
 
 
 
 const TasksAppts = () => {
+    const [triggerFetch, setTriggerFetch] = useState(false);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
     const today = new Date();
@@ -79,25 +80,24 @@ const handleTitleClick = (task) => {
     }
 
     useEffect(() => {
+      const fetchTasks = async () => {
       if (!isLoading && !isError && initialTasks) {
           const currentDate = new Date();
           const selectedDateObj = new Date(formattedDate);
-  
+
           const filteredTasks = initialTasks.filter(task => {
               const taskDate = new Date(task.date);
-  
-              // Include tasks from past dates that are not 'complete'
-              if (taskDate < currentDate && task.state !== 'Complete') {
-                  return true;
-              }
-  
-              // Include tasks from the current or selected date
-              return taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0];
+
+              // Include tasks that are not 'Complete' and are either from the past or the selected date
+              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
           });
-  
+
           setTasks(filteredTasks);
       }
-    }, [lastUpdated, initialTasks, isLoading, isError, formattedDate]);
+    };
+
+    fetchTasks();
+  }, [triggerFetch, lastUpdated, initialTasks, isLoading, isError, formattedDate]);
 
 //toggle expanded task
 const handleTaskClick = (taskId) => {
@@ -106,6 +106,9 @@ const handleTaskClick = (taskId) => {
   );
 };
 
+const handleNewTaskAdded = () => {
+  setTriggerFetch(prev => !prev); // Toggle the trigger to re-fetch tasks
+};
 
 
 //handling priority 
