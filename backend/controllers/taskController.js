@@ -8,11 +8,11 @@ export const addTask = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error('Not authorized, no user found');
     }
-    const { taskName, priority, notes, numberOfTimers, date } = req.body;
+    const { title, priority, notes, numberOfTimers, date } = req.body;
 
     const task = new Task({
         user: req.user._id,
-        taskName,
+        title,
         state: 'not started',
         priority,
         notes,
@@ -93,17 +93,6 @@ export const updatePriority = asyncHandler(async (req, res) => {
 
 // Get tasks for a specific date
 export const getTasksByDate = asyncHandler(async (req, res) => {
-    const userDate = new Date(req.query.date);
-    const nextDay = new Date(userDate);
-    nextDay.setDate(userDate.getDate() + 1);
-
-    const tasks = await Task.find({
-        user: req.user._id,
-        date: {
-            $gte: userDate,
-            $lt: nextDay
-        }
-    });
-
+    const tasks = await Task.find({ user: req.user._id, date: req.query.date });
     res.json(tasks);
 });

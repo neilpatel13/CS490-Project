@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from 'react';
 // adding functionality to pull timer values from user profile
-import { useSelector } from 'react-redux'; 
+import { useSelector } from 'react-redux';
 import { Dialog, DialogTitle, DialogContent, Tab, Tabs, Button } from '@mui/material';
 import { current } from '@reduxjs/toolkit';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
@@ -12,32 +12,14 @@ const TimerModal = ({ open, handleClose, task }) => {
   const [tabValue, setTabValue] = useState(0);
   const timerValueRef = useRef(timerValue);
   // pulling timer values from user profile
-  const { userInfo: { pomodoro, short, long } } = useSelector((state) => state.auth) || { userInfo: { pomodoro: 25, short: 5, long: 15 } }; //switch this back after testing
+  const userProfile = useSelector(state => state.userProfile) || {pomodoroTime: 25, shortBreakTime: 5, longBreakTime: 15};
 // calculating timer finish times
   const[elapsedTime, setElapsedTime] = useState(0);
   const[startTime, setStartTime] = useState(null);
   const [finishTime, setFinishTime] = useState(null);
 //displaying pomo amounts
-  const [currentTimer, setCurrentTimer] = useState(0);
+  const [currentTimer, setCurrentTimer] = useState(1);
   const [totalTimers, setTotalTimers] = useState(task.timer);
-//keeps track of number of completed pomos
-const [pomodoroCount, setPomodoroCount] = useState(0);
-
-
-
-
-//this is to switch to break tabs after pomos finish
-useEffect(() => {
-  if(isRunning && timerValue ===0){
-    setIsRunning(false);
-    if (tabValue === 0) {
-      setPomodoroCount(prevCount => prevCount + 1);
-      setTabValue((pomodoroCount + 1) % 4 === 0 ? 2 : 1);
-    } else{
-      setTabValue(0);
-    }
-  }
-}, [isRunning, timerValue, pomodoroCount, tabValue]);
 
 // i dont remember what this does but its important
   useEffect(() => {
@@ -45,39 +27,35 @@ useEffect(() => {
   }, [timerValue]); 
 
 // these hooks are for keeping track of what pomo we are on, and reseting it on different tasks
-//still figuring out what to do when the pomo count reaches the number of total pomos 
   useEffect(() => {
-    if (timerValue ===0 && tabValue === 0){
-      if (currentTimer < totalTimers){
-        setCurrentTimer(currentTimer => currentTimer + 1);
-      }
-  }
-  }, [timerValue, tabValue]);
-
+    if (timerValue ===0){
+      setCurrentTimer(currentTimer => currentTimer + 1);
+    }
+  }, [timerValue]);
 
   useEffect(() => {
-    setCurrentTimer(0);
+    setCurrentTimer(1);
     setTotalTimers(task.timer);
   }, [task]);
 
-  // changing the default timer values to be populated by user preferences, it dont work yet
+  // changing the default timer values to be populated by user preferences
   useEffect(() => {
   switch (tabValue) {
       case 0:
-        setTimerValue(pomodoro*60);
+        setTimerValue(userProfile.pomodoroTime*60);
         break;
       case 1:
-        setTimerValue(short*60);
+        setTimerValue(userProfile.shortBreakTime*60);
         break;
       case 2:
-        setTimerValue(long*60);
+        setTimerValue(userProfile.longBreakTime*60);
         break;
       default:
-        setTimerValue(pomodoro*60);
+        setTimerValue(userProfile.pomodoroTime*60);
         break;
     }
     setTimerCount(1);
-  },[task, tabValue, pomodoro, short, long]);
+  },[task, tabValue, userProfile.pomodoroTime, userProfile.shortBreakTime, userProfile.longBreakTime]);
 
   useEffect(() => {
     let timer;
@@ -96,31 +74,26 @@ useEffect(() => {
       setTimerCount((prevCount) => prevCount - 1);
       switch (tabValue) {
         case 0:
-          setTimerValue(pomodoro*60);
+          setTimerValue(userProfile.pomodoroTime*60);
           break;
         case 1:
-          setTimerValue(short*60);
+          setTimerValue(userProfile.shortBreakTime*60);
           break;
         case 2:
-          setTimerValue(long*60);
+          setTimerValue(userProfile.longBreakTime*60);
           break;
         default:
-          setTimerValue(pomodoro*60);
+          setTimerValue(userProfile.pomodoroTime*60);
           break;
     }
     }
-  }, [timerValue, timerCount, tabValue, pomodoro, short, long]);
+  }, [timerValue, timerCount, tabValue, userProfile.pomodoroTime, userProfile.shortBreakTime, userProfile.longBreakTime]);
 
 //useEffect to get the initial finish time value on modal open
   useEffect(() => {
     const now =Date.now();
     setFinishTime(formatEndTime(now + timerValue * 1000));
-  }, [timerValue, pomodoro, short, long]);
-
-//stops timer from auto running on opening a new focus time or switching tabs
-useEffect(() => {
-  setIsRunning(false);
-}, [task, tabValue]);
+  }, [timerValue, userProfile.pomodoroTime, userProfile.shortBreakTime, userProfile.longBreakTime]);
 
 //this now also keeps track of elapsed time and helps us display the end time
   const handleStartStopClick = () => {
@@ -156,7 +129,7 @@ const formatEndTime = (time) => {
 
   return(
     <Dialog open={open}>
-      <button className="closeButton" onClick={handleClose} aria-label="Close modal">
+      <button className="closeButton" onClick={handleClose}>
         <HighlightOffOutlinedIcon />
       </button>
     <DialogContent>

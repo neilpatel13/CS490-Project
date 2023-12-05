@@ -6,7 +6,7 @@ const taskSchema = mongoose.Schema({
         required: true,
         ref: 'User'
     },
-    taskName: {
+    title: {
         type: String,
         required: true,
     },
@@ -17,21 +17,17 @@ const taskSchema = mongoose.Schema({
     priority: {
         type: String,
         required: true,
-        enum: ['Top Priority', 'Important', 'Other']
+        enum: ['top priority', 'important', 'other']
     },
     state: {
         type: String,
-        required: false,
+        required: true,
         enum: ['not started', 'in progress', 'complete', 'rolled over'],
         default: 'not started'
     },
-    timer: {
+    timers: {
         type: Number,
         default: 1
-    },
-    timersFinished: {
-        type: Number,
-        default: 0
     },
     notes: String
 }, {
