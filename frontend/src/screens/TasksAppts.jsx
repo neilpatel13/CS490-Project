@@ -98,6 +98,16 @@ const [logoutApiCall] = useLogoutMutation();
     }
   };
 
+  const handleMonthChange = (value) => {
+    handleDateChange('month', value);
+
+    // Adjust the number of days based on the selected month
+    const daysInMonth = new Date(selectedDate.year, parseInt(value, 10), 0).getDate();
+    const newDay = Math.min(parseInt(selectedDate.day, 10), daysInMonth);
+    handleDateChange('day', newDay.toString().padStart(2, '0'));
+  };
+
+
   const handleDateChange = (field, value) => {
     setSelectedDate((prev) => ({ ...prev, [field]: value }));
   };
@@ -113,9 +123,8 @@ const [logoutApiCall] = useLogoutMutation();
   // Generate an array of months (1 to 12)
   const monthOptions = Array.from({ length: 12 }, (_, index) => (index + 1).toString().padStart(2, '0'));
 
-  // Generate an array of days (1 to 31)
-  const dayOptions = Array.from({ length: 31 }, (_, index) => (index + 1).toString().padStart(2, '0'));
-
+  const dayOptions = Array.from({ length: new Date(selectedDate.year, selectedDate.month, 0).getDate() }, (_, index) => (index + 1).toString().padStart(2, '0'));
+  //i got the leap year working, im awesome! 
   const yearRange = generateYearRange();
 
   const handleMonthDecrement = () => {
@@ -307,7 +316,7 @@ const [logoutApiCall] = useLogoutMutation();
           {/* Month Select */}
           <Select
             value={selectedDate.month}
-            onChange={(e) => handleDateChange('month', e.target.value)}
+            onChange={(e) => handleMonthChange(e.target.value)}
             style={{ marginLeft: '5px', fontFamily: 'DM Sans', fontSize: '12px' }}
           >
             {monthOptions.map((month) => (
