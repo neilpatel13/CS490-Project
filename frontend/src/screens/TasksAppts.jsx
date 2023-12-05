@@ -52,6 +52,32 @@ const TasksAppts = () => {
     const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
     const [tasks, setTasks] = useState([]);
 
+//function for opening the focus time modal
+const handleTitleClick = (task) => {
+  setCurrentTask(task);
+  setModalOpen(true);
+};
+ const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+    //dialog functions for adding tasks
+    const handleClickOpen = () => {
+        setDialogOpen(true);
+    };
+    const handleClose = () =>{
+        setDialogOpen(false);
+    };
+
+    const [lastUpdated, setLastUpdated] = useState(Date.now());
+
+    const onAddTask = (newTask) => {
+      console.log('Before adding task', tasks);
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+      console.log('after adding tasks', tasks);
+      setLastUpdated(Date.now());
+    }
+
     useEffect(() => {
       if (!isLoading && !isError && initialTasks) {
           const currentDate = new Date();
@@ -71,33 +97,7 @@ const TasksAppts = () => {
   
           setTasks(filteredTasks);
       }
-    }, [initialTasks, isLoading, isError, formattedDate]);
-  
-  
-  
-
-//function for opening the focus time modal
-const handleTitleClick = (task) => {
-  setCurrentTask(task);
-  setModalOpen(true);
-};
- const handleModalClose = () => {
-    setModalOpen(false);
-  };
-
-    //dialog functions for adding tasks
-    const handleClickOpen = () => {
-        setDialogOpen(true);
-    };
-    const handleClose = () =>{
-        setDialogOpen(false);
-    };
-
-    const onAddTask = (newTask) => {
-      console.log('Before adding task', tasks);
-      setTasks((prevTasks) => [...prevTasks, newTask]);
-      console.log('after adding tasks', tasks);
-    }
+    }, [lastUpdated, initialTasks, isLoading, isError, formattedDate]);
 
 //toggle expanded task
 const handleTaskClick = (taskId) => {
