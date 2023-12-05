@@ -4,8 +4,9 @@ import {Button,
     Dialog,DialogActions,
     DialogContent,DialogContentText,
     DialogTitle, MenuItem, InputLabel} from '@mui/material';
+import { useAddTaskMutation } from '../slices/taskApiSlice';
 
-    const TaskAddingDialog = ({open, handleClose,onAddTask }) =>{
+    const TaskAddingDialog = ({open, handleClose, onAddTask }) =>{
         const [taskName, setTaskName] = useState('');
         const [timer, setTimer] = useState(null);
         const [notes, setNotes] = useState('');
@@ -48,27 +49,34 @@ import {Button,
             }
         };
 
-        const handleSubmit = () => {
+        const [addTask, { isLoading: isAdding, isError: addError}] = useAddTaskMutation();
+
+        const handleSubmit = async () => {
             if(taskName.trim()=== '' || timer.trim() ==='' || priority==='') {
                 return;
             }
 
             const newTask ={
-                id: Date.now(),
                 taskName,
+                date: new Date(),
                 timer,
                 notes,
                 priority,
             };
 
-            onAddTask(newTask);
+            try{
+
+                const addedTask = await addTask(newTask).unwrap();
+                onAddTask(addedTask);
+                setTaskName('');
+                setTimer('');
+                setNotes('');
+                setPriority('');
         
-            setTaskName('');
-            setTimer('');
-            setNotes('');
-            setPriority('');
-        
-            handleClose();
+                handleClose();
+            } catch(error){
+                console.error('failed to add task', error);
+            }
         };
 
         return(
