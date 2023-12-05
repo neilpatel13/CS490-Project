@@ -166,7 +166,7 @@ const [logoutApiCall] = useLogoutMutation();
     return(
         <Box>
           <div id='topBar' className='topBar'>
-          <p id='name' style={{fontSize:'15px', right:'3%', position: 'absolute', textAlign:'center', top:'28%'}}>{userInfo.first} {userInfo.last}</p>
+          <p id='name' style={{fontSize:'15px', right:'3%', position: 'absolute', textAlign:'center', top:'28%'}}>{userInfo && userInfo.first} {userInfo && userInfo.last}</p>
           <a href='/profile'>
             <img src={usrLogo} alt='eclipse' style={{right:'10%', position:'absolute',  top: '22%', flexShrink: '0'}}/>
           </a>
@@ -307,8 +307,7 @@ const [logoutApiCall] = useLogoutMutation();
       </div>
       </Box>
       <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position: 'absolute', left: '14.8%', top: '5%' }}>
-        <div id='dateSelector' style={{ color: "#000", fontFamily: "DM Sans", fontSize: "2vh", fontStyle: "normal", fontWeight: "500", lineHeight: "normal" }}>
-          Date Selector:
+      <div id='dateSelector' data-testid="custom-date-selector" style={{ color: "#000", fontFamily: "DM Sans", fontSize: "2vh", fontStyle: "normal", fontWeight: "500", lineHeight: "normal" }}>
           {/* Left Arrow Button for Month */}
           <Button onClick={handleMonthDecrement} style={{ fontFamily: 'DM Sans', fontSize: '12px', marginLeft: '10px' }}>
             {'<'}
