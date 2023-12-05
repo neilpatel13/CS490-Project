@@ -60,10 +60,16 @@ const TasksAppts = () => {
           const filteredTasks = initialTasks.filter(task => {
               const taskDate = new Date(task.date);
 
-              // For current and past dates, include tasks that are not 'complete'
-              if (selectedDateObj <= currentDate) {
+              // For the current day, include all tasks up to the current date
+              // and include incomplete tasks from past dates
+              if (selectedDateObj.toISOString().split('T')[0] === currentDate.toISOString().split('T')[0]) {
                   return (taskDate <= currentDate && task.state !== 'Complete') || 
-                         (taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0]);
+                         (taskDate.toISOString().split('T')[0] === currentDate.toISOString().split('T')[0]);
+              }
+
+              // For past dates, only show tasks from that specific date
+              if (selectedDateObj < currentDate) {
+                  return taskDate.toISOString().split('T')[0] === selectedDateObj.toISOString().split('T')[0];
               }
 
               // For future dates, only show tasks specifically set for that date
@@ -72,7 +78,7 @@ const TasksAppts = () => {
 
           setTasks(filteredTasks);
       }
-  }, [initialTasks, isLoading, isError, formattedDate]);
+    }, [initialTasks, isLoading, isError, formattedDate]);
   
   
 
