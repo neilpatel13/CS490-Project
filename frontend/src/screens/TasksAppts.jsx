@@ -48,15 +48,20 @@ const TasksAppts = () => {
   });
 
 
-  const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-  const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
-  const [tasks, setTasks] = useState([]);
+    const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
+    const [tasks, setTasks] = useState([]);
 
-  useEffect(() => {
-    if (!isLoading && !isError && initialTasks) {
-        setTasks(initialTasks);
-    }
-}, [initialTasks, isLoading, isError, formattedDate]);
+    useEffect(() => {
+      if (!isLoading && !isError && initialTasks) {
+          const currentDate = new Date();
+          const filteredTasks = initialTasks.filter(task => {
+              const taskDate = new Date(task.date);
+              return taskDate <= currentDate;
+          });
+          setTasks(filteredTasks);
+      }
+  }, [initialTasks, isLoading, isError, formattedDate]);
   
 
 //function for opening the focus time modal
@@ -212,7 +217,7 @@ const [logoutApiCall] = useLogoutMutation();
         <AddIcon fontSize="1.25rem" />
     </Fab>
     </div>
-    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask} />
+    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask} selectedDate={selectedDate} />
     {currentTask && <TimerModal open={modalOpen} handleClose={handleModalClose} task={currentTask} />}
       <div id='taskBox' className='taskRectangle'>
         <Box

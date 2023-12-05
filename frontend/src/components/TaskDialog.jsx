@@ -6,7 +6,7 @@ import {Button,
     DialogTitle, MenuItem, InputLabel} from '@mui/material';
 import { useAddTaskMutation } from '../slices/taskApiSlice';
 
-    const TaskAddingDialog = ({open, handleClose, onAddTask }) =>{
+    const TaskAddingDialog = ({open, handleClose, onAddTask, selectedDate }) =>{
         const [taskName, setTaskName] = useState('');
         const [timer, setTimer] = useState(null);
         const [notes, setNotes] = useState('');
@@ -51,23 +51,26 @@ import { useAddTaskMutation } from '../slices/taskApiSlice';
 
         const [addTask, { isLoading: isAdding, isError: addError}] = useAddTaskMutation();
 
-        const handleSubmit = async () => {
+        const handleSubmit = async (e) => {
+            e.preventDefault();
             if(taskName.trim()=== '' || timer.trim() ==='' || priority==='') {
                 return;
             }
 
+            const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+
             const newTask ={
                 taskName,
-                date: new Date(),
                 timer,
                 notes,
                 priority,
+                date: formattedDate,
             };
 
             try{
 
                 const addedTask = await addTask(newTask).unwrap();
-                onAddTask(addedTask);
+                onAddTask(newTask);
                 setTaskName('');
                 setTimer('');
                 setNotes('');
