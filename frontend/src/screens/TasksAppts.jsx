@@ -100,9 +100,9 @@ const handleTitleClick = (task) => {
 
 //toggle expanded task
 const handleTaskClick = (taskId) => {
-    setExpandedTask((prevExpandedTask) =>
-    (prevExpandedTask === taskId ? null : taskId
-    ));
+  setExpandedTask((prevExpandedTask) =>
+      prevExpandedTask === taskId ? null : taskId
+  );
 };
 
 
@@ -242,9 +242,10 @@ const [logoutApiCall] = useLogoutMutation();
       {/* added drag drop context here */}
             <div id='innerBox' className='taskInnerRectangle'>
             <div className="sectionHeader">Top Priority</div>
+
               {groupedTasks['Top Priority'] &&
                 groupedTasks['Top Priority'].map((task) => (
-                  <div key={task.id} className="taskCard">
+                  <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                       {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
                       <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
@@ -253,8 +254,8 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
-                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task.id)}>
-                        {expandedTask === task.id ? 
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}

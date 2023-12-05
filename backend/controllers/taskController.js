@@ -16,7 +16,7 @@ export const addTask = asyncHandler(async (req, res) => {
         state: 'not started',
         priority,
         notes,
-        numberOfTimers,
+        timer: numberOfTimers, // Map numberOfTimers to timer
         date,
     });
 

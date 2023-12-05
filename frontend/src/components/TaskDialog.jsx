@@ -59,13 +59,13 @@ import { useAddTaskMutation } from '../slices/taskApiSlice';
 
             const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
 
-            const newTask ={
-                taskName,
-                timer,
-                notes,
-                priority,
-                date: formattedDate,
-            };
+        const newTask = {
+            taskName,
+            numberOfTimers: timer, // Change this line to match the backend field name
+            notes,
+            priority,
+            date: formattedDate,
+        };
 
             try{
 
