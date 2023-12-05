@@ -100,8 +100,8 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
     const tasks = await Task.find({
         user: req.user._id,
         $or: [
-            { date: { $gte: userDate, $lt: nextDay } }, // Tasks on the specified date
-            { date: { $lt: userDate }, state: { $ne: 'Complete' } } // Incomplete tasks from past dates
+            { date: { $gte: userDate, $lt: nextDay } },
+            { date: { $lt: userDate }, state: { $ne: 'Complete' } }
         ]
     });
 

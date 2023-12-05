@@ -95,7 +95,7 @@ const handleTitleClick = (task) => {
 
     const onAddTask = (newTask) => {
       console.log('Before adding task', tasks);
-        setTasks((prevTasks) => [...prevTasks,newTask]);
+      setTasks((prevTasks) => [...prevTasks, newTask]);
       console.log('after adding tasks', tasks);
     }
 
