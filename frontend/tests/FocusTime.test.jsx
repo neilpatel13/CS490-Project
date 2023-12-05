@@ -1,7 +1,7 @@
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor, act } from '@testing-library/react';
 import TimerModal from '../src/components/FocusTime'; 
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
+import { beforeEach, afterEach, vi } from 'vitest';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../src/slices/authSlice'; 
@@ -132,11 +132,9 @@ describe('TimerModal', () => {
     // Check state after stop
     expect(getByText('Start')).toBeInTheDocument();
   });
-  
-  test('timer and tab changes', async () => {
-    // Start using fake timers
-    vi.useFakeTimers();
-  
+
+  //test finish time
+  test('Finish time display', () => {
     // Configure the store
     const store = configureStore({
       reducer: {
@@ -145,49 +143,336 @@ describe('TimerModal', () => {
       preloadedState: {
         auth: {
           userInfo: {
-            pomodoro: 0.1,
-            short: 0.05,
-            long: 0.1,
+            pomodoro: 25,
+            short: 5,
+            long: 15,
           },
         },
       },
     });
-  
+
     // Mock the task
     const mockTask = {
-      id: Date.now(),
-      taskName: 'Task',
-      timer: '2', // set the number of timers for the test
-      notes: 'Some notes',
-      priority: 'Important',
+        id: Date.now(),
+        taskName: 'Task',
+        timer: '2',
+        notes: 'Some notes',
+        priority: 'Important',
     };
-  
+
     // Render the component
-    const { getByText } = render(
+    render(
       <Provider store={store}>
         <TimerModal open={true} handleClose={() => {}} task={mockTask} />
       </Provider>
     );
-  
-    // Simulate start button click
-    fireEvent.click(getByText('Start'));
-// Advance timers by 25 minutes (1500 seconds)
-    vi.advanceTimersByTime(0.1 * 60 * 1000);
 
-// Wait for next tick for state updates
-    await waitFor(() => {
-        const timerElement = document.querySelector('.timerAppearance'); // replace '.timer' with the actual selector of your timer element
-        expect(timerElement.textContent).toBe('00:03');
+    // Check for finish at
+    expect(screen.getByText('Finish At:')).toBeInTheDocument();
+  });
+
+  //check the pomo counter: 
+  test('Pomo tracker shows up', () => {
+    // Configure the store
+    const store = configureStore({
+      reducer: {
+        auth: authReducer,
+      },
+      preloadedState: {
+        auth: {
+          userInfo: {
+            pomodoro: 25,
+            short: 5,
+            long: 15,
+          },
+        },
+      },
     });
 
-// Simulate stop button click
-    fireEvent.click(getByText('Stop'));
+    // Mock the task
+    const mockTask = {
+        id: Date.now(),
+        taskName: 'Task',
+        timer: '2',
+        notes: 'Some notes',
+        priority: 'Important',
+    };
 
-// Check state after stop
-    await waitFor(() => expect(getByText('Start')).toBeInTheDocument());
+    // Render the component
+    render(
+      <Provider store={store}>
+        <TimerModal open={true} handleClose={() => {}} task={mockTask} />
+      </Provider>
+    );
 
-    // Stop using fake timers
+    // Check for pomos
+    expect(screen.getByText('Pomos:')).toBeInTheDocument();
+  });
+
+//close button works 
+test('closes the modal when the close button is clicked', async () => {
+  // Configure the store
+  const store = configureStore({
+    reducer: {
+      auth: authReducer,
+    },
+    preloadedState: {
+      auth: {
+        userInfo: {
+          pomodoro: 25,
+          short: 5,
+          long: 15,
+        },
+      },
+    },
+  });
+
+  // Mock the task
+  const mockTask = {
+    id: Date.now(),
+    taskName: 'Task',
+    timer: '2',
+    notes: 'Some notes',
+    priority: 'Important',
+  };
+
+  // Mock the handleClose function
+  const handleClose = vi.fn();
+
+  // Render the component
+    render(
+    <Provider store={store}>
+      <TimerModal open={true} handleClose={handleClose} task={mockTask} />
+    </Provider>
+  );
+
+  // Simulate clicking on the close button
+  const closeButton = screen.getByLabelText('Close modal');
+  userEvent.click(closeButton);
+
+  // Check if the handleClose function was called
+  await waitFor(() => expect(handleClose).toHaveBeenCalled());
+});
+
+
+});
+
+describe('Timer related tests', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+  });
+    // test if tab switches to short break
+   test('tab changes to short break', async () => {
+
+    const user = userEvent.setup({
+      advanceTimers: (ms) => vi.advanceTimersByTime(ms),
+    });
+        // Configure the store
+      const store = configureStore({
+        reducer: {
+          auth: authReducer,
+        },
+        preloadedState: {
+          auth: {
+            userInfo: {
+              pomodoro: 0.1,
+              short: 0.05,
+              long: 0.1,
+            },
+          },
+        },
+      });
+    
+      // Mock the task
+      const mockTask = {
+        id: Date.now(),
+        taskName: 'Task',
+        timer: '2', 
+        notes: 'Some notes',
+        priority: 'Important',
+      };
+      
+      // Render the component
+      const { getByText } = render(
+        <Provider store={store}>
+          <TimerModal open={true} handleClose={() => {}} task={mockTask} />
+        </Provider>
+      );
+    
+      // Simulate start button click
+      await user.click(screen.getByText('Start'));
+      
+      await act(() => vi.advanceTimersByTime(6 * 1000));
+
+      // Wait for next tick for state updates
+      await new Promise(resolve => setImmediate(resolve));
+
+      const timerElement = document.querySelector('.timerAppearance'); 
+      expect(timerElement.textContent).toBe('0:03');
+  
+    });
+
+  //test if tab switches back to pomo 
+
+  test('tab changes back to pomo from short break', async () => {
+
+    const user = userEvent.setup({
+      advanceTimers: (ms) => vi.advanceTimersByTime(ms),
+    });
+        // Configure the store
+      const store = configureStore({
+        reducer: {
+          auth: authReducer,
+        },
+        preloadedState: {
+          auth: {
+            userInfo: {
+              pomodoro: 0.1,
+              short: 0.05,
+              long: 0.1,
+            },
+          },
+        },
+      });
+    
+      // Mock the task
+      const mockTask = {
+        id: Date.now(),
+        taskName: 'Task',
+        timer: '2', 
+        notes: 'Some notes',
+        priority: 'Important',
+      };
+      
+      // Render the component
+      const { getByText } = render(
+        <Provider store={store}>
+          <TimerModal open={true} handleClose={() => {}} task={mockTask} />
+        </Provider>
+      );
+      //switch tabs to short break
+      await user.click(screen.getByText('Short Break'));
+      // Simulate start button click
+      await user.click(screen.getByText('Start'));
+      
+      await act(() => vi.advanceTimersByTime(3 * 1000));
+
+      // Wait for next tick for state updates
+      await new Promise(resolve => setImmediate(resolve));
+
+      const timerElement = document.querySelector('.timerAppearance'); 
+      expect(timerElement.textContent).toBe('0:06');
+  
+    });
+
+    //test if tab switches back to pomo from long break
+
+    test('tab changes back to pomo from long break', async () => {
+
+      const user = userEvent.setup({
+        advanceTimers: (ms) => vi.advanceTimersByTime(ms),
+      });
+          // Configure the store
+        const store = configureStore({
+          reducer: {
+            auth: authReducer,
+          },
+          preloadedState: {
+            auth: {
+              userInfo: {
+                pomodoro: 0.1,
+                short: 0.05,
+                long: 0.1,
+              },
+            },
+          },
+        });
+      
+        // Mock the task
+        const mockTask = {
+          id: Date.now(),
+          taskName: 'Task',
+          timer: '2', 
+          notes: 'Some notes',
+          priority: 'Important',
+        };
+        
+        // Render the component
+        const { getByText } = render(
+          <Provider store={store}>
+            <TimerModal open={true} handleClose={() => {}} task={mockTask} />
+          </Provider>
+        );
+        //switch tabs to short break
+        await user.click(screen.getByText('Long Break'));
+        // Simulate start button click
+        await user.click(screen.getByText('Start'));
+        
+        await act(() => vi.advanceTimersByTime(6 * 1000));
+  
+        // Wait for next tick for state updates
+        await new Promise(resolve => setImmediate(resolve));
+  
+        const timerElement = document.querySelector('.timerAppearance'); 
+        expect(timerElement.textContent).toBe('0:06');
+    
+      });
+
+  //test if tab switches to long break
+
+  test('tab changes to long break', async () => {
+
+    const user = userEvent.setup({
+      advanceTimers: (ms) => vi.advanceTimersByTime(ms),
+    });
+        // Configure the store
+      const store = configureStore({
+        reducer: {
+          auth: authReducer,
+        },
+        preloadedState: {
+          auth: {
+            userInfo: {
+              pomodoro: 0.1,
+              short: 0.05,
+              long: 0.2,
+            },
+          },
+        },
+      });
+    
+      // Mock the task
+      const mockTask = {
+        id: Date.now(),
+        taskName: 'Task',
+        timer: '5', 
+        notes: 'Some notes',
+        priority: 'Important',
+      };
+      
+      // Render the component
+      const { getByText } = render(
+        <Provider store={store}>
+          <TimerModal open={true} handleClose={() => {}} task={mockTask} />
+        </Provider>
+      );
+    
+      for (let i = 0; i < 4; i++) {
+        await user.click(screen.getByText('Start'));
+        await act(() => vi.advanceTimersByTime(6 * 1000));
+        await new Promise(resolve => setImmediate(resolve));
+        if(i < 3){
+          await user.click(screen.getByText('Pomodoro'));
+        }
+      }
+
+      const timerElement = document.querySelector('.timerAppearance'); 
+      expect(timerElement.textContent).toBe('0:12');
+  
+    });
+
+  // Stop using fake timers
+  afterEach(() => {
     vi.useRealTimers();
-  }, 10000);
-
+  });
 });
