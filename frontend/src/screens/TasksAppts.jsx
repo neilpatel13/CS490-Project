@@ -79,6 +79,10 @@ const handleTitleClick = (task) => {
       setLastUpdated(Date.now());
     }
 
+    const handleNewTaskAdded = () => {
+      setTriggerFetch(prev => !prev); // Toggle the trigger to re-fetch tasks
+    };
+
     useEffect(() => {
       const fetchTasks = async () => {
       if (!isLoading && !isError && initialTasks) {
@@ -105,11 +109,6 @@ const handleTaskClick = (taskId) => {
       prevExpandedTask === taskId ? null : taskId
   );
 };
-
-const handleNewTaskAdded = () => {
-  setTriggerFetch(prev => !prev); // Toggle the trigger to re-fetch tasks
-};
-
 
 //handling priority 
 const groupedTasks = tasks.reduce((acc,task) => {
@@ -232,7 +231,7 @@ const [logoutApiCall] = useLogoutMutation();
         <AddIcon fontSize="1.25rem" />
     </Fab>
     </div>
-    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={onAddTask} selectedDate={selectedDate} />
+    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={handleNewTaskAdded} selectedDate={selectedDate} />
     {currentTask && <TimerModal open={modalOpen} handleClose={handleModalClose} task={currentTask} />}
       <div id='taskBox' className='taskRectangle'>
         <Box

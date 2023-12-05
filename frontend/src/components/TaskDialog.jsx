@@ -51,8 +51,7 @@ import { useAddTaskMutation } from '../slices/taskApiSlice';
 
         const [addTask, { isLoading: isAdding, isError: addError}] = useAddTaskMutation();
 
-        const handleSubmit = async (e) => {
-            e.preventDefault();
+        const handleSubmit = async (taskData) => {
             if(taskName.trim()=== '' || timer.trim() ==='' || priority==='') {
                 return;
             }
@@ -80,6 +79,7 @@ import { useAddTaskMutation } from '../slices/taskApiSlice';
             } catch(error){
                 console.error('failed to add task', error);
             }
+            onAddTask();
         };
 
         return(
