@@ -29,6 +29,10 @@ const taskSchema = mongoose.Schema({
         type: Number,
         default: 1
     },
+    timersFinished: {
+        type: Number,
+        default: 0
+    },
     notes: String
 }, {
     timestamps: true

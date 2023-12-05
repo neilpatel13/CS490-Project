@@ -10,7 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { logout } from '../slices/authSlice';
 import { useLogoutMutation } from '../slices/userApiSlice';
 // import * as React from 'react';
-import {useEffect, useState} from 'react';
+//import {useEffect, useState} from 'react';
 import {useSelector } from 'react-redux';
 import TaskAddingDialog from '../components/TaskDialog';
 import { useDispatch } from 'react-redux';
@@ -22,6 +22,7 @@ import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOu
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TimerModal from '../components/FocusTime';
 // edit icon import 
+import React, { useEffect, useState } from 'react';
 import { useGetTasksQuery } from '../slices/taskApiSlice';
 
 
@@ -40,7 +41,8 @@ const TasksAppts = () => {
     const { userInfo } = useSelector((state) => state.auth);
 //loading tasks if they exist 
     const [tasks, setTasks] = useState([]);
-    const { data: initialTasks = [], isLoading, isError } = useGetTasksQuery();
+    const currentDate = new Date().toISOString().split('T')[0]; // Format current date as YYYY-MM-DD
+    const { data: initialTasks = [], isLoading, isError } = useGetTasksQuery(currentDate);
 
     useEffect(() => {
       if (!isLoading && !isError){
