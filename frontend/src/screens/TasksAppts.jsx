@@ -103,6 +103,7 @@ const TasksAppts = () => {
     handleDateChange('day', newDay.toString().padStart(2, '0'));
   };
 
+
   const handleDateChange = (field, value) => {
     setSelectedDate((prev) => ({ ...prev, [field]: value }));
   };
@@ -118,9 +119,8 @@ const TasksAppts = () => {
   // Generate an array of months (1 to 12)
   const monthOptions = Array.from({ length: 12 }, (_, index) => (index + 1).toString().padStart(2, '0'));
 
-  // Generate an array of days (1 to 31)
-  const dayOptions = Array.from({ length: 31 }, (_, index) => (index + 1).toString().padStart(2, '0'));
-
+  const dayOptions = Array.from({ length: new Date(selectedDate.year, selectedDate.month, 0).getDate() }, (_, index) => (index + 1).toString().padStart(2, '0'));
+  //i got the leap year working, im awesome! 
   const yearRange = generateYearRange();
 
   const handleMonthDecrement = () => {
@@ -158,6 +158,7 @@ const TasksAppts = () => {
     const newYear = currentYear + 1;
     handleDateChange('year', newYear.toString());
   };  
+
 
   return (
     <Box>
