@@ -523,8 +523,6 @@ const groupedTasks = tasks.reduce((acc,task) => {
         </div>
       </div>
 
-      </Box>
-
       <div>
         <AppointmentComponent />
       </div>
