@@ -65,24 +65,31 @@ const TasksAppts = () => {
         const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
     
         if (selectedDateObj.toDateString() === currentDate.toDateString()) {
+          // Current day: Load tasks only if 'Plan Day' button is clicked
           if (shouldFetchTasks) {
             const filteredTasks = initialTasks.filter(task => {
               const taskDate = new Date(task.date);
               return task.state !== 'Complete' && (taskDate <= selectedDateObj);
             });
             setTasks(filteredTasks);
+          } else {
+            setTasks([]); // Clear tasks if the button hasn't been clicked
           }
         } else if (selectedDateObj < currentDate) {
+          // Past dates: Automatically load tasks
           const filteredTasks = initialTasks.filter(task => {
             const taskDate = new Date(task.date);
             return task.state !== 'Complete' && (taskDate <= selectedDateObj);
           });
           setTasks(filteredTasks);
         } else {
+          // Future dates: Do not display tasks
           setTasks([]);
         }
       }
     }, [selectedDate, shouldFetchTasks, initialTasks, isLoading, isError]);
+    
+    
     
     
     
