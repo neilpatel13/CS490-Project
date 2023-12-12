@@ -77,9 +77,6 @@ const TasksAppts = () => {
               return task.state !== 'Complete' && (taskDate <= selectedDateObj);
             });
             setTasks(filteredTasks);
-          } else {
-            // Do not display tasks for the current day if displayCurrentDayTasks is false
-            setTasks([]);
           }
         } else if (selectedDateObj < currentDate) {
           // Automatically load tasks for past dates
@@ -94,6 +91,7 @@ const TasksAppts = () => {
         }
       }
     }, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
+    
     
     
   
