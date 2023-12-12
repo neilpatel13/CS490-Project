@@ -71,25 +71,30 @@ const TasksAppts = () => {
     
         if (selectedDateObj.toDateString() === currentDate.toDateString()) {
           if (displayCurrentDayTasks) {
+            // Load tasks for the current day only if displayCurrentDayTasks is true
             const filteredTasks = initialTasks.filter(task => {
               const taskDate = new Date(task.date);
               return task.state !== 'Complete' && (taskDate <= selectedDateObj);
             });
             setTasks(filteredTasks);
           } else {
-            setTasks([]); // Clear tasks for the current day if displayCurrentDayTasks is false
+            // Do not display tasks for the current day if displayCurrentDayTasks is false
+            setTasks([]);
           }
         } else if (selectedDateObj < currentDate) {
+          // Automatically load tasks for past dates
           const filteredTasks = initialTasks.filter(task => {
             const taskDate = new Date(task.date);
             return task.state !== 'Complete' && (taskDate <= selectedDateObj);
           });
           setTasks(filteredTasks);
         } else {
-          setTasks([]); // No tasks for future dates
+          // Do not load tasks for future dates
+          setTasks([]);
         }
       }
     }, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
+    
     
   
 
