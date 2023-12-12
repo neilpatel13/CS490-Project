@@ -96,14 +96,30 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
     const userDate = new Date(req.query.date);
     const nextDay = new Date(userDate);
     nextDay.setDate(userDate.getDate() + 1);
+    const currentDate = new Date();
 
-    const tasks = await Task.find({
+    let query = {
         user: req.user._id,
-        $or: [
-            { date: { $gte: userDate, $lt: nextDay } }, // Tasks on the specified date
-            { date: { $lt: userDate }, state: { $ne: 'complete' } } // Incomplete tasks from past dates
-        ]
-    });
+        date: { $gte: userDate, $lt: nextDay } // Tasks on the specified date
+    };
 
+    // If the requested date is in the future, do not include past tasks
+    if (userDate > currentDate) {
+        query = {
+            user: req.user._id,
+            date: { $gte: userDate, $lt: nextDay }
+        };
+    } else {
+        // Include incomplete tasks from past dates
+        query = {
+            user: req.user._id,
+            $or: [
+                { date: { $gte: userDate, $lt: nextDay } },
+                { date: { $lt: userDate }, state: { $ne: 'complete' } }
+            ]
+        };
+    }
+
+    const tasks = await Task.find(query);
     res.json(tasks);
 });
