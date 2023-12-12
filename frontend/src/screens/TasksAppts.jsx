@@ -60,30 +60,34 @@ const TasksAppts = () => {
     };
     
     useEffect(() => {
-      if (initialTasks && !isLoading && !isError) {
-        const currentDate = new Date();
-        const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+      if (shouldFetchTasks) {
+        if (initialTasks && !isLoading && !isError) {
+          const currentDate = new Date();
+          const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
     
-        // Automatically load tasks for past dates
-        if (selectedDateObj < currentDate) {
-          const filteredTasks = initialTasks.filter(task => {
-            const taskDate = new Date(task.date);
-            return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-          });
+          if (selectedDateObj.toDateString() === currentDate.toDateString()) {
+            const filteredTasks = initialTasks.filter(task => {
+              const taskDate = new Date(task.date);
+              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+            });
     
-          setTasks(filteredTasks);
-        } 
-        // Load tasks for the current day only when 'Plan Day' button is clicked
-        else if (selectedDateObj.toDateString() === currentDate.toDateString() && shouldFetchTasks) {
-          const filteredTasks = initialTasks.filter(task => {
-            const taskDate = new Date(task.date);
-            return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-          });
+            setTasks(filteredTasks);
+          } else if (selectedDateObj < currentDate) {
+            // Load tasks for past dates automatically
+            const filteredTasks = initialTasks.filter(task => {
+              const taskDate = new Date(task.date);
+              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+            });
     
-          setTasks(filteredTasks);
+            setTasks(filteredTasks);
+          } else {
+            // For future dates, do not load tasks automatically
+            setTasks([]);
+          }
         }
       }
     }, [selectedDate, shouldFetchTasks, initialTasks, isLoading, isError]);
+    
     
     
   
