@@ -55,8 +55,11 @@ const TasksAppts = () => {
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
     const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
 
+    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
+
     const handlePlanDayClick = () => {
-      setShouldFetchTasks(true);
+      setDisplayCurrentDayTasks(true);
+      // ... rest of your logic for fetching tasks
     };
 
     const isFirstRender = useRef(true);
@@ -67,14 +70,14 @@ const TasksAppts = () => {
         const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
     
         if (selectedDateObj.toDateString() === currentDate.toDateString()) {
-          if (shouldFetchTasks) {
+          if (displayCurrentDayTasks) {
             const filteredTasks = initialTasks.filter(task => {
               const taskDate = new Date(task.date);
               return task.state !== 'Complete' && (taskDate <= selectedDateObj);
             });
             setTasks(filteredTasks);
           } else {
-            setTasks([]); // Clear tasks for the current day if shouldFetchTasks is false
+            setTasks([]); // Clear tasks for the current day if displayCurrentDayTasks is false
           }
         } else if (selectedDateObj < currentDate) {
           const filteredTasks = initialTasks.filter(task => {
@@ -86,7 +89,7 @@ const TasksAppts = () => {
           setTasks([]); // No tasks for future dates
         }
       }
-    }, [selectedDate, shouldFetchTasks, initialTasks, isLoading, isError]);
+    }, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
     
   
 
