@@ -8,7 +8,6 @@ import { Button, Box, Typography, Fab, Select, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { logout } from "../slices/authSlice";
 import { useLogoutMutation } from "../slices/userApiSlice";
-// import * as React from 'react';
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import TaskAddingDialog from "../components/TaskDialog";
@@ -18,7 +17,6 @@ import usrLogo from "../assets/user.svg";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
-import AppointmentComponent from "../components/Appointment";
 // adding dnd import
 
 import TimerModal from "../components/FocusTime";
@@ -131,7 +129,7 @@ const TasksAppts = () => {
 
   const handleDateChange = (field, value) => {
     setSelectedDate((prev) => ({ ...prev, [field]: value }));
-     const updatedDate = { ...selectedDate, [field]: value };
+    const updatedDate = { ...selectedDate, [field]: value };
     const dateStr = `${updatedDate.year}-${updatedDate.month}-${updatedDate.day}`;
     listEventsofDay(dateStr);
   };
