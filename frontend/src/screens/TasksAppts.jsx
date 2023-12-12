@@ -30,7 +30,6 @@ const TasksAppts = () => {
     const [triggerFetch, setTriggerFetch] = useState(false);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
-    const today = new Date();
 
     // adding some logic for focus time here
     const [modalOpen, setModalOpen] = useState(false);
@@ -42,6 +41,10 @@ const TasksAppts = () => {
     const { userInfo } = useSelector((state) => state.auth);
     //loading tasks if they exist 
 
+    const [tasks, setTasks] = useState([]);
+
+    const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
+    const today = new Date();
     const [selectedDate, setSelectedDate] = useState({
       year: today.getFullYear().toString(),
       month: (today.getMonth() + 1).toString().padStart(2, '0'),
@@ -51,7 +54,27 @@ const TasksAppts = () => {
 
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
     const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
-    const [tasks, setTasks] = useState([]);
+
+    const handlePlanDayClick = () => {
+      setShouldFetchTasks(true);
+    };
+    
+    useEffect(() => {
+      if (initialTasks && !isLoading && !isError) {
+          const currentDate = new Date();
+          const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+  
+          if (selectedDateObj <= currentDate || shouldFetchTasks) {
+              const filteredTasks = initialTasks.filter(task => {
+                  const taskDate = new Date(task.date);
+                  return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+              });
+  
+              setTasks(filteredTasks);
+          }
+      }
+    }, [selectedDate, shouldFetchTasks, initialTasks, isLoading, isError]);
+  
 
 //function for opening the focus time modal
 const handleTitleClick = (task) => {
@@ -83,25 +106,7 @@ const handleTitleClick = (task) => {
       setTriggerFetch(prev => !prev); // Toggle the trigger to re-fetch tasks
     };
 
-    useEffect(() => {
-      const fetchTasks = async () => {
-      if (!isLoading && !isError && initialTasks) {
-          const currentDate = new Date();
-          const selectedDateObj = new Date(formattedDate);
-
-          const filteredTasks = initialTasks.filter(task => {
-              const taskDate = new Date(task.date);
-
-              // Include tasks that are not 'Complete' and are either from the past or the selected date
-              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-          });
-
-          setTasks(filteredTasks);
-      }
-    };
-
-    fetchTasks();
-  }, [triggerFetch, lastUpdated, initialTasks, isLoading, isError, formattedDate]);
+    
 
 //toggle expanded task
 const handleTaskClick = (taskId) => {
@@ -144,7 +149,11 @@ const [logoutApiCall] = useLogoutMutation();
 
   const handleDateChange = (field, value) => {
     setSelectedDate(prev => ({ ...prev, [field]: value }));
-};
+    const newSelectedDate = new Date(prev.year, prev.month - 1, prev.day);
+    if (newSelectedDate < today) {
+        setShouldFetchTasks(true);
+    }
+  };
 
   // Generate an array of years around the selected year
   const generateYearRange = () => {
@@ -212,7 +221,7 @@ const [logoutApiCall] = useLogoutMutation();
             <div id='moreText' className='fontStyle3'> It’s time to plan your day!</div>
             
             <Link to="/tasks">
-              <Button type='button' variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px', border: '1px solid #FFF', color: '#fff'}}>
+              <Button onClick={handlePlanDayClick} type='button' variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px', border: '1px solid #FFF', color: '#fff'}}>
                 Plan Day
               </Button>
             </Link>
