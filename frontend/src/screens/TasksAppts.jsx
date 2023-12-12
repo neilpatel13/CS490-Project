@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useRef } from 'react';
 import logo from '../assets/mainLogo.svg';
 import lo from '../assets/logout.svg';
 ///import usr from '../assets/profile.svg';
@@ -20,7 +21,6 @@ import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOu
 // adding dnd import 
 import TimerModal from '../components/FocusTime';
 // edit icon import
-import React, { useEffect, useState, useContext } from 'react';
 import { useGetTasksQuery } from '../slices/taskApiSlice';
 
 
@@ -58,8 +58,15 @@ const TasksAppts = () => {
     const handlePlanDayClick = () => {
       setShouldFetchTasks(true);
     };
+
+    const isFirstRender = useRef(true);
     
     useEffect(() => {
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        return;
+      }
+
       if (initialTasks && !isLoading && !isError) {
         const currentDate = new Date();
         const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
@@ -83,14 +90,6 @@ const TasksAppts = () => {
         }
       }
     }, [selectedDate, shouldFetchTasks, initialTasks, isLoading, isError]);
-    
-    
-    
-    
-    
-    
-    
-    
   
 
 //function for opening the focus time modal
