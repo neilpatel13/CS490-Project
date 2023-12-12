@@ -63,38 +63,34 @@ const TasksAppts = () => {
     };
 
     const isFirstRender = useRef(true);
-    
-    useEffect(() => {
-      if (initialTasks && !isLoading && !isError) {
-        const currentDate = new Date();
-        const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
-    
-        if (selectedDateObj.toDateString() === currentDate.toDateString()) {
-          if (displayCurrentDayTasks) {
-            // Load tasks for the current day only if displayCurrentDayTasks is true
-            const filteredTasks = initialTasks.filter(task => {
-              const taskDate = new Date(task.date);
-              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-            });
-            setTasks(filteredTasks);
-          }
-        } else if (selectedDateObj < currentDate) {
-          // Automatically load tasks for past dates
-          const filteredTasks = initialTasks.filter(task => {
-            const taskDate = new Date(task.date);
-            return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-          });
-          setTasks(filteredTasks);
-        } else {
-          // Do not load tasks for future dates
-          setTasks([]);
-        }
+
+useEffect(() => {
+  if (initialTasks && !isLoading && !isError) {
+    const currentDate = new Date();
+    const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+
+    if (selectedDateObj.toDateString() === currentDate.toDateString()) {
+      if (displayCurrentDayTasks || !isFirstRender.current) {
+        const filteredTasks = initialTasks.filter(task => {
+          const taskDate = new Date(task.date);
+          return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+        });
+        setTasks(filteredTasks);
       }
-    }, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
+    } else if (selectedDateObj < currentDate) {
+      const filteredTasks = initialTasks.filter(task => {
+        const taskDate = new Date(task.date);
+        return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+      });
+      setTasks(filteredTasks);
+    } else {
+      setTasks([]);
+    }
+  }
+  isFirstRender.current = false;
+}, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
+
     
-    
-    
-  
 
 //function for opening the focus time modal
 const handleTitleClick = (task) => {
