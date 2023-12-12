@@ -60,33 +60,30 @@ const TasksAppts = () => {
     };
     
     useEffect(() => {
-      if (shouldFetchTasks) {
-        if (initialTasks && !isLoading && !isError) {
-          const currentDate = new Date();
-          const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+      if (initialTasks && !isLoading && !isError) {
+        const currentDate = new Date();
+        const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
     
-          if (selectedDateObj.toDateString() === currentDate.toDateString()) {
+        if (selectedDateObj.toDateString() === currentDate.toDateString()) {
+          if (shouldFetchTasks) {
             const filteredTasks = initialTasks.filter(task => {
               const taskDate = new Date(task.date);
               return task.state !== 'Complete' && (taskDate <= selectedDateObj);
             });
-    
             setTasks(filteredTasks);
-          } else if (selectedDateObj < currentDate) {
-            // Load tasks for past dates automatically
-            const filteredTasks = initialTasks.filter(task => {
-              const taskDate = new Date(task.date);
-              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-            });
-    
-            setTasks(filteredTasks);
-          } else {
-            // For future dates, do not load tasks automatically
-            setTasks([]);
           }
+        } else if (selectedDateObj < currentDate) {
+          const filteredTasks = initialTasks.filter(task => {
+            const taskDate = new Date(task.date);
+            return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+          });
+          setTasks(filteredTasks);
+        } else {
+          setTasks([]);
         }
       }
     }, [selectedDate, shouldFetchTasks, initialTasks, isLoading, isError]);
+    
     
     
     
