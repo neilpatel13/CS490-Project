@@ -131,6 +131,9 @@ const TasksAppts = () => {
 
   const handleDateChange = (field, value) => {
     setSelectedDate((prev) => ({ ...prev, [field]: value }));
+     const updatedDate = { ...selectedDate, [field]: value };
+    const dateStr = `${updatedDate.year}-${updatedDate.month}-${updatedDate.day}`;
+    listEventsofDay(dateStr);
   };
 
   // Generate an array of years around the selected year
@@ -917,12 +920,6 @@ const TasksAppts = () => {
             >
               <AddIcon fontSize="1.25rem" />
             </Fab>
-            <input
-              type="date"
-              data-testid="appointmentDateInput"
-              value={selectedDate}
-              onChange={(e) => handleDateChange(e.target.value)}
-            />
           </div>
           <div
             id="appointmentBox"
