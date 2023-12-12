@@ -62,11 +62,6 @@ const TasksAppts = () => {
     const isFirstRender = useRef(true);
     
     useEffect(() => {
-      if (isFirstRender.current) {
-        isFirstRender.current = false;
-        return;
-      }
-
       if (initialTasks && !isLoading && !isError) {
         const currentDate = new Date();
         const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
@@ -78,6 +73,8 @@ const TasksAppts = () => {
               return task.state !== 'Complete' && (taskDate <= selectedDateObj);
             });
             setTasks(filteredTasks);
+          } else {
+            setTasks([]); // Clear tasks for the current day if shouldFetchTasks is false
           }
         } else if (selectedDateObj < currentDate) {
           const filteredTasks = initialTasks.filter(task => {
@@ -86,10 +83,11 @@ const TasksAppts = () => {
           });
           setTasks(filteredTasks);
         } else {
-          setTasks([]);
+          setTasks([]); // No tasks for future dates
         }
       }
     }, [selectedDate, shouldFetchTasks, initialTasks, isLoading, isError]);
+    
   
 
 //function for opening the focus time modal
