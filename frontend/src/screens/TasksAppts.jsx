@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from '../assets/mainLogo.svg';
 import lo from '../assets/logout.svg';
 ///import usr from '../assets/profile.svg';
@@ -39,9 +39,7 @@ const TasksAppts = () => {
     const navigate = useNavigate();
 
     const { userInfo } = useSelector((state) => state.auth);
-    //loading tasks if they exist 
-
-    const [tasks, setTasks] = useState([]);
+    //loading tasks if they exist
 
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
     const today = new Date();
@@ -56,39 +54,39 @@ const TasksAppts = () => {
     const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
 
     const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
+    const [tasks, setTasks] = useState([]);
 
     const handlePlanDayClick = () => {
       setDisplayCurrentDayTasks(true);
-      // ... rest of your logic for fetching tasks
     };
 
-    const isFirstRender = useRef(true);
-
-useEffect(() => {
-  if (initialTasks && !isLoading && !isError) {
-    const currentDate = new Date();
-    const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
-
-    if (selectedDateObj.toDateString() === currentDate.toDateString()) {
-      if (displayCurrentDayTasks || !isFirstRender.current) {
+    useEffect(() => {
+      const currentDate = new Date();
+      const selectedDateObj = new Date(selectedDate);
+  
+      if (selectedDateObj < currentDate) {
+        // Logic for past dates
         const filteredTasks = initialTasks.filter(task => {
           const taskDate = new Date(task.date);
-          return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+          return taskDate.toDateString() === selectedDateObj.toDateString();
         });
         setTasks(filteredTasks);
+      } else if (selectedDateObj.toDateString() === currentDate.toDateString()) {
+        // Logic for current date
+        if (displayCurrentDayTasks) {
+          const filteredTasks = initialTasks.filter(task => {
+            const taskDate = new Date(task.date);
+            return taskDate <= selectedDateObj;
+          });
+          setTasks(filteredTasks);
+        } else {
+          setTasks([]);
+        }
+      } else {
+        // Logic for future dates
+        setTasks([]);
       }
-    } else if (selectedDateObj < currentDate) {
-      const filteredTasks = initialTasks.filter(task => {
-        const taskDate = new Date(task.date);
-        return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-      });
-      setTasks(filteredTasks);
-    } else {
-      setTasks([]);
-    }
-  }
-  isFirstRender.current = false;
-}, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
+    }, [selectedDate, initialTasks, displayCurrentDayTasks]);
 
     
 
