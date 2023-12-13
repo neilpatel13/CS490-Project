@@ -17,6 +17,7 @@ import usrLogo from "../assets/user.svg";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
+import { isToday } from "date-fns";
 // adding dnd import
 
 import TimerModal from "../components/FocusTime";
@@ -31,6 +32,7 @@ const TasksAppts = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false); // Set initial state to false
   const [initialized, setInitialized] = useState(false); // Track initialization status
+  const [planDayClicked, setPlanDayClicked] = useState(false);
   const CLIENT_ID =
     "248086281974-5u3hgq4tl01h5fj37t4bgb3gu6679boq.apps.googleusercontent.com";
   const API_KEY = "AIzaSyBKIAglnDDSoOw75PRucrUqs3F6uUFHIP8";
@@ -437,7 +439,6 @@ const TasksAppts = () => {
     try {
       // Fetch Google Calendar events
       const googleCalendarEvents = await returnEventsofDay(selectedDate);
-      console.log("Events G:", googleCalendarEvents);
 
       // Get available time slots without conflicts
       const availableTimeSlots = getAvailableTimeSlots(
@@ -453,6 +454,7 @@ const TasksAppts = () => {
 
       // Update the state with the filled schedule
       setTimeSlots(filledTimeSlots);
+      setPlanDayClicked(true);
     } catch (error) {
       console.error("Error planning the day:", error);
     }
@@ -466,6 +468,19 @@ const TasksAppts = () => {
       // Reset loading state
       setLoading(false);
     });
+  };
+
+  const isToday = (date) => {
+    const currentDate = new Date();
+    const year = parseInt(date.year, 10); // Convert year to number
+    const month = parseInt(date.month, 10); // Convert month to number
+    const day = parseInt(date.day, 10); // Convert day to number
+
+    return (
+      year === currentDate.getFullYear() &&
+      month === currentDate.getMonth() + 1 &&
+      day === currentDate.getDate()
+    );
   };
 
   return (
@@ -535,6 +550,7 @@ const TasksAppts = () => {
               color: "#fff",
             }}
             onClick={handlePlanDayClick}
+            disabled={!isToday(selectedDate) || planDayClicked}
           >
             Plan Day
           </Button>
