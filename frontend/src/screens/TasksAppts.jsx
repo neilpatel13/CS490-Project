@@ -57,14 +57,17 @@ const TasksAppts = () => {
 
     const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
 
+    const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
+
     const handlePlanDayClick = () => {
-      setDisplayCurrentDayTasks(true);
+      setLoadCurrentDayTasks(true);
     };
 
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
   useEffect(() => {
+  if (loadCurrentDayTasks) {
     if (!isLoading && !isError && initialTasks) {
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
@@ -87,6 +90,7 @@ const TasksAppts = () => {
             setTasks([]);
         }
     }
+  }
   }, [selectedDate, triggerFetch, lastUpdated, initialTasks, isLoading, isError, formattedDate, displayCurrentDayTasks]);
 
     
