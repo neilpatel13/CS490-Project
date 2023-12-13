@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from '../assets/mainLogo.svg';
 import lo from '../assets/logout.svg';
 ///import usr from '../assets/profile.svg';
@@ -57,42 +57,32 @@ const TasksAppts = () => {
 
     const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
 
-    const isFirstRender = useRef(true);
-
-    useEffect(() => {
-      if (initialTasks && !isLoading && !isError) {
-        const currentDate = new Date();
-        const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
-  
-        if (selectedDateObj.toDateString() === currentDate.toDateString()) {
-          if (displayCurrentDayTasks) {
-            // Display tasks for the current day
-            const filteredTasks = initialTasks.filter(task => {
-              const taskDate = new Date(task.date);
-              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-            });
-            setTasks(filteredTasks);
-          } else {
-            // Do not display tasks for the current day until 'Plan Day' is clicked
-            setTasks([]);
-          }
-        } else if (selectedDateObj < currentDate) {
-          // Automatically display tasks for past dates
-          const filteredTasks = initialTasks.filter(task => {
-            const taskDate = new Date(task.date);
-            return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-          });
-          setTasks(filteredTasks);
-        } else {
-          // Do not display tasks for future dates
-          setTasks([]);
-        }
-      }
-    }, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
-
     const handlePlanDayClick = () => {
       setDisplayCurrentDayTasks(true);
-    };
+  };
+
+  const [lastUpdated, setLastUpdated] = useState(Date.now());
+
+  useEffect(() => {
+    if (!isLoading && !isError && initialTasks) {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        const selectedDateObj = new Date(formattedDate);
+
+        if (selectedDateObj < currentDate) {
+            // Past date logic
+            const filteredTasks = initialTasks.filter(task => new Date(task.date) <= selectedDateObj);
+            setTasks(filteredTasks);
+        } else if (selectedDateObj.getTime() === currentDate.getTime() && displayCurrentDayTasks) {
+            // Current date logic, only if 'Plan Day' button is clicked
+            const filteredTasks = initialTasks.filter(task => new Date(task.date) <= selectedDateObj);
+            setTasks(filteredTasks);
+        } else {
+            // Future date logic
+            setTasks([]);
+        }
+    }
+}, [selectedDate, triggerFetch, lastUpdated, initialTasks, isLoading, isError, formattedDate, displayCurrentDayTasks]);
     
 
     
@@ -114,7 +104,7 @@ const handleTitleClick = (task) => {
         setDialogOpen(false);
     };
 
-    const [lastUpdated, setLastUpdated] = useState(Date.now());
+    
 
     const onAddTask = (newTask) => {
       console.log('Before adding task', tasks);
