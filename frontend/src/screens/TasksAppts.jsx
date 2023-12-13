@@ -70,19 +70,24 @@ const TasksAppts = () => {
         const selectedDateObj = new Date(formattedDate);
 
         if (selectedDateObj < currentDate) {
-            // Past date logic
+            // Load past tasks
             const filteredTasks = initialTasks.filter(task => new Date(task.date) <= selectedDateObj);
             setTasks(filteredTasks);
-        } else if (selectedDateObj.getTime() === currentDate.getTime() && displayCurrentDayTasks) {
-            // Current date logic, only if 'Plan Day' button is clicked
-            const filteredTasks = initialTasks.filter(task => new Date(task.date) <= selectedDateObj);
-            setTasks(filteredTasks);
+        } else if (selectedDateObj.getTime() === currentDate.getTime()) {
+            // Load current day tasks only if displayCurrentDayTasks is true
+            if (displayCurrentDayTasks) {
+                const filteredTasks = initialTasks.filter(task => new Date(task.date) <= selectedDateObj);
+                setTasks(filteredTasks);
+            } else {
+                setTasks([]);
+            }
         } else {
-            // Future date logic
+            // Do not load future tasks
             setTasks([]);
         }
     }
 }, [selectedDate, triggerFetch, lastUpdated, initialTasks, isLoading, isError, formattedDate, displayCurrentDayTasks]);
+
     
 
     
