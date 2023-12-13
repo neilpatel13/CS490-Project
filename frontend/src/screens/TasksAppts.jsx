@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import logo from '../assets/mainLogo.svg';
 import lo from '../assets/logout.svg';
 ///import usr from '../assets/profile.svg';
@@ -57,38 +57,43 @@ const TasksAppts = () => {
 
     const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
 
-    const handlePlanDayClick = () => {
-      setDisplayCurrentDayTasks(true);
-      // ... rest of your logic for fetching tasks
-    };
-
     const isFirstRender = useRef(true);
 
-useEffect(() => {
-  if (initialTasks && !isLoading && !isError) {
-    const currentDate = new Date();
-    const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
-
-    if (selectedDateObj.toDateString() === currentDate.toDateString()) {
-      if (displayCurrentDayTasks || !isFirstRender.current) {
-        const filteredTasks = initialTasks.filter(task => {
-          const taskDate = new Date(task.date);
-          return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-        });
-        setTasks(filteredTasks);
+    useEffect(() => {
+      if (initialTasks && !isLoading && !isError) {
+        const currentDate = new Date();
+        const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+  
+        if (selectedDateObj.toDateString() === currentDate.toDateString()) {
+          if (displayCurrentDayTasks) {
+            // Display tasks for the current day
+            const filteredTasks = initialTasks.filter(task => {
+              const taskDate = new Date(task.date);
+              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+            });
+            setTasks(filteredTasks);
+          } else {
+            // Do not display tasks for the current day until 'Plan Day' is clicked
+            setTasks([]);
+          }
+        } else if (selectedDateObj < currentDate) {
+          // Automatically display tasks for past dates
+          const filteredTasks = initialTasks.filter(task => {
+            const taskDate = new Date(task.date);
+            return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+          });
+          setTasks(filteredTasks);
+        } else {
+          // Do not display tasks for future dates
+          setTasks([]);
+        }
       }
-    } else if (selectedDateObj < currentDate) {
-      const filteredTasks = initialTasks.filter(task => {
-        const taskDate = new Date(task.date);
-        return task.state !== 'Complete' && (taskDate <= selectedDateObj);
-      });
-      setTasks(filteredTasks);
-    } else {
-      setTasks([]);
-    }
-  }
-  isFirstRender.current = false;
-}, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
+    }, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
+
+    const handlePlanDayClick = () => {
+      setDisplayCurrentDayTasks(true);
+    };
+    
 
     
 
