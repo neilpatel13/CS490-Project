@@ -44,8 +44,10 @@ const TasksAppts = () => {
     const [tasks, setTasks] = useState([]);
 
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
     const [selectedDate, setSelectedDate] = useState({
       year: today.getFullYear().toString(),
       month: (today.getMonth() + 1).toString().padStart(2, '0'),
@@ -61,9 +63,9 @@ const TasksAppts = () => {
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
 
     const handlePlanDayClick = () => {
-      setDisplayCurrentDayTasks(true);
-      loadTasksForSelectedDate(); // Call function to load tasks for today
-  };
+        setDisplayCurrentDayTasks(true);
+        fetchTasks(); // Fetch tasks for the current day
+    };
 
   // Function to load tasks based on the selected date
   const loadTasksForSelectedDate = () => {
@@ -76,35 +78,24 @@ const TasksAppts = () => {
     }
   };
 
+  const fetchTasks = () => {
+    const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+    if (selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && displayCurrentDayTasks)) {
+        // Fetch tasks for past dates or current date if displayCurrentDayTasks is true
+        // Call useGetTasksQuery here or similar logic to fetch tasks
+    } else {
+        setTasks([]); // Do not load tasks for future dates
+    }
+};
+
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
   useEffect(() => {
-  if (selectedDate) {
-    if (!isLoading && !isError && initialTasks) {
-        const currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0);
-        const selectedDateObj = new Date(formattedDate);
-
-        if (selectedDateObj < currentDate) {
-            // Load past tasks
-            const filteredTasks = initialTasks.filter(task => new Date(task.date) <= selectedDateObj);
-            setTasks(filteredTasks);
-        } else if (selectedDateObj.getTime() === currentDate.getTime()) {
-            // Load current day tasks only if displayCurrentDayTasks is true
-            if (displayCurrentDayTasks) {
-                const filteredTasks = initialTasks.filter(task => new Date(task.date) <= selectedDateObj);
-                setTasks(filteredTasks);
-            } else {
-                setTasks([]);
-            }
-        } else {
-            // Do not load future tasks
-            setTasks([]);
-        }
+    if (selectedDate) {
+        fetchTasks();
     }
-  }
-  }, [selectedDate, triggerFetch, lastUpdated, initialTasks, isLoading, isError, formattedDate, displayCurrentDayTasks]);
+}, [selectedDate]);
 
     
 
