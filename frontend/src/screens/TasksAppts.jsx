@@ -59,7 +59,8 @@ const TasksAppts = () => {
 
     const handlePlanDayClick = () => {
       setDisplayCurrentDayTasks(true);
-  };
+    };
+
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
@@ -78,8 +79,6 @@ const TasksAppts = () => {
             if (displayCurrentDayTasks) {
                 const filteredTasks = initialTasks.filter(task => new Date(task.date) <= selectedDateObj);
                 setTasks(filteredTasks);
-            } else {
-                setTasks([]);
             }
         } else {
             // Do not load future tasks
