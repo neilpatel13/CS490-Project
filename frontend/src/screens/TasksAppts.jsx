@@ -17,6 +17,7 @@ import usrLogo from "../assets/user.svg";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
+import { isToday } from "date-fns";
 // adding dnd import
 
 import TimerModal from "../components/FocusTime";
@@ -31,6 +32,7 @@ const TasksAppts = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false); // Set initial state to false
   const [initialized, setInitialized] = useState(false); // Track initialization status
+  const [planDayClicked, setPlanDayClicked] = useState(false);
   const CLIENT_ID =
     "248086281974-5u3hgq4tl01h5fj37t4bgb3gu6679boq.apps.googleusercontent.com";
   const API_KEY = "AIzaSyBKIAglnDDSoOw75PRucrUqs3F6uUFHIP8";
@@ -197,9 +199,6 @@ const TasksAppts = () => {
         }
 
         sessionStorage.setItem(SESSION_STORAGE_KEY, resp.credential);
-
-        // Continue with listing upcoming events
-        //await listUpcomingEvents();
       };
 
       if (gapi.client.getToken() === null) {
@@ -213,18 +212,18 @@ const TasksAppts = () => {
       setLoading(false);
     }
   };
+  const initialTimeSlot = [...Array(16)].map((_, index) => {
+    const hour = 5 + index;
+    if (hour < 5 || hour >= 21) {
+      return { hour: "", events: [] };
+    }
+    return {
+      hour:
+        hour === 12 ? "12 PM" : hour <= 11 ? `${hour} AM` : `${hour - 12} PM`,
+      events: [],
+    };
+  });
   useEffect(() => {
-    const initialTimeSlot = [...Array(16)].map((_, index) => {
-      const hour = 5 + index;
-      if (hour < 5 || hour >= 21) {
-        return { hour: "", events: [] };
-      }
-      return {
-        hour:
-          hour === 12 ? "12 PM" : hour <= 11 ? `${hour} AM` : `${hour - 12} PM`,
-        events: [],
-      };
-    });
     setTimeSlots(initialTimeSlot);
     if (initialized) {
       // Load Google API client script only if initialized
@@ -283,7 +282,7 @@ const TasksAppts = () => {
 
   const updateEventTimeSlots = (_events, selected_date) => {
     console.log("Updating event time slots");
-    console.log(_events, selected_date);
+    //console.log(_events, selected_date);
     const updatedTimeSlots = [...Array(16)].map((_, index) => {
       const hour = 5 + index;
       if (hour < 5 || hour >= 21) {
@@ -292,7 +291,7 @@ const TasksAppts = () => {
       }
 
       const startTime = convertToDate(selected_date);
-      console.log("StartTime", startTime);
+      //console.log("StartTime", startTime);
       startTime.setHours(hour, 0, 0, 0);
 
       const endTime = convertToDate(selected_date);
@@ -300,7 +299,7 @@ const TasksAppts = () => {
 
       const eventsInTimeSlot = _events.filter((event) => {
         const eventStartTime = new Date(event.start.dateTime);
-        console.log({ eventStartTime, startTime, endTime });
+        //console.log({ eventStartTime, startTime, endTime });
         return eventStartTime >= startTime && eventStartTime < endTime;
       });
       return {
@@ -309,9 +308,10 @@ const TasksAppts = () => {
         events: eventsInTimeSlot,
       };
     });
-    console.log("Updated time slots", updatedTimeSlots);
+    //console.log("Updated time slots", updatedTimeSlots);
     setTimeSlots(updatedTimeSlots);
   };
+
   const listEventsofDay = async (selectedDate) => {
     try {
       console.log(selectedDate);
@@ -343,6 +343,144 @@ const TasksAppts = () => {
     } catch (err) {
       console.error("Error fetching events:", err);
     }
+  };
+
+  const returnEventsofDay = async (selectedDate) => {
+    try {
+      const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+
+      console.log(formattedDate);
+
+      // Convert the formattedDate to a UTC date object
+      const startOfDay = new Date(`${formattedDate}T00:00:00Z`);
+      const endOfDay = new Date(`${formattedDate}T23:59:59Z`);
+      // Convert startOfDay and endOfDay to UTC before making the API call
+      const startOfDayUTC = startOfDay.toISOString();
+      const endOfDayUTC = endOfDay.toISOString();
+
+      //console.log("startOfDay:", startOfDayUTC);
+      //console.log("endOfDay:", endOfDayUTC);
+
+      const request = {
+        calendarId: "primary",
+        timeMin: startOfDayUTC,
+        timeMax: endOfDayUTC,
+        showDeleted: false,
+        singleEvents: true,
+        maxResults: 10,
+        orderBy: "startTime",
+      };
+
+      const response = await gapi.client.calendar.events.list(request);
+
+      // Return the events instead of updating the time slots
+      return response.result.items;
+    } catch (err) {
+      console.error("Error fetching events:", err);
+      return []; // Return an empty array or handle the error accordingly
+    }
+  };
+
+  const getAvailableTimeSlots = (timeSlots, googleCalendarEvents) => {
+    // Clone the time slots array to avoid modifying the original array
+    const clonedTimeSlots = timeSlots.map((slot) => ({
+      ...slot,
+      events: [...slot.events],
+    }));
+
+    return clonedTimeSlots.filter((slot) => {
+      // Check for conflicts with Google Calendar events
+      const hasConflict = googleCalendarEvents.some(
+        (event) => event.startTime <= slot.hour && slot.hour < event.endTime
+      );
+
+      return !hasConflict;
+    });
+  };
+
+  const fillTasksIntoSchedule = (availableTimeSlots, groupedTasks) => {
+    const filledTimeSlots = [...availableTimeSlots];
+
+    // Function to find the index of the first available slot
+    const findAvailableSlotIndex = () => {
+      return filledTimeSlots.findIndex((slot) => slot.events.length === 0);
+    };
+
+    // Function to fill a task into the first available slot
+    const fillTaskIntoSlot = (task) => {
+      const availableSlotIndex = findAvailableSlotIndex();
+
+      if (availableSlotIndex !== -1) {
+        filledTimeSlots[availableSlotIndex].events.push({
+          id: task.id,
+          summary: task.taskName,
+          // Add other task details as needed
+        });
+      }
+    };
+
+    // Prioritize tasks and fill into the schedule
+    if (groupedTasks["Top Priority"]) {
+      groupedTasks["Top Priority"].forEach((task) => fillTaskIntoSlot(task));
+    }
+
+    if (groupedTasks["Important"]) {
+      groupedTasks["Important"].forEach((task) => fillTaskIntoSlot(task));
+    }
+
+    if (groupedTasks["Other"]) {
+      groupedTasks["Other"].forEach((task) => fillTaskIntoSlot(task));
+    }
+
+    return filledTimeSlots;
+  };
+
+  const planDay = async () => {
+    try {
+      // Fetch Google Calendar events
+      const googleCalendarEvents = await returnEventsofDay(selectedDate);
+
+      // Get available time slots without conflicts
+      const availableTimeSlots = getAvailableTimeSlots(
+        timeSlots,
+        googleCalendarEvents
+      );
+
+      // Fill tasks into the schedule based on priority
+      const filledTimeSlots = fillTasksIntoSchedule(
+        availableTimeSlots,
+        groupedTasks
+      );
+
+      // Update the state with the filled schedule
+      setTimeSlots(filledTimeSlots);
+      setPlanDayClicked(true);
+    } catch (error) {
+      console.error("Error planning the day:", error);
+    }
+  };
+
+  const handlePlanDayClick = async () => {
+    setLoading(true);
+
+    // Trigger the planDay function
+    planDay().finally(() => {
+      // Reset loading state
+      setLoading(false);
+    });
+  };
+
+  const isToday = (date) => {
+    const currentDate = new Date();
+    const year = parseInt(date.year, 10); // Convert year to number
+    const month = parseInt(date.month, 10); // Convert month to number
+    const day = parseInt(date.day, 10); // Convert day to number
+
+    return (
+      year === currentDate.getFullYear() &&
+      month === currentDate.getMonth() + 1 &&
+      day === currentDate.getDate()
+    );
   };
 
   return (
@@ -411,6 +549,8 @@ const TasksAppts = () => {
               border: "1px solid #FFF",
               color: "#fff",
             }}
+            onClick={handlePlanDayClick}
+            disabled={!isToday(selectedDate) || planDayClicked}
           >
             Plan Day
           </Button>
