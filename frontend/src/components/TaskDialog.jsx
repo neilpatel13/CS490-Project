@@ -4,9 +4,10 @@ import {Button,
     Dialog,DialogActions,
     DialogContent,DialogContentText,
     DialogTitle, MenuItem, InputLabel} from '@mui/material';
-import { useAddTaskMutation } from '../slices/taskApiSlice';
+
 
     const TaskAddingDialog = ({open, handleClose, onAddTask, selectedDate }) =>{
+
         const [taskName, setTaskName] = useState('');
         const [timer, setTimer] = useState(null);
         const [notes, setNotes] = useState('');
@@ -49,6 +50,7 @@ import { useAddTaskMutation } from '../slices/taskApiSlice';
             }
         };
 
+
         const [addTask, { isLoading: isAdding, isError: addError}] = useAddTaskMutation();
 
         const handleSubmit = async (taskData) => {
@@ -80,6 +82,7 @@ import { useAddTaskMutation } from '../slices/taskApiSlice';
                 console.error('failed to add task', error);
             }
             onAddTask();
+
         };
 
         return(

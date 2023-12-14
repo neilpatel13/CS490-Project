@@ -8,11 +8,11 @@ export const addTask = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error('Not authorized, no user found');
     }
-    const { taskName, priority, notes, numberOfTimers, date } = req.body;
+    const { title, priority, notes, numberOfTimers, date } = req.body;
 
     const task = new Task({
         user: req.user._id,
-        taskName,
+        title,
         state: 'not started',
         priority,
         notes,
@@ -104,6 +104,7 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
             { date: { $lt: userDate }, state: { $ne: 'complete' } } // Incomplete tasks from past dates
         ]
     });
+
 
     res.json(tasks);
 });

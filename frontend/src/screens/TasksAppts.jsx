@@ -1,14 +1,15 @@
-import logo from '../assets/mainLogo.svg';
-import lo from '../assets/logout.svg';
+import logo from "../assets/mainLogo.svg";
+import lo from "../assets/logout.svg";
 ///import usr from '../assets/profile.svg';
 ///import lock from '../assets/lock.svg';
 ///import cl from '../assets/clock.svg';
-import { Link } from 'react-router-dom';
-import {Box, Button, Fab, Select, MenuItem} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { logout } from '../slices/authSlice';
-import { useLogoutMutation } from '../slices/userApiSlice';
+import { Link } from "react-router-dom";
+import { Button, Box, Typography, Fab, Select, MenuItem } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { logout } from "../slices/authSlice";
+import { useLogoutMutation } from "../slices/userApiSlice";
 // import * as React from 'react';
+
 //import {useEffect, useState} from 'react';
 import {useSelector } from 'react-redux';
 import TaskAddingDialog from '../components/TaskDialog';
@@ -22,7 +23,7 @@ import TimerModal from '../components/FocusTime';
 // edit icon import
 import React, { useEffect, useState, useContext } from 'react';
 import { useGetTasksQuery } from '../slices/taskApiSlice';
-
+import AppointmentComponent from "../components/Appointment";
 
 
 
@@ -117,16 +118,16 @@ const groupedTasks = tasks.reduce((acc,task) => {
   }
     acc[task.priority].push(task);
     return acc;
-}, {});
+  }, {});
 
-//logout api call
-const [logoutApiCall] = useLogoutMutation();
+  //logout api call
+  const [logoutApiCall] = useLogoutMutation();
 
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
-      navigate('/login');
+      navigate("/login");
     } catch (err) {
       console.error(err);
     }
@@ -197,36 +198,118 @@ const [logoutApiCall] = useLogoutMutation();
     handleDateChange('year', newYear.toString());
   };  
 
-    return(
-        <Box>
-          <div id='topBar' className='topBar'>
-          <p id='name' style={{fontSize:'15px', right:'3%', position: 'absolute', textAlign:'center', top:'28%'}}>{userInfo && userInfo.first} {userInfo && userInfo.last}</p>
-          <a href='/profile'>
-            <img src={usrLogo} alt='eclipse' style={{right:'10%', position:'absolute',  top: '22%', flexShrink: '0'}}/>
-          </a>
-          </div>
-          <div id='sideBr' className='blackSideBar'>
-            <div id='text' style={{top:'3%', position: 'relative'}}>Crush It</div>
-            <div id='line' style={{left:'15%',background: '#3E3F42', height:'1px', width:'70%',top:'6%', position: 'relative'}}> </div>
-            <img style={{top:'10%', position:'relative', flexShrink: 0}} src={logo} alt='Someone Working!'/>
-            <div id='moreText' className='fontStyle3'> It’s time to plan your day!</div>
-            
-            <Link to="/tasks">
-              <Button type='button' variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px', border: '1px solid #FFF', color: '#fff'}}>
-                Plan Day
-              </Button>
-            </Link>
 
-
-            <Button onClick={logoutHandler} type='button' variant='primary' className='logoutButton' style={{fontFamily:'DM Sans', fontSize:'12px', border: '1px solid #FFF'}}>
-              <img src={lo} alt='logout'/>Log out
-            </Button>
-        </div>
-  <Box> 
-  <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position:'absolute', left:'14.8%', top: '18%' }}>
-    <div id='taskHeading' style={{color: "#000",fontFamily: "DM Sans", fontSize: "4vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal"}}>
-      Tasks
+  return (
+    <Box>
+      <div id="topBar" className="topBar">
+        <p
+          id="name"
+          style={{
+            fontSize: "15px",
+            right: "3%",
+            position: "absolute",
+            textAlign: "center",
+            top: "28%",
+          }}
+        >
+          {userInfo.first} {userInfo.last}
+        </p>
+        <a href="/profile">
+          <img
+            src={usrLogo}
+            alt="eclipse"
+            style={{
+              right: "10%",
+              position: "absolute",
+              top: "22%",
+              flexShrink: "0",
+            }}
+          />
+        </a>
       </div>
+      <div id="sideBr" className="blackSideBar">
+        <div id="text" style={{ top: "3%", position: "relative" }}>
+          Crush It
+        </div>
+        <div
+          id="line"
+          style={{
+            left: "15%",
+            background: "#3E3F42",
+            height: "1px",
+            width: "70%",
+            top: "6%",
+            position: "relative",
+          }}
+        >
+          {" "}
+        </div>
+        <img
+          style={{ top: "10%", position: "relative", flexShrink: 0 }}
+          src={logo}
+          alt="Someone Working!"
+        />
+        <div id="moreText" className="fontStyle3">
+          {" "}
+          It’s time to plan your day!
+        </div>
+
+        <Link to="/tasks">
+          <Button
+            type="button"
+            variant="primary"
+            className="planDayButton"
+            style={{
+              fontFamily: "DM Sans",
+              fontSize: "16px",
+              border: "1px solid #FFF",
+              color: "#fff",
+            }}
+          >
+            Plan Day
+          </Button>
+        </Link>
+
+        <Button
+          onClick={logoutHandler}
+          type="button"
+          variant="primary"
+          className="logoutButton"
+          style={{
+            fontFamily: "DM Sans",
+            fontSize: "12px",
+            border: "1px solid #FFF",
+          }}
+        >
+          <img src={lo} alt="logout" />
+          Log out
+        </Button>
+      </div>
+      <Box>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row",
+            position: "absolute",
+            left: "14.8%",
+            top: "18%",
+          }}
+        >
+          <div
+            id="taskHeading"
+            style={{
+              color: "#000",
+              fontFamily: "DM Sans",
+              fontSize: "4vh",
+              fontStyle: "normal",
+              fontWeight: "700",
+              lineHeight: "normal",
+            }}
+          >
+            Tasks
+          </div>
+         //merge conflict removed here 
       <Fab onClick={handleClickOpen} size="small" color="primary" aria-label="add" sx={{width:'30px', height:'30px', marginLeft:'10px'}}>
         <AddIcon fontSize="1.25rem" />
     </Fab>
@@ -234,7 +317,7 @@ const [logoutApiCall] = useLogoutMutation();
     <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={handleNewTaskAdded} selectedDate={selectedDate} />
     {currentTask && <TimerModal open={modalOpen} handleClose={handleModalClose} task={currentTask} />}
       <div id='taskBox' className='taskRectangle'>
-        <Box
+               <Box
         display="flex"
         spacing={4}
         flexDirection="column"
@@ -341,6 +424,7 @@ const [logoutApiCall] = useLogoutMutation();
         </Box>
       </div>
       </Box>
+
       <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position: 'absolute', left: '14.8%', top: '5%' }}>
       <div id='dateSelector' data-testid="custom-date-selector" style={{ color: "#000", fontFamily: "DM Sans", fontSize: "2vh", fontStyle: "normal", fontWeight: "500", lineHeight: "normal" }}>
           {/* Left Arrow Button for Month */}
@@ -407,7 +491,12 @@ const [logoutApiCall] = useLogoutMutation();
           {/* ... (existing code) */}
         </div>
       </div>
-      </Box>
-    )
-}
-export default TasksAppts
+
+      <div>
+        <AppointmentComponent />
+      </div>
+    </Box>
+  );
+};
+
+export default TasksAppts;
