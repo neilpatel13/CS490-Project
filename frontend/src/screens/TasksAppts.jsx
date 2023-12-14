@@ -309,7 +309,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
           >
             Tasks
           </div>
-         //merge conflict removed here 
+
       <Fab onClick={handleClickOpen} size="small" color="primary" aria-label="add" sx={{width:'30px', height:'30px', marginLeft:'10px'}}>
         <AddIcon fontSize="1.25rem" />
     </Fab>
