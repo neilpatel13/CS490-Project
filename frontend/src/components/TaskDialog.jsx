@@ -5,7 +5,9 @@ import {Button,
     DialogContent,DialogContentText,
     DialogTitle, MenuItem, InputLabel} from '@mui/material';
 
-    const TaskAddingDialog = ({open, handleClose,onAddTask }) =>{
+
+    const TaskAddingDialog = ({open, handleClose, onAddTask, selectedDate }) =>{
+
         const [taskName, setTaskName] = useState('');
         const [timer, setTimer] = useState(null);
         const [notes, setNotes] = useState('');
@@ -48,27 +50,39 @@ import {Button,
             }
         };
 
-        const handleSubmit = () => {
+
+        const [addTask, { isLoading: isAdding, isError: addError}] = useAddTaskMutation();
+
+        const handleSubmit = async (taskData) => {
             if(taskName.trim()=== '' || timer.trim() ==='' || priority==='') {
                 return;
             }
 
-            const newTask ={
-                id: Date.now(),
-                taskName,
-                timer,
-                notes,
-                priority,
-            };
+            const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
 
-            onAddTask(newTask);
+        const newTask = {
+            taskName,
+            numberOfTimers: timer, // Change this line to match the backend field name
+            notes,
+            priority,
+            date: formattedDate,
+        };
+
+            try{
+
+                const addedTask = await addTask(newTask).unwrap();
+                onAddTask(newTask);
+                setTaskName('');
+                setTimer('');
+                setNotes('');
+                setPriority('');
         
-            setTaskName('');
-            setTimer('');
-            setNotes('');
-            setPriority('');
-        
-            handleClose();
+                handleClose();
+            } catch(error){
+                console.error('failed to add task', error);
+            }
+            onAddTask();
+
         };
 
         return(
