@@ -413,7 +413,9 @@ const TasksAppts = () => {
       if (availableSlotIndex !== -1) {
         filledTimeSlots[availableSlotIndex].events.push({
           id: task.id,
-          summary: task.taskName,
+          summary: " Focus Time • " + task.taskName,
+          totalPomTimers: task.timer,
+          isFromTask: true,
           // Add other task details as needed
         });
       }
@@ -1095,9 +1097,31 @@ const TasksAppts = () => {
                       <div style={{ width: "50px", height: "50px" }}>
                         {timeSlot.hour}
                       </div>
-                      <div style={{ marginLeft: "25px", marginTop: "10px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          marginLeft: "25px",
+                          marginTop: "10px",
+                          flex: "1",
+                        }}
+                      >
                         {timeSlot.events.map((event) => (
-                          <div key={event.id}>{event.summary}</div>
+                          <div
+                            key={event.id}
+                            style={{
+                              border: `1px solid ${
+                                !event.isFromTask ? "#D3D3D3" : "#007BFF"
+                              }`,
+                              borderRadius: "5px",
+                              padding: "5px",
+                              marginBottom: "5px",
+                              backgroundColor: "#fff",
+                              width: "100%", // Ensure full width
+                            }}
+                          >
+                            {event.summary}
+                          </div>
                         ))}
                       </div>
                     </div>
