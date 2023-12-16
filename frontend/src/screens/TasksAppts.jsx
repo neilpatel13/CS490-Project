@@ -57,7 +57,7 @@ const TasksAppts = () => {
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
 
     const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate, {
-        skip: isToday(selectedDate) && !displayCurrentDayTasks
+      skip: isToday(selectedDate) && !displayCurrentDayTasks
     });
 
     // Function to determine if the selected date is today
@@ -106,7 +106,7 @@ const TasksAppts = () => {
   useEffect(() => {
     // Fetch tasks when a past date is selected or when the display condition for the current day changes
     fetchTasks();
-}, [selectedDate, displayCurrentDayTasks]);
+}, [selectedDate, displayCurrentDayTasks, initialTasks, isLoading, isError]);
 
 
 //function for opening the focus time modal

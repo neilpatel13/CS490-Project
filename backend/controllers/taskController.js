@@ -113,5 +113,3 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
     res.json(tasks);
 });
 
-
-
