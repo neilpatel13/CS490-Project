@@ -41,18 +41,19 @@ const TasksAppts = () => {
     const { userInfo } = useSelector((state) => state.auth);
     //loading tasks if they exist 
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const [tasks, setTasks] = useState([]);
     const [selectedDate, setSelectedDate] = useState({
       year: today.getFullYear().toString(),
       month: (today.getMonth() + 1).toString().padStart(2, '0'),
       day: today.getDate().toString().padStart(2, '0'),
     });
+
     const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
 
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
 
