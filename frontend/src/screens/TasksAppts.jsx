@@ -27,6 +27,17 @@ import { useGetTasksQuery } from '../slices/taskApiSlice';
 
 
 const TasksAppts = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const [selectedDate, setSelectedDate] = useState({
+      year: today.getFullYear().toString(),
+      month: (today.getMonth() + 1).toString().padStart(2, '0'),
+      day: today.getDate().toString().padStart(2, '0'),
+    });
+    const [tasks, setTasks] = useState([]);
+    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
+
     const [triggerFetch, setTriggerFetch] = useState(false);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
@@ -39,33 +50,31 @@ const TasksAppts = () => {
     const navigate = useNavigate();
 
     const { userInfo } = useSelector((state) => state.auth);
-    //loading tasks if they exist 
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const [tasks, setTasks] = useState([]);
-    const [selectedDate, setSelectedDate] = useState({
-      year: today.getFullYear().toString(),
-      month: (today.getMonth() + 1).toString().padStart(2, '0'),
-      day: today.getDate().toString().padStart(2, '0'),
-    });
-
-    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
+    //loading tasks if they exist
 
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
 
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
 
-    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`, {
-      skip: !displayCurrentDayTasks
+    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate, {
+        skip: isToday(selectedDate) && !displayCurrentDayTasks
     });
+
+    function isToday(date) {
+      const selectedDate = new Date(`${date.year}-${date.month}-${date.day}`);
+      return selectedDate.setHours(0, 0, 0, 0) === today.getTime();
+  }
 
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
 
   // Function to fetch tasks based on the selected date
-  const fetchTasks = async (includeCurrentDay = false) => {
-    const query = includeCurrentDay ? `?date=${formattedDate}&includeCurrentDayTasks=true` : `?date=${formattedDate}`;
+  const fetchTasks = async () => {
+    if (isToday(selectedDate) && !displayCurrentDayTasks) {
+        // Do not fetch tasks for the current day unless 'Plan Day' is clicked
+        return;
+    }
+
+    const query = `?date=${formattedDate}`;
     try {
         const response = await fetch(`/api/tasks${query}`, {
             method: 'GET',
@@ -89,14 +98,13 @@ const TasksAppts = () => {
 
   const handlePlanDayClick = () => {
     setDisplayCurrentDayTasks(true);
-    fetchTasks(true); // Fetch tasks for the current day
+    fetchTasks(); // Fetch tasks for the current day
   };
 
   useEffect(() => {
-    if (!isLoading && !isError && initialTasks) {
-        setTasks(initialTasks);
-    }
-  }, [initialTasks, isLoading, isError, selectedDate]);
+    // Fetch tasks when a past date is selected or when the display condition for the current day changes
+    fetchTasks();
+}, [selectedDate, displayCurrentDayTasks]);
 
 
 //function for opening the focus time modal
