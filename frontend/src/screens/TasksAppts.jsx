@@ -52,11 +52,12 @@ const TasksAppts = () => {
       year: today.getFullYear().toString(),
       month: (today.getMonth() + 1).toString().padStart(2, '0'),
       day: today.getDate().toString().padStart(2, '0'),
-    });
-
+  });
 
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
+    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate, {
+        skip: !displayCurrentDayTasks && isToday(selectedDate)
+    });
 
     const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
 
@@ -64,7 +65,6 @@ const TasksAppts = () => {
 
     const handlePlanDayClick = () => {
       setDisplayCurrentDayTasks(true);
-      fetchTasks(); // Fetch tasks for the current day
     };
 
   // Function to fetch tasks based on the selected date
@@ -85,10 +85,10 @@ const TasksAppts = () => {
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
   useEffect(() => {
-    if (selectedDate) {
-        fetchTasks();
+    if (!isLoading && !isError && initialTasks) {
+        setTasks(initialTasks);
     }
-}, [selectedDate]);
+  }, [initialTasks, isLoading, isError]);
 
     
 
@@ -437,4 +437,11 @@ const [logoutApiCall] = useLogoutMutation();
       </Box>
     )
 }
+
+function isToday(selectedDate) {
+  const today = new Date();
+  const selected = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+  return selected.setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0);
+}
+
 export default TasksAppts
