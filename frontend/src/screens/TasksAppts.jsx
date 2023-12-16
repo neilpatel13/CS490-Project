@@ -63,33 +63,30 @@ const TasksAppts = () => {
 
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
 
-    const handlePlanDayClick = () => {
-      setDisplayCurrentDayTasks(true);
-      fetchTasks(); // Fetch tasks for the current day
-  };
-
   // Function to fetch tasks based on the selected date
   const fetchTasks = () => {
     const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
     if (selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && displayCurrentDayTasks)) {
         // Fetch tasks for past dates or current date if displayCurrentDayTasks is true
-        // Replace the following line with your actual task fetching logic
-        // Example: useGetTasksQuery(formattedDate)
-        // For now, using a placeholder
-        setTasks([{ id: 1, name: "Sample Task" }]); // Placeholder, replace with actual fetch
+        setTasks([{ id: 1, name: "Sample Task" }]); // Replace with actual fetch logic
     } else {
         setTasks([]); // Do not load tasks for future dates
     }
-};
+  };
+
+  const handlePlanDayClick = () => {
+  setDisplayCurrentDayTasks(true);
+  fetchTasks(); // Fetch tasks for the current day
+  };
 
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
   useEffect(() => {
-    if (!isLoading && !isError && initialTasks) {
+    if (!isLoading && !isError && initialTasks && displayCurrentDayTasks) {
         setTasks(initialTasks);
     }
-  }, [initialTasks, isLoading, isError]);
+  }, [initialTasks, isLoading, isError, displayCurrentDayTasks]); 
 
     
 
