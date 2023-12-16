@@ -42,23 +42,22 @@ const TasksAppts = () => {
     //loading tasks if they exist 
 
     const [tasks, setTasks] = useState([]);
+    const [selectedDate, setSelectedDate] = useState({
+      year: today.getFullYear().toString(),
+      month: (today.getMonth() + 1).toString().padStart(2, '0'),
+      day: today.getDate().toString().padStart(2, '0'),
+    });
+    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
 
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const [selectedDate, setSelectedDate] = useState({
-      year: today.getFullYear().toString(),
-      month: (today.getMonth() + 1).toString().padStart(2, '0'),
-      day: today.getDate().toString().padStart(2, '0'),
-  });
-
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
 
-    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
-    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate, {
-      skip: !displayCurrentDayTasks && isToday(selectedDate)
+    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`, {
+      skip: !displayCurrentDayTasks
     });
 
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
@@ -71,7 +70,7 @@ const TasksAppts = () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                // Include other necessary headers, like authorization
+                // Add your necessary headers here
             },
         });
         if (response.ok) {
@@ -85,23 +84,19 @@ const TasksAppts = () => {
     }
   };
 
-const handlePlanDayClick = () => {
-  setDisplayCurrentDayTasks(true);
-  fetchTasks(); // Fetch tasks for the current day
-};
-
-
   const [lastUpdated, setLastUpdated] = useState(Date.now());
+
+  const handlePlanDayClick = () => {
+    setDisplayCurrentDayTasks(true);
+    fetchTasks(true); // Fetch tasks for the current day
+  };
 
   useEffect(() => {
     if (!isLoading && !isError && initialTasks) {
         setTasks(initialTasks);
     }
-  }, [initialTasks, isLoading, isError]); 
+  }, [initialTasks, isLoading, isError, selectedDate]);
 
-    
-
-    
 
 //function for opening the focus time modal
 const handleTitleClick = (task) => {
