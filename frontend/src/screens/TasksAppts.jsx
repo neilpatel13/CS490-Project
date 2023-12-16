@@ -65,7 +65,8 @@ const TasksAppts = () => {
 
     const handlePlanDayClick = () => {
       setDisplayCurrentDayTasks(true);
-    };
+      fetchTasks(); // Fetch tasks for the current day
+  };
 
   // Function to fetch tasks based on the selected date
   const fetchTasks = () => {
@@ -79,7 +80,7 @@ const TasksAppts = () => {
     } else {
         setTasks([]); // Do not load tasks for future dates
     }
-  };
+};
 
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
