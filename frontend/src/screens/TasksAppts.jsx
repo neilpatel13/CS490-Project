@@ -64,29 +64,40 @@ const TasksAppts = () => {
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
 
   // Function to fetch tasks based on the selected date
-  const fetchTasks = () => {
-    const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
-    if (selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && displayCurrentDayTasks)) {
-        // Fetch tasks for past dates or current date if displayCurrentDayTasks is true
-        setTasks([{ id: 1, name: "Sample Task" }]); // Replace with actual fetch logic
-    } else {
-        setTasks([]); // Do not load tasks for future dates
+  const fetchTasks = async (includeCurrentDay = false) => {
+    const query = includeCurrentDay ? `?date=${formattedDate}&includeCurrentDayTasks=true` : `?date=${formattedDate}`;
+    try {
+        const response = await fetch(`/api/tasks${query}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                // Include other necessary headers, like authorization
+            },
+        });
+        if (response.ok) {
+            const data = await response.json();
+            setTasks(data);
+        } else {
+            // Handle errors
+        }
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
     }
   };
 
-  const handlePlanDayClick = () => {
+const handlePlanDayClick = () => {
   setDisplayCurrentDayTasks(true);
   fetchTasks(); // Fetch tasks for the current day
-  };
+};
 
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
   useEffect(() => {
-    if (!isLoading && !isError && initialTasks && displayCurrentDayTasks) {
+    if (!isLoading && !isError && initialTasks) {
         setTasks(initialTasks);
     }
-  }, [initialTasks, isLoading, isError, displayCurrentDayTasks]); 
+  }, [initialTasks, isLoading, isError]); 
 
     
 
@@ -237,7 +248,7 @@ const [logoutApiCall] = useLogoutMutation();
             <div id='moreText' className='fontStyle3'> It’s time to plan your day!</div>
             
             <Link to="/tasks">
-              <Button onClick={handlePlanDayClick} type='button' variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px', border: '1px solid #FFF', color: '#fff'}}>
+              <Button type='button' onClick={handlePlanDayClick} variant='primary' className='planDayButton' style={{fontFamily:'DM Sans', fontSize:'16px', border: '1px solid #FFF', color: '#fff'}}>
                 Plan Day
               </Button>
             </Link>
