@@ -55,11 +55,11 @@ const TasksAppts = () => {
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
 
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-
-    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
     const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate, {
       skip: isToday(selectedDate) && !displayCurrentDayTasks
     });
+
+    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
 
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
 
