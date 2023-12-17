@@ -108,4 +108,4 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
   
     const tasks = await Task.find(query);
     res.json(tasks);
-  });
+});
