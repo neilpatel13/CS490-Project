@@ -10,7 +10,7 @@ export const addTask = asyncHandler(async (req, res) => {
     }
     const { taskName, priority, notes, numberOfTimers, date } = req.body;
 
-    const task = new Task({
+    const task = await Task.find({
         user: req.user._id,
         taskName,
         state: 'not started',
@@ -90,36 +90,22 @@ export const updatePriority = asyncHandler(async (req, res) => {
 });
 
 
-
 // Get tasks for a specific date
 export const getTasksByDate = asyncHandler(async (req, res) => {
     const userDate = new Date(req.query.date);
     const nextDay = new Date(userDate);
     nextDay.setDate(userDate.getDate() + 1);
     const currentDate = new Date();
-
+  
     let query = {
-        user: req.user._id,
-        date: { $gte: userDate, $lt: nextDay } // Tasks on the specified date
+      user: req.user._id,
+      date: { $lt: nextDay }, // Tasks on or before the selected date
     };
-
-    // If the requested date is in the future, do not include past tasks
-    if (userDate > currentDate) {
-        query = {
-            user: req.user._id,
-            date: { $gte: userDate, $lt: nextDay }
-        };
-    } else {
-        // Include incomplete tasks from past dates
-        query = {
-            user: req.user._id,
-            $or: [
-                { date: { $gte: userDate, $lt: nextDay } },
-                { date: { $lt: userDate }, state: { $ne: 'complete' } }
-            ]
-        };
+  
+    if (userDate < currentDate) {
+      query.state = { $ne: 'complete' }; // Tasks that are not complete
     }
-
+  
     const tasks = await Task.find(query);
     res.json(tasks);
-});
+  });

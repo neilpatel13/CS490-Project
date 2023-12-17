@@ -65,42 +65,53 @@ const TasksAppts = () => {
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
 
     const handlePlanDayClick = () => {
-      const newDate = addDays(new Date(selectedDate.year, selectedDate.month - 1, selectedDate.day), 1);
+      const currentDate = new Date();
       setSelectedDate({
-        year: newDate.getFullYear().toString(),
-        month: (newDate.getMonth() + 1).toString().padStart(2, '0'),
-        day: newDate.getDate().toString().padStart(2, '0'),
+        year: currentDate.getFullYear().toString(),
+        month: (currentDate.getMonth() + 1).toString().padStart(2, '0'),
+        day: currentDate.getDate().toString().padStart(2, '0'),
       });
-      setDisplayCurrentDayTasks(false);
-      setLoadCurrentDayTasks(false); // Add this line to reset the task loading for the new date
+      setDisplayCurrentDayTasks(true);
+      fetchTasks();
     };
-  
-    
-  // Function to fetch tasks based on the selected date
-  const fetchTasks = () => {
-    const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
-    if (selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && !displayCurrentDayTasks)) {
-      const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-      const { data: fetchedTasks, isLoading, isError } = useGetTasksQuery(formattedDate, {
-        skip: !displayCurrentDayTasks && isToday(new Date(selectedDate.year, selectedDate.month - 1, selectedDate.day))
-      });
 
-      if (!isLoading && !isError && fetchedTasks) {
-        setTasks(fetchedTasks);
-      }
-    } else {
-      setTasks([]); // Clear tasks for future dates
+    const handleDateChange = (field, value) => {
+      setSelectedDate(prev => {
+        const updatedDate = { ...prev, [field]: value };
+        const newSelectedDate = new Date(updatedDate.year, updatedDate.month - 1, updatedDate.day);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (newSelectedDate <= today) {
+          fetchTasks();
+        } else {
+          setTasks([]); // Clear tasks for future dates
+          setDisplayCurrentDayTasks(false); // Reset display for future dates
+        }
+        return updatedDate;
+      });
+    };
+
+
+// Function to fetch tasks based on the selected date
+const fetchTasks = () => {
+  const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (selectedDateObj < today) {
+    if (!isLoading && !isError && initialTasks) {
+      setTasks(initialTasks);
     }
-  };
+  }
+};
 
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
   useEffect(() => {
-    if (!isLoading && !isError && initialTasks) {
-        setTasks(initialTasks);
+    if (displayCurrentDayTasks) {
+      fetchTasks();
     }
-  }, [initialTasks, isLoading, isError]);
+  }, [displayCurrentDayTasks, initialTasks, isLoading, isError]);
 
     
 
@@ -174,21 +185,6 @@ const [logoutApiCall] = useLogoutMutation();
     const daysInMonth = new Date(selectedDate.year, parseInt(value, 10), 0).getDate();
     const newDay = Math.min(parseInt(selectedDate.day, 10), daysInMonth);
     handleDateChange('day', newDay.toString().padStart(2, '0'));
-  };
-
-
-  const handleDateChange = (field, value) => {
-    setSelectedDate(prev => ({ ...prev, [field]: value }));
-    const newSelectedDate = new Date(selectedDate.year, selectedDate.month - 1, selectedDate.day);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (newSelectedDate < today) {
-      setShouldFetchTasks(true);
-      setDisplayCurrentDayTasks(false); // Reset display for past dates
-    } else {
-      setTasks([]); // Clear tasks for future dates
-      setDisplayCurrentDayTasks(false); // Reset display for future dates
-    }
   };
   
 
