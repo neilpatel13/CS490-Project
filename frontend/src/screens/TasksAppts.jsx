@@ -33,7 +33,7 @@ const TasksAppts = () => {
     const [triggerFetch, setTriggerFetch] = useState(false);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
-    const today = new Date();
+  
 
     // adding some logic for focus time here
     const [modalOpen, setModalOpen] = useState(false);
@@ -74,8 +74,7 @@ const TasksAppts = () => {
     year: today.getFullYear().toString(),
   });
   // adding some logic for focus time here
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentTask, setCurrentTask] = useState(null);
+ 
 
 
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
@@ -971,7 +970,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
                   top: "3%",
                 }}
               >
-                <DragDropContext onDragEnd={() => {}}>
+              
                   {timeSlots.map((timeSlot, index) => (
                     <div
                       key={index}
@@ -1010,7 +1009,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
                       </div>
                     </div>
                   ))}
-                </DragDropContext>
+               
               </div>
             </Box>
           </div>
