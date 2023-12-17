@@ -59,6 +59,8 @@ const TasksAppts = () => {
       skip: isToday(selectedDate) && !displayCurrentDayTasks
     });
 
+    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
+
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
 
   // Function to fetch tasks based on the selected date
