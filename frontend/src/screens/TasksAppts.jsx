@@ -72,6 +72,7 @@ const TasksAppts = () => {
         day: newDate.getDate().toString().padStart(2, '0'),
       });
       setDisplayCurrentDayTasks(false);
+      setLoadCurrentDayTasks(false); // Add this line to reset the task loading for the new date
     };
   
     
