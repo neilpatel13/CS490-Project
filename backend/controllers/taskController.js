@@ -90,17 +90,26 @@ export const updatePriority = asyncHandler(async (req, res) => {
 });
 
 // Get tasks for a specific date
+// Get tasks for a specific date
 export const getTasksByDate = asyncHandler(async (req, res) => {
     const userDate = new Date(req.query.date);
-    const nextDay = new Date(userDate);
-    nextDay.setDate(userDate.getDate() + 1);
-    const currentDate = new Date();
+    userDate.setHours(0, 0, 0, 0); // Set the time to the start of the day
+
+    // Convert userDate to UTC
+    const userDateUTC = new Date(Date.UTC(userDate.getFullYear(), userDate.getMonth(), userDate.getDate()));
+
+    // Calculate nextDay in UTC
+    const nextDayUTC = new Date(userDateUTC);
+    nextDayUTC.setDate(userDateUTC.getDate() + 1);
 
     let query = {
       user: req.user._id,
-      date: { $lt: nextDay }, // Tasks on or before the selected date
+      date: { $lt: nextDayUTC }, // Tasks on or before the selected date
     };
 
+    // If the selected date is before the current date, include tasks that are not complete
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
     if (userDate < currentDate) {
       query.state = { $ne: 'complete' }; // Tasks that are not complete
     }
