@@ -55,22 +55,11 @@ const TasksAppts = () => {
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
 
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-
     const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate, {
       skip: isToday(selectedDate) && !displayCurrentDayTasks
     });
 
-    // Function to determine if the selected date is today
-    function isToday(date) {
-      const selectedDate = new Date(`${date.year}-${date.month}-${date.day}`);
-      return selectedDate.setHours(0, 0, 0, 0) === today.getTime();
-    }
-
-    // Function to determine if the selected date is in the past
-    function isPastDate(date) {
-      const selectedDate = new Date(`${date.year}-${date.month}-${date.day}`);
-      return selectedDate < today;
-    }
+    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
 
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
 
