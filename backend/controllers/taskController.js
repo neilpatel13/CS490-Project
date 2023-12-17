@@ -89,23 +89,23 @@ export const updatePriority = asyncHandler(async (req, res) => {
     }
 });
 
-
 // Get tasks for a specific date
 export const getTasksByDate = asyncHandler(async (req, res) => {
     const userDate = new Date(req.query.date);
     const nextDay = new Date(userDate);
     nextDay.setDate(userDate.getDate() + 1);
     const currentDate = new Date();
-  
+
     let query = {
       user: req.user._id,
       date: { $lt: nextDay }, // Tasks on or before the selected date
     };
-  
+
     if (userDate < currentDate) {
       query.state = { $ne: 'complete' }; // Tasks that are not complete
     }
-  
+
     const tasks = await Task.find(query);
     res.json(tasks);
 });
+
