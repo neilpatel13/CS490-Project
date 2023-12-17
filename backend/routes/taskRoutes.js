@@ -9,4 +9,5 @@ router.route('/:id/state').put(protect, updateTaskState);
 router.route('/:id/notes').put(protect, updateTaskNotes);
 router.route('/:id/timers').put(protect, updateNumberOfTimers);
 router.route('/:id/priority').put(protect, updatePriority);
+
 export default router;

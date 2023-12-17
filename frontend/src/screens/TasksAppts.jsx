@@ -98,9 +98,9 @@ const fetchTasks = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   if (selectedDateObj < today) {
-    if (!isLoading && !isError && initialTasks) {
-      setTasks(initialTasks);
-    }
+      if (!isLoading && !isError && initialTasks) {
+          setTasks(initialTasks);
+      }
   }
 };
 
@@ -109,9 +109,9 @@ const fetchTasks = () => {
 
   useEffect(() => {
     if (displayCurrentDayTasks) {
-      fetchTasks();
+        fetchTasks();
     }
-  }, [displayCurrentDayTasks, initialTasks, isLoading, isError]);
+}, [displayCurrentDayTasks, initialTasks, isLoading, isError]);
 
     
 
