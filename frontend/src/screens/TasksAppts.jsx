@@ -22,6 +22,7 @@ import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOu
 import TimerModal from '../components/FocusTime';
 // edit icon import
 import { useGetTasksQuery } from '../slices/taskApiSlice';
+import { isToday, addDays, isSameDay } from 'date-fns';
 
 
 
@@ -64,23 +65,32 @@ const TasksAppts = () => {
     const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
 
     const handlePlanDayClick = () => {
-      setDisplayCurrentDayTasks(true);
-      fetchTasks(); // Fetch tasks for the current day
-  };
-
+      const newDate = addDays(new Date(selectedDate.year, selectedDate.month - 1, selectedDate.day), 1);
+      setSelectedDate({
+        year: newDate.getFullYear().toString(),
+        month: (newDate.getMonth() + 1).toString().padStart(2, '0'),
+        day: newDate.getDate().toString().padStart(2, '0'),
+      });
+      setDisplayCurrentDayTasks(false);
+    };
+  
+    
   // Function to fetch tasks based on the selected date
   const fetchTasks = () => {
     const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
-    if (selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && displayCurrentDayTasks)) {
-        // Fetch tasks for past dates or current date if displayCurrentDayTasks is true
-        // Replace the following line with your actual task fetching logic
-        // Example: useGetTasksQuery(formattedDate)
-        // For now, using a placeholder
-        setTasks([{ id: 1, name: "Sample Task" }]); // Placeholder, replace with actual fetch
+    if (selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && !displayCurrentDayTasks)) {
+      const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+      const { data: fetchedTasks, isLoading, isError } = useGetTasksQuery(formattedDate, {
+        skip: !displayCurrentDayTasks && isToday(new Date(selectedDate.year, selectedDate.month - 1, selectedDate.day))
+      });
+
+      if (!isLoading && !isError && fetchedTasks) {
+        setTasks(fetchedTasks);
+      }
     } else {
-        setTasks([]); // Do not load tasks for future dates
+      setTasks([]); // Clear tasks for future dates
     }
-};
+  };
 
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
@@ -168,11 +178,18 @@ const [logoutApiCall] = useLogoutMutation();
 
   const handleDateChange = (field, value) => {
     setSelectedDate(prev => ({ ...prev, [field]: value }));
-    const newSelectedDate = new Date(prev.year, prev.month - 1, prev.day);
+    const newSelectedDate = new Date(selectedDate.year, selectedDate.month - 1, selectedDate.day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     if (newSelectedDate < today) {
-        setShouldFetchTasks(true);
+      setShouldFetchTasks(true);
+      setDisplayCurrentDayTasks(false); // Reset display for past dates
+    } else {
+      setTasks([]); // Clear tasks for future dates
+      setDisplayCurrentDayTasks(false); // Reset display for future dates
     }
   };
+  
 
   // Generate an array of years around the selected year
   const generateYearRange = () => {
@@ -437,12 +454,6 @@ const [logoutApiCall] = useLogoutMutation();
       </div>
       </Box>
     )
-}
-
-function isToday(selectedDate) {
-  const today = new Date();
-  const selected = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
-  return selected.setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0);
 }
 
 export default TasksAppts
