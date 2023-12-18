@@ -108,10 +108,10 @@ const fetchTasks = () => {
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
   useEffect(() => {
-    if (displayCurrentDayTasks) {
-        fetchTasks();
-    }
-}, [displayCurrentDayTasks, initialTasks, isLoading, isError]);
+        if (displayCurrentDayTasks) {
+            fetchTasks();
+        }
+    }, [displayCurrentDayTasks, initialTasks, isLoading, isError]);
 
     
 
