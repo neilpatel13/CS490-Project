@@ -8,7 +8,10 @@ import { Button, Box, Typography, Fab, Select, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { logout } from "../slices/authSlice";
 import { useLogoutMutation } from "../slices/userApiSlice";
-import React, { useState, useEffect } from "react";
+
+// import * as React from 'react';
+
+//import {useEffect, useState} from 'react';
 import { useSelector } from "react-redux";
 import TaskAddingDialog from "../components/TaskDialog";
 import { useDispatch } from "react-redux";
@@ -16,18 +19,31 @@ import { useNavigate } from "react-router-dom";
 import usrLogo from "../assets/user.svg";
 import OpenWithIcon from "@mui/icons-material/OpenWith";
 import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOutlined";
-import { DragDropContext, Draggable } from "react-beautiful-dnd";
-import { isToday } from "date-fns";
 // adding dnd import
-
 import TimerModal from "../components/FocusTime";
+// edit icon import
+import React, { useEffect, useState, useContext } from "react";
+import { useGetTasksQuery } from "../slices/taskApiSlice";
+import { isToday } from "date-fns";
 
 const TasksAppts = () => {
-  const [tasks, setTasks] = useState([]);
+  const [triggerFetch, setTriggerFetch] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [expandedTask, setExpandedTask] = useState(null);
 
+  // adding some logic for focus time here
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentTask, setCurrentTask] = useState(null);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { userInfo } = useSelector((state) => state.auth);
+  //loading tasks if they exist
+
   const today = new Date();
+  const currentHour = today.getHours();
+  const currentMinute = today.getMinutes();
   const [timeSlots, setTimeSlots] = useState([]);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false); // Set initial state to false
@@ -56,13 +72,14 @@ const TasksAppts = () => {
     year: today.getFullYear().toString(),
   });
   // adding some logic for focus time here
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentTask, setCurrentTask] = useState(null);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const { userInfo } = useSelector((state) => state.auth);
+  const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+  const {
+    data: initialTasks,
+    isLoading,
+    isError,
+  } = useGetTasksQuery(formattedDate);
+  const [tasks, setTasks] = useState([]);
 
   //function for opening the focus time modal
   const handleTitleClick = (task) => {
@@ -81,11 +98,45 @@ const TasksAppts = () => {
     setDialogOpen(false);
   };
 
+  const [lastUpdated, setLastUpdated] = useState(Date.now());
+
   const onAddTask = (newTask) => {
     console.log("Before adding task", tasks);
     setTasks((prevTasks) => [...prevTasks, newTask]);
     console.log("after adding tasks", tasks);
+    setLastUpdated(Date.now());
   };
+
+  const handleNewTaskAdded = () => {
+    setTriggerFetch((prev) => !prev); // Toggle the trigger to re-fetch tasks
+  };
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (!isLoading && !isError && initialTasks) {
+        const currentDate = new Date();
+        const selectedDateObj = new Date(formattedDate);
+
+        const filteredTasks = initialTasks.filter((task) => {
+          const taskDate = new Date(task.date);
+
+          // Include tasks that are not 'Complete' and are either from the past or the selected date
+          return task.state !== "Complete" && taskDate <= selectedDateObj;
+        });
+
+        setTasks(filteredTasks);
+      }
+    };
+
+    fetchTasks();
+  }, [
+    triggerFetch,
+    lastUpdated,
+    initialTasks,
+    isLoading,
+    isError,
+    formattedDate,
+  ]);
 
   //toggle expanded task
   const handleTaskClick = (taskId) => {
@@ -398,18 +449,35 @@ const TasksAppts = () => {
     });
   };
 
-  const fillTasksIntoSchedule = (availableTimeSlots, groupedTasks) => {
+  const fillTasksIntoSchedule = (
+    availableTimeSlots,
+    groupedTasks,
+    currentTime
+  ) => {
     const filledTimeSlots = [...availableTimeSlots];
 
     // Function to find the index of the first available slot
-    const findAvailableSlotIndex = () => {
-      return filledTimeSlots.findIndex((slot) => slot.events.length === 0);
+    const findAvailableSlotIndex = (startIndex) => {
+      return filledTimeSlots.findIndex(
+        (slot, idx) => idx >= startIndex && slot.events.length === 0
+      );
+    };
+    const convertTimeStringToNumber = (timeString) => {
+      const [hourString, meridiem] = timeString.split(/\s+/); // Split on space
+
+      let hour = parseInt(hourString, 10);
+
+      // Adjust for PM
+      if (meridiem && meridiem.toLowerCase() === "pm" && hour !== 12) {
+        hour += 12;
+      }
+
+      return hour;
     };
 
     // Function to fill a task into the first available slot
-    const fillTaskIntoSlot = (task) => {
-      const availableSlotIndex = findAvailableSlotIndex();
-
+    const fillTaskIntoSlot = (task, startIndex) => {
+      const availableSlotIndex = findAvailableSlotIndex(startIndex);
       if (availableSlotIndex !== -1) {
         filledTimeSlots[availableSlotIndex].events.push({
           id: task.id,
@@ -420,18 +488,31 @@ const TasksAppts = () => {
         });
       }
     };
+    console.log(currentTime);
+    const startIndex = filledTimeSlots.findIndex((slot) => {
+      const slotHour = convertTimeStringToNumber(slot.hour);
+      console.log(slotHour); // Print the numeric hour
+      return slotHour >= currentTime;
+    });
+    console.log(startIndex);
 
     // Prioritize tasks and fill into the schedule
     if (groupedTasks["Top Priority"]) {
-      groupedTasks["Top Priority"].forEach((task) => fillTaskIntoSlot(task));
+      groupedTasks["Top Priority"].forEach((task) =>
+        fillTaskIntoSlot(task, startIndex)
+      );
     }
 
     if (groupedTasks["Important"]) {
-      groupedTasks["Important"].forEach((task) => fillTaskIntoSlot(task));
+      groupedTasks["Important"].forEach((task) =>
+        fillTaskIntoSlot(task, startIndex)
+      );
     }
 
     if (groupedTasks["Other"]) {
-      groupedTasks["Other"].forEach((task) => fillTaskIntoSlot(task));
+      groupedTasks["Other"].forEach((task) =>
+        fillTaskIntoSlot(task, startIndex)
+      );
     }
 
     return filledTimeSlots;
@@ -451,7 +532,8 @@ const TasksAppts = () => {
       // Fill tasks into the schedule based on priority
       const filledTimeSlots = fillTasksIntoSchedule(
         availableTimeSlots,
-        groupedTasks
+        groupedTasks,
+        currentHour
       );
 
       // Update the state with the filled schedule
@@ -597,6 +679,7 @@ const TasksAppts = () => {
           >
             Tasks
           </div>
+
           <Fab
             onClick={handleClickOpen}
             size="small"
@@ -610,7 +693,8 @@ const TasksAppts = () => {
         <TaskAddingDialog
           open={dialogOpen}
           handleClose={handleClose}
-          onAddTask={onAddTask}
+          onAddTask={handleNewTaskAdded}
+          selectedDate={selectedDate}
         />
         {currentTask && (
           <TimerModal
@@ -629,12 +713,12 @@ const TasksAppts = () => {
             sx={{ bgcolor: "#FFF" }}
           >
             {/* added drag drop context here */}
-
             <div id="innerBox" className="taskInnerRectangle">
               <div className="sectionHeader">Top Priority</div>
+
               {groupedTasks["Top Priority"] &&
                 groupedTasks["Top Priority"].map((task) => (
-                  <div key={task.id} className="taskCard">
+                  <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                       {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
                       <div
@@ -668,9 +752,9 @@ const TasksAppts = () => {
                           />
                           <div
                             style={{ marginTop: "-3px" }}
-                            onClick={() => handleTaskClick(task.id)}
+                            onClick={() => handleTaskClick(task._id)}
                           >
-                            {expandedTask === task.id ? (
+                            {expandedTask === task._id ? (
                               <ExpandCircleDownOutlinedIcon
                                 style={{
                                   color: "#292D32",
@@ -690,7 +774,7 @@ const TasksAppts = () => {
                         </div>
                       </div>
                     </div>
-                    {expandedTask === task.id && (
+                    {expandedTask === task._id && (
                       <div className="taskDetails">
                         <div id="break" className="taskBreak" />
                         <p>
@@ -714,11 +798,12 @@ const TasksAppts = () => {
                   </div>
                 ))}
             </div>
+
             <div id="innerBoxOne" className="taskInnerRectangle">
               <div className="sectionHeader">Important</div>
               {groupedTasks["Important"] &&
                 groupedTasks["Important"].map((task) => (
-                  <div key={task.id} className="taskCard">
+                  <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                       <div
                         style={{
@@ -751,9 +836,9 @@ const TasksAppts = () => {
                           />
                           <div
                             style={{ marginTop: "-3px" }}
-                            onClick={() => handleTaskClick(task.id)}
+                            onClick={() => handleTaskClick(task._id)}
                           >
-                            {expandedTask === task.id ? (
+                            {expandedTask === task._id ? (
                               <ExpandCircleDownOutlinedIcon
                                 style={{
                                   color: "#292D32",
@@ -773,7 +858,7 @@ const TasksAppts = () => {
                         </div>
                       </div>
                     </div>
-                    {expandedTask === task.id && (
+                    {expandedTask === task._id && (
                       <div className="taskDetails">
                         <div id="break" className="taskBreak" />
                         <p>
@@ -801,7 +886,7 @@ const TasksAppts = () => {
               <div className="sectionHeader">Other</div>
               {groupedTasks["Other"] &&
                 groupedTasks["Other"].map((task) => (
-                  <div key={task.id} className="taskCard">
+                  <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                       <div
                         style={{
@@ -834,9 +919,9 @@ const TasksAppts = () => {
                           />
                           <div
                             style={{ marginTop: "-3px" }}
-                            onClick={() => handleTaskClick(task.id)}
+                            onClick={() => handleTaskClick(task._id)}
                           >
-                            {expandedTask === task.id ? (
+                            {expandedTask === task._id ? (
                               <ExpandCircleDownOutlinedIcon
                                 style={{
                                   color: "#292D32",
@@ -856,7 +941,7 @@ const TasksAppts = () => {
                         </div>
                       </div>
                     </div>
-                    {expandedTask === task.id && (
+                    {expandedTask === task._id && (
                       <div className="taskDetails">
                         <div id="break" className="taskBreak" />
                         <p>
@@ -1087,46 +1172,44 @@ const TasksAppts = () => {
                   top: "3%",
                 }}
               >
-                <DragDropContext onDragEnd={() => {}}>
-                  {timeSlots.map((timeSlot, index) => (
-                    <div
-                      key={index}
-                      data-testid="time-slot"
-                      style={{ height: "40px", display: "flex" }}
-                    >
-                      <div style={{ width: "50px", height: "50px" }}>
-                        {timeSlot.hour}
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          marginLeft: "25px",
-                          marginTop: "10px",
-                          flex: "1",
-                        }}
-                      >
-                        {timeSlot.events.map((event) => (
-                          <div
-                            key={event.id}
-                            style={{
-                              border: `1px solid ${
-                                !event.isFromTask ? "#D3D3D3" : "#007BFF"
-                              }`,
-                              borderRadius: "5px",
-                              padding: "5px",
-                              marginBottom: "5px",
-                              backgroundColor: "#fff",
-                              width: "100%", // Ensure full width
-                            }}
-                          >
-                            {event.summary}
-                          </div>
-                        ))}
-                      </div>
+                {timeSlots.map((timeSlot, index) => (
+                  <div
+                    key={index}
+                    data-testid="time-slot"
+                    style={{ height: "40px", display: "flex" }}
+                  >
+                    <div style={{ width: "50px", height: "50px" }}>
+                      {timeSlot.hour}
                     </div>
-                  ))}
-                </DragDropContext>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        marginLeft: "25px",
+                        marginTop: "10px",
+                        flex: "1",
+                      }}
+                    >
+                      {timeSlot.events.map((event) => (
+                        <div
+                          key={event.id}
+                          style={{
+                            border: `1px solid ${
+                              !event.isFromTask ? "#D3D3D3" : "#007BFF"
+                            }`,
+                            borderRadius: "5px",
+                            padding: "5px",
+                            marginBottom: "5px",
+                            backgroundColor: "#fff",
+                            width: "100%", // Ensure full width
+                          }}
+                        >
+                          {event.summary}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             </Box>
           </div>
