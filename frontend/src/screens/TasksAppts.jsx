@@ -808,7 +808,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
   size="small" 
   aria-label="add" 
   sx={{
-    width:'35px', 
+    width:'37px', 
     height:'0px', 
     marginLeft:'10px',
     background: 'linear-gradient(345deg, #166ffa 30%, #3081ff 70%)',
@@ -1174,7 +1174,7 @@ color: 'white',
               color="primary"
               aria-label="add"
               sx={{ 
-              width:'35px', 
+              width:'37px', 
               height:'0px', 
               marginLeft:'10px',
               background: 'linear-gradient(345deg, #166ffa 30%, #3081ff 70%)',
