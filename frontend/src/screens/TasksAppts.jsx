@@ -765,7 +765,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
               color: "#fff",
             }}
             onClick={handlePlanDayClick}
-            disabled={planDayClicked}
+            disabled={!isToday(selectedDate) || planDayClicked}
           >
             Plan Day
           </Button>
