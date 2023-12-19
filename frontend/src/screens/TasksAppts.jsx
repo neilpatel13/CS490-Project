@@ -1236,7 +1236,7 @@ color: 'white',
                             border: `1px solid ${
                               !event.isFromTask ? "#D3D3D3" : "#007BFF"
                             }`,
-                            padding: "2px",
+                            padding: "7px",
                             marginBottom: "5px",
                             backgroundColor: "#fff",
                             width: "34vw", // Ensure full width
