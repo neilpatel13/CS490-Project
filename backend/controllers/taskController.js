@@ -91,49 +91,43 @@ export const updatePriority = asyncHandler(async (req, res) => {
 });
 
 // Get tasks for a specific date
+// Get tasks for a specific date
 export const getTasksByDate = asyncHandler(async (req, res) => {
     const { date } = req.query; // Assuming date is in 'YYYY-MM-DD' format
-    const userDate = moment.utc(date).startOf('day').toDate(); // Convert to JavaScript Date object
-    const nextDay = moment.utc(date).add(1, 'days').startOf('day').toDate(); // Next day in UTC
+    const userDate = moment.utc(date).startOf('day').toDate(); // Start of the user-selected day in UTC
+    const nextDay = moment.utc(date).add(1, 'days').startOf('day').toDate(); // Start of the next day in UTC
 
     let query = {
         user: req.user._id
     };
 
-    // If the selected date is the current date, include tasks that are not complete
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    currentDate.setMinutes(-currentDate.getTimezoneOffset()); // Convert to UTC
+    // Current date in UTC
+    const currentDateUTC = moment.utc().startOf('day');
 
-    userDate.setMinutes(-userDate.getTimezoneOffset()); // Convert to UTC
-
-    if (userDate.getTime() === currentDate.getTime()) {
-      query.state = { $ne: 'complete' }; // Tasks that are not complete
-      query.date = { $lte: nextDay }; // Tasks on or before the selected date
+    if (currentDateUTC.isSame(userDate)) {
+        // If the selected date is the current date, fetch all tasks from the current date and incomplete tasks from previous dates
+        query.$or = [
+            { date: { $gte: userDate, $lt: nextDay } },
+            { state: { $ne: 'complete' }, date: { $lt: userDate } }
+        ];
     } else {
-        console.log('userDate', userDate);
+        // For past dates, fetch both incomplete and complete tasks, but exclude 'complete' tasks that were not created on their respective dates
         query.$or = [
             { state: { $ne: 'complete' }, date: { $lt: nextDay } },
             { state: 'complete', date: { $gte: userDate, $lt: nextDay } }
-          ];
+        ];
     }
 
     const tasks = await Task.find(query);
 
-    // If the selected date is not the current date, update all non-complete tasks to 'rolled over'
-    if (userDate.getTime() !== currentDate.getTime()) {
-      for (let task of tasks) {
-        // Convert task's date to start of the day in UTC
-        const taskDate = new Date(task.date);
-        taskDate.setHours(0, 0, 0, 0);
-        taskDate.setMinutes(-taskDate.getTimezoneOffset());
-
-        // Only roll over tasks that were created on a date before the selected date
-        if (task.state !== 'complete' && taskDate.getTime() < userDate.getTime()) {
-          task.state = 'rolled over';
-          await task.save();
+    // Roll over tasks only if the selected date is a past date
+    if (currentDateUTC.isAfter(userDate)) {
+        for (let task of tasks) {
+            if (task.state !== 'complete' && moment.utc(task.date).startOf('day').isBefore(userDate)) {
+                task.state = 'rolled over';
+                await task.save();
+            }
         }
-      }
     }
 
     res.json(tasks);
