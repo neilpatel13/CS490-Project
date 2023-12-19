@@ -92,7 +92,8 @@ export const updatePriority = asyncHandler(async (req, res) => {
 
 // Get tasks for a specific date
 export const getTasksByDate = asyncHandler(async (req, res) => {
-    const userDate = new Date(req.query.date);
+    const [year, month, day] = req.query.date.split('-');
+    const userDate = new Date(Date.UTC(year, month - 1, day));
     userDate.setHours(0, 0, 0, 0); // Set the time to the start of the day
 
     // Calculate nextDay in local time
@@ -106,17 +107,38 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
     // If the selected date is the current date, include tasks that are not complete
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
+    currentDate.setMinutes(-currentDate.getTimezoneOffset()); // Convert to UTC
+
+    userDate.setMinutes(-userDate.getTimezoneOffset()); // Convert to UTC
+
     if (userDate.getTime() === currentDate.getTime()) {
       query.state = { $ne: 'complete' }; // Tasks that are not complete
       query.date = { $lte: nextDay }; // Tasks on or before the selected date
     } else {
-      query.$or = [
-        { state: { $ne: 'complete' }, date: { $lte: nextDay } }, // Tasks that are not complete and were created on or before the selected date
-        { state: 'complete', date: { $gte: userDate, $lt: nextDay } } // Tasks that are complete and were created on the selected date
-      ];
+        console.log('userDate', userDate);
+        query.$or = [
+            { state: { $ne: 'complete' }, date: { $lte: nextDay } },
+            { state: 'complete', date: { $gte: userDate, $lt: nextDay } }
+          ];
     }
 
     const tasks = await Task.find(query);
+
+    // If the selected date is not the current date, update all non-complete tasks to 'rolled over'
+    if (userDate.getTime() !== currentDate.getTime()) {
+      for (let task of tasks) {
+        // Convert task's date to start of the day in UTC
+        const taskDate = new Date(task.date);
+        taskDate.setHours(0, 0, 0, 0);
+        taskDate.setMinutes(-taskDate.getTimezoneOffset());
+
+        // Only roll over tasks that were created on a date before the selected date
+        if (task.state !== 'complete' && taskDate.getTime() < userDate.getTime()) {
+          task.state = 'rolled over';
+          await task.save();
+        }
+      }
+    }
+
     res.json(tasks);
 });
-

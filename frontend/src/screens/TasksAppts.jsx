@@ -26,6 +26,10 @@ import TimerModal from '../components/FocusTime';
 import { useGetTasksQuery } from '../slices/taskApiSlice';
 import { isToday, addDays, isSameDay } from 'date-fns';
 import moment from 'moment-timezone';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
 
 
 
@@ -38,9 +42,9 @@ const TasksAppts = () => {
   const currentDate = moment().tz('America/New_York');
   console.log('currentDate:', currentDate);
   const [selectedDate, setSelectedDate] = useState({
-    year: currentDate.format('YYYY'),
-    month: currentDate.format('MM'),
-    day: currentDate.format('DD'),
+    year: currentDate.year(),
+    month: currentDate.month() + 1, // Months are zero-indexed in moment.js
+    day: currentDate.date(),
   });
   console.log('selectedDate:', selectedDate);
 
@@ -67,6 +71,9 @@ const TasksAppts = () => {
   const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
   
   const [tasks, setTasks] = useState([]);
+  const updateTaskInState = (updatedTask) => {
+    setTasks(tasks.map(task => task._id === updatedTask._id ? updatedTask : task));
+  };
 
   // Define selectedDateObj and today here
   const selectedDateObj = new Date(formattedDate);
@@ -269,6 +276,30 @@ const [logoutApiCall] = useLogoutMutation();
     handleDateChange('year', newYear.toString());
   };  
 
+  const handleIconClick = async (task) => {
+    const states = ['not started', 'in progress', 'complete', 'rolled over'];
+    const currentIndex = states.indexOf(task.state);
+    const nextState = states[(currentIndex + 1) % states.length];
+  
+    try {
+      const response = await fetch(`/api/tasks/${task._id}/state`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include other headers as needed, like authorization headers
+        },
+        body: JSON.stringify({ state: nextState }),
+      });
+  
+      const updatedTask = await response.json();
+      // Update the local state to reflect the change immediately
+      // This assumes you have a way to update the task in your local state, e.g., a state setter or a context/redux action
+      updateTaskInState(updatedTask);
+    } catch (error) {
+      console.error('Failed to update task state:', error);
+    }
+  };
+
     return(
         <Box>
           <div id='topBar' className='topBar'>
@@ -321,39 +352,35 @@ const [logoutApiCall] = useLogoutMutation();
 
             {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) && (
               groupedTasks['Top Priority'] && groupedTasks['Top Priority'].map((task) => (
-                <DraggableTask key={task._id} task={task}>
-                  <div key={task._id} className="taskCard">
-                    <div className="taskHeader">
-                      {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
-                      <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                      <div className="taskTitle" onClick={() => handleTitleClick(task)}>
-                        {task.taskName}
-                        </div>
-                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
-                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
-                        {expandedTask === task._id ? 
-                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
-                        : 
-                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
-                        </div>
-                        </div>
-                      </div>
-                    </div>
-                    {expandedTask === task._id && (
-                      <div className="taskDetails">
-                        <div id='break' className='taskBreak'/>
-                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
-                        {task.notes !== "" && task.notes.trim() !== "" && (
-  <p>
-    <span style={{color:'#545454'}}>Notes:</span><br/>
-    <span style={{fontWeight:"bold"}}>{task.notes}</span>
-  </p>
-)}
-                      </div>
-                    )}
-                  </div>
-                  </DraggableTask>
+            <DraggableTask key={task._id} task={task}>
+            <div key={task._id} className="taskCard">
+            <div className="taskHeader">
+            <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
+  <div onClick={() => handleIconClick(task)}>
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+  </div>
+  <div className="taskTitle" onClick={() => handleTitleClick(task)}>
+    {task.taskName}
+  </div>
+</div>
+    </div>
+    {expandedTask === task._id && (
+      <div className="taskDetails">
+        <div id='break' className='taskBreak'/>
+        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+        {task.notes !== "" && task.notes.trim() !== "" && (
+          <p>
+            <span style={{color:'#545454'}}>Notes:</span><br/>
+            <span style={{fontWeight:"bold"}}>{task.notes}</span>
+          </p>
+        )}
+      </div>
+    )}
+  </div>
+</DraggableTask>
                 ))
                 )}
             </div>
@@ -368,19 +395,16 @@ const [logoutApiCall] = useLogoutMutation();
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                    <div className="taskTitle" onClick={() => handleTitleClick(task)}>
-                        {task.taskName}
-                        </div>
-                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
-                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
-                        {expandedTask === task._id ? 
-                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
-                        : 
-                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
-                        </div>
-                        </div>
-                      </div>
+  <div onClick={() => handleIconClick(task)}>
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+  </div>
+  <div className="taskTitle" onClick={() => handleTitleClick(task)}>
+    {task.taskName}
+  </div>
+</div>
                     </div>
                     {expandedTask === task._id && (
                       <div className="taskDetails">
@@ -412,19 +436,16 @@ const [logoutApiCall] = useLogoutMutation();
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                    <div className="taskTitle" onClick={() => handleTitleClick(task)}>
-                        {task.taskName}
-                        </div>
-                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
-                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
-                        {expandedTask === task._id ? 
-                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
-                        : 
-                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
-                        </div>
-                        </div>
-                      </div>
+  <div onClick={() => handleIconClick(task)}>
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+  </div>
+  <div className="taskTitle" onClick={() => handleTitleClick(task)}>
+    {task.taskName}
+  </div>
+</div>
                     </div>
                     {expandedTask === task._id && (
                       <div className="taskDetails">
