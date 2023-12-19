@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';import logo from '../assets/mainLogo.svg';
+import React, { useState, useEffect, useCallback } from 'react';
+import logo from '../assets/mainLogo.svg';
 import lo from '../assets/logout.svg';
 ///import usr from '../assets/profile.svg';
 ///import lock from '../assets/lock.svg';
@@ -23,6 +24,7 @@ import TimerModal from '../components/FocusTime';
 import { useGetTasksQuery } from '../slices/taskApiSlice';
 import { isToday, addDays, isSameDay } from 'date-fns';
 import moment from 'moment-timezone';
+
 
 
 
@@ -316,7 +318,12 @@ const [logoutApiCall] = useLogoutMutation();
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
-                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
+                        {task.notes !== "" && task.notes.trim() !== "" && (
+  <p>
+    <span style={{color:'#545454'}}>Notes:</span><br/>
+    <span style={{fontWeight:"bold"}}>{task.notes}</span>
+  </p>
+)}
                       </div>
                     )}
                   </div>
@@ -348,7 +355,12 @@ const [logoutApiCall] = useLogoutMutation();
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
-                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
+                        {task.notes !== "" && task.notes.trim() !== "" && (
+  <p>
+    <span style={{color:'#545454'}}>Notes:</span><br/>
+    <span style={{fontWeight:"bold"}}>{task.notes}</span>
+  </p>
+)}
                       </div>
                     )}
                   </div>
@@ -380,7 +392,12 @@ const [logoutApiCall] = useLogoutMutation();
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
-                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
+                        {task.notes !== "" && task.notes.trim() !== "" && (
+  <p>
+    <span style={{color:'#545454'}}>Notes:</span><br/>
+    <span style={{fontWeight:"bold"}}>{task.notes}</span>
+  </p>
+)}
                       </div>
                     )}
                   </div>
