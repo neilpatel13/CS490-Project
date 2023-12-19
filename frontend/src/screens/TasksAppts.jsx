@@ -32,6 +32,8 @@ import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
 import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
 import { useUpdateTaskStateMutation } from '../slices/taskApiSlice';
+//rolling over tasks
+import { useRolloverTasksMutation } from '../slices/taskApiSlice';
 
 const TasksAppts = () => {
     const [triggerFetch, setTriggerFetch] = useState(false);
@@ -219,13 +221,27 @@ const groupedTasks = tasks.reduce((acc,task) => {
     const newDay = Math.min(parseInt(selectedDate.day, 10), daysInMonth);
     handleDateChange("day", newDay.toString().padStart(2, "0"));
   };
-
-  const handleDateChange = (field, value) => {
+  const [rolloverTasks, { isLoading: rolloverIsLoading, isError: rolloverIsError }] = useRolloverTasksMutation();
+  const handleDateChange = async (field, value) => {
 
     setSelectedDate((prev) => ({ ...prev, [field]: value }));
     const updatedDate = { ...selectedDate, [field]: value };
     const dateStr = `${updatedDate.year}-${updatedDate.month}-${updatedDate.day}`;
     listEventsofDay(dateStr);
+
+    //rollover tasks logic
+    if (field === 'date' && value > new Date()){
+      try {
+        await rolloverTasks();
+        if (!rolloverIsLoading && !rolloverIsError) {
+          console.log('Tasks rolled over successfully');
+      }
+    } catch(error){
+      if (rolloverIsError) {
+        console.error('Error rolling over tasks:', error);
+      }
+    }
+  }
   };
 
 

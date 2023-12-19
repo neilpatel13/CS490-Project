@@ -107,3 +107,18 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
 
     res.json(tasks);
 });
+
+//rolling over tasks 
+export const rolloverTasks = asyncHandler(async (req, res) => {
+    const tasks = await Task.find({
+        user: req.user._id,
+        state: { $nin: ['completed'] }
+    });
+    
+    tasks.forEach(task => {
+        task.state = 'rolled over';
+        task.save();
+    });
+
+    res.json({message: 'Tasks rolled over' });
+});

@@ -21,11 +21,18 @@ export const taskApiSlice = apiSlice.injectEndpoints({
         body: { state },
       }),
     }),
+    rolloverTasks: builder.mutation({
+      query: () => ({
+        url: '/api/tasks/rollover',
+        method: 'PUT',
+      }),
   }),
+}),
 });
 
 export const {
   useGetTasksQuery,
   useAddTaskMutation,
-  useUpdateTaskStateMutation
+  useUpdateTaskStateMutation,
+  useRolloverTasksMutation
 } = taskApiSlice;
