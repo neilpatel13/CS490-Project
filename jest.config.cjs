@@ -1,5 +1,5 @@
 module.exports = {
-    testMatch: ['<rootDir>/backend/tests/*.test.jsx'], // Update the testMatch pattern
+    testMatch: ['<rootDir>/*/tests/*.test.jsx'], // Update the testMatch pattern
     // testPathIgnorePatterns: ['<rootDir>/node_modules/'], // Ignoring node_modules
     // Other Jest configurations...
     // testEnvironment: 'node',
