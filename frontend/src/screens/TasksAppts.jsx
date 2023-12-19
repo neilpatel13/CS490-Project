@@ -328,13 +328,24 @@ const [logoutApiCall] = useLogoutMutation();
             </Button>
         </div>
   <Box> 
-  <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position:'absolute', left:'14.8%', top: '18%' }}>
-    <div id='taskHeading' style={{color: "#000",fontFamily: "DM Sans", fontSize: "4vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal"}}>
+  <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position:'absolute', left:'14.8%', top: '15%' }}>
+    <div id='taskHeading' style={{color: "#000",fontFamily: "DM Sans", fontSize: "3.5vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal"}}>
       Tasks
       </div>
-      <Fab onClick={handleClickOpen} size="small" color="primary" aria-label="add" sx={{width:'30px', height:'30px', marginLeft:'10px'}}>
-        <AddIcon fontSize="1.25rem" />
-    </Fab>
+      <Fab 
+  onClick={handleClickOpen} 
+  size="small" 
+  aria-label="add" 
+  sx={{
+    width:'35px', 
+    height:'0px', 
+    marginLeft:'10px',
+    background: 'linear-gradient(345deg, #166ffa 30%, #3081ff 70%)',
+    color: 'white',
+  }}
+>
+  <AddIcon />
+</Fab>
     </div>
     <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={refetch} selectedDate={selectedDate} />
     {currentTask && <TimerModal open={modalOpen} handleClose={handleModalClose} task={currentTask} />}
@@ -368,7 +379,7 @@ const [logoutApiCall] = useLogoutMutation();
     {task.taskName}
   </div>
   
-  <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+  <div style={{ position: 'absolute', left: '500px', top: '9px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
                         {expandedTasks.includes(task._id) ?
@@ -382,9 +393,9 @@ const [logoutApiCall] = useLogoutMutation();
     {expandedTasks.includes(task._id) && (
       <div className="taskDetails">
         <div id='break' className='taskBreak'/>
-        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+        <p style={{ marginTop: '17px'}}>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
         {task.notes !== "" && task.notes.trim() !== "" && (
-          <p>
+        <p>
             <span style={{color:'#545454'}}>Notes:</span><br/>
             <span style={{fontWeight:"bold"}}>{task.notes}</span>
           </p>
@@ -416,8 +427,7 @@ const [logoutApiCall] = useLogoutMutation();
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
   </div>
-  <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+  <div style={{ position: 'absolute', left: '500px', top: '9px', display: 'flex', alignItems: 'center'}}>                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
                         {expandedTasks.includes(task._id) ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
@@ -430,7 +440,7 @@ const [logoutApiCall] = useLogoutMutation();
                     {expandedTasks.includes(task._id) && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
-                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        <p style={{ marginTop: '17px'}}>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
                         {task.notes !== "" && task.notes.trim() !== "" && (
   <p>
     <span style={{color:'#545454'}}>Notes:</span><br/>
@@ -466,8 +476,7 @@ const [logoutApiCall] = useLogoutMutation();
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
   </div>
-  <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+  <div style={{ position: 'absolute', left: '500px', top: '9px', display: 'flex', alignItems: 'center'}}>                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
                         {expandedTasks.includes(task._id) ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
@@ -480,7 +489,7 @@ const [logoutApiCall] = useLogoutMutation();
                     {expandedTasks.includes(task._id) && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
-                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        <p style={{ marginTop: '17px'}}>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
                         {task.notes !== "" && task.notes.trim() !== "" && (
   <p>
     <span style={{color:'#545454'}}>Notes:</span><br/>

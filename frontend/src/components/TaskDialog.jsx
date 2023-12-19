@@ -46,10 +46,10 @@ import { toggleRefresh } from '../slices/refreshSlice';
         //recent change
         const handleNumberChange = (event) => {
             const value = event.target.value;
-            if(!isNaN(value) && value >= 0) {
-                setTimer(value==='' ? null : value);
+            if (!isNaN(value) && value >= 0) {
+                setTimer(value === '' ? null : parseInt(value, 10));
             } else {
-                setTimer('0');
+                setTimer(0); // Set to 0 instead of '0' to keep the state as a number
             }
         };
 
@@ -57,34 +57,35 @@ import { toggleRefresh } from '../slices/refreshSlice';
 
         const handleSubmit = async (event) => {
             event.preventDefault();
-
-            if(taskName.trim()=== '' || timer.trim() ==='' || priority==='') {
-              return;
+        
+            // Ensure taskName and priority are not empty and timer is a number
+            if(taskName.trim() === '' || priority === '' || isNaN(timer) || timer === null) {
+                return;
             }
-          
+        
             const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-          
+        
             const newTask = {
-              taskName,
-              timer, // Change this line to match the backend field name
-              notes,
-              priority,
-              date: formattedDate,
+                taskName,
+                numberOfTimers: Number(timer), // Change this line to match the backend field name
+                notes,
+                priority,
+                date: formattedDate,
             };
-          
+        
             try {
                 const addedTask = await addTask(newTask).unwrap();
                 // ... other code ...
-          
+        
                 handleClose();
-          
+        
                 // Dispatch the toggleRefresh action
                 dispatch(toggleRefresh());
                 console.log('toggleRefresh action dispatched');
-              } catch (error) {
+            } catch (error) {
                 console.error('Failed to add task', error);
-              }
-          };
+            }
+        };
 
         return(
         <Dialog open={open} onClose={ handleClose }>
