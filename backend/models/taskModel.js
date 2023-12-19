@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+//updated title to taskName and capitalized the first letter of prioriy titles to match the values on the frontend
+
 const taskSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -21,17 +23,13 @@ const taskSchema = mongoose.Schema({
     },
     state: {
         type: String,
-        required: false,
+        required: true,
         enum: ['not started', 'in progress', 'complete', 'rolled over'],
         default: 'not started'
     },
     timer: {
         type: Number,
         default: 1
-    },
-    timersFinished: {
-        type: Number,
-        default: 0
     },
     notes: String
 }, {

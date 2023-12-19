@@ -10,6 +10,7 @@ import { toggleRefresh } from '../slices/refreshSlice';
 
     const TaskAddingDialog = ({open, handleClose, selectedDate }) =>{
         const dispatch = useDispatch();
+
         const [taskName, setTaskName] = useState('');
         const [timer, setTimer] = useState(null);
         const [notes, setNotes] = useState('');
@@ -53,6 +54,7 @@ import { toggleRefresh } from '../slices/refreshSlice';
             }
         };
 
+
         const [addTask, { isLoading: isAdding, isError: addError}] = useAddTaskMutation();
 
         const handleSubmit = async (event) => {
@@ -85,6 +87,7 @@ import { toggleRefresh } from '../slices/refreshSlice';
             } catch (error) {
                 console.error('Failed to add task', error);
             }
+
         };
 
         return(
