@@ -1125,13 +1125,29 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
       <div>
         <Box>
           <div
+
+/*<div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position:'absolute', left:'14.8%', top: '15%' }}>
+<div id='taskHeading' style={{color: "#000",fontFamily: "DM Sans", fontSize: "3.5vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal"}}>
+  Tasks
+  </div>
+  <Fab 
+onClick={handleClickOpen} 
+size="small" 
+aria-label="add" 
+sx={{
+width:'35px', 
+height:'0px', 
+marginLeft:'10px',
+background: 'linear-gradient(345deg, #166ffa 30%, #3081ff 70%)',
+color: 'white',
+}} */
             style={{
               display: "flex",
               alignItems: "center",
               flexDirection: "row",
               position: "absolute",
               left: "56.8%",
-              top: "18%",
+              top: "15%",
             }}
           >
             <div
@@ -1139,7 +1155,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
               style={{
                 color: "#000",
                 fontFamily: "DM Sans",
-                fontSize: "4vh",
+                fontSize: "3.5vh",
                 fontStyle: "normal",
                 fontWeight: "700",
                 lineHeight: "normal",
@@ -1153,7 +1169,11 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
               size="small"
               color="primary"
               aria-label="add"
-              sx={{ width: "30px", height: "30px", marginLeft: "10px" }}
+              sx={{ width:'35px', 
+              height:'0px', 
+              marginLeft:'10px',
+              background: 'linear-gradient(345deg, #166ffa 30%, #3081ff 70%)',
+              color: 'white', }}
             >
               <AddIcon fontSize="1.25rem" />
             </Fab>
@@ -1165,7 +1185,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
               color: "#000",
               position: "absolute",
               left: "56.8%",
-              top: "25%",
+              top: "22vh",
             }}
           >
             <Box
