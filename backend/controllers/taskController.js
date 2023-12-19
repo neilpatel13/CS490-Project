@@ -11,7 +11,7 @@ export const addTask = asyncHandler(async (req, res) => {
     }
     const { taskName, priority, notes, numberOfTimers, date } = req.body;
 
-    const task = await Task.find({
+    const task = new Task({
         user: req.user._id,
         taskName,
         state: 'not started',

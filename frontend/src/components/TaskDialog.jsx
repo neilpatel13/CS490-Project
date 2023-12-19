@@ -4,13 +4,14 @@ import {Button,
     Dialog,DialogActions,
     DialogContent,DialogContentText,
     DialogTitle, MenuItem, InputLabel} from '@mui/material';
-import { useAddTaskMutation } from '../slices/taskApiSlice';
+import { useAddTaskMutation, useGetTasksQuery } from '../slices/taskApiSlice';
 
     const TaskAddingDialog = ({open, handleClose, onAddTask, selectedDate }) =>{
         const [taskName, setTaskName] = useState('');
         const [timer, setTimer] = useState(null);
         const [notes, setNotes] = useState('');
         const [priority, setPriority] = useState('');
+        const { refetch } = useGetTasksQuery();
 
         const priorityOptions = ['Top Priority', 'Important', 'Other'];
 
@@ -51,36 +52,34 @@ import { useAddTaskMutation } from '../slices/taskApiSlice';
 
         const [addTask, { isLoading: isAdding, isError: addError}] = useAddTaskMutation();
 
-        const handleSubmit = async (taskData) => {
+        const handleSubmit = async () => {
             if(taskName.trim()=== '' || timer.trim() ==='' || priority==='') {
-                return;
+              return;
             }
-
+          
             const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-
-        const newTask = {
-            taskName,
-            numberOfTimers: timer, // Change this line to match the backend field name
-            notes,
-            priority,
-            date: formattedDate,
-        };
-
+          
+            const newTask = {
+              taskName,
+              timer, // Change this line to match the backend field name
+              notes,
+              priority,
+              date: formattedDate,
+            };
+          
             try{
-
-                const addedTask = await addTask(newTask).unwrap();
-                onAddTask(newTask);
-                setTaskName('');
-                setTimer('');
-                setNotes('');
-                setPriority('');
-        
-                handleClose();
+              const addedTask = await addTask(newTask).unwrap();
+              onAddTask(); // Call onAddTask after the new task is successfully added
+              setTaskName('');
+              setTimer('');
+              setNotes('');
+              setPriority('');
+          
+              handleClose();
             } catch(error){
-                console.error('failed to add task', error);
+              console.error('failed to add task', error);
             }
-            onAddTask();
-        };
+          };
 
         return(
         <Dialog open={open} onClose={ handleClose }>

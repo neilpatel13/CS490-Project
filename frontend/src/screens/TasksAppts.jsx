@@ -67,12 +67,10 @@ const TasksAppts = () => {
 
 
     const { data: fetchedTasks, error, refetch } = useGetTasksQuery(formattedDate);
-    console.log('Fetched tasks:', fetchedTasks);
-    console.log('Fetch error:', error);
 
     useEffect(() => {
-      const selectedDateIsNotCurrentDate = !moment(selectedDate).isSame(currentDate, 'day');
-      const shouldFetchTasks = selectedDateIsNotCurrentDate || (selectedDateIsNotCurrentDate === false && loadCurrentDayTasks);
+      const selectedDateIsNotCurrentDate = !moment.utc(selectedDate).isSame(moment.utc(currentDate), 'day');
+      const shouldFetchTasks = selectedDateIsNotCurrentDate || (selectedDateIsNotCurrentDate === false && hasClickedPlanDay);
     
       if (shouldFetchTasks) {
         refetch().then((result) => {
@@ -80,19 +78,26 @@ const TasksAppts = () => {
             setTasks(result.data);
           }
         });
+      } else {
+        // If shouldFetchTasks is false, clear the tasks
+        setTasks([]);
       }
-    }, [selectedDate, triggerFetch, loadCurrentDayTasks]);
+    }, [selectedDate, triggerFetch, hasClickedPlanDay]);
 
-    const handlePlanDayClick = () => {
-      // Set selectedDate to the current date when the "Plan Day" button is clicked
-      setSelectedDate({
-        year: currentDate.format('YYYY'),
-        month: currentDate.format('MM'),
-        day: currentDate.format('DD'),
-      });
-      setTriggerFetch(Date.now()); // Set triggerFetch to the current timestamp
-      setLoadCurrentDayTasks(true); // Set loadCurrentDayTasks to true
-    };
+    
+
+
+const handlePlanDayClick = () => {
+  // Set selectedDate to the current date when the "Plan Day" button is clicked
+  setSelectedDate({
+    year: currentDate.format('YYYY'),
+    month: currentDate.format('MM'),
+    day: currentDate.format('DD'),
+  });
+  setTriggerFetch(Date.now()); // Set triggerFetch to the current timestamp
+  setHasClickedPlanDay(true); // Set hasClickedPlanDay to true
+};
+
     const handleDateChange = (field, value) => {
     setSelectedDate(prev => {
       return { ...prev, [field]: value };
@@ -109,7 +114,6 @@ const TasksAppts = () => {
 const fetchTasks = useCallback(async () => {
   const { data: fetchedTasks } = await useGetTasksQuery(formattedDate);
   if (fetchedTasks) {
-    console.log('Fetched tasks:', fetchedTasks);
     setTasks(fetchedTasks); // Update the tasks state
   } else {
     setTasks([]); // Clear tasks if no tasks were fetched
@@ -140,14 +144,11 @@ const handleTitleClick = (task) => {
     
 
     const onAddTask = (newTask) => {
-      console.log('Before adding task', tasks);
-      setTasks((prevTasks) => [...prevTasks, newTask]);
-      console.log('after adding tasks', tasks);
-      setLastUpdated(Date.now());
-    }
+      refetch();
+    };
 
     const handleNewTaskAdded = () => {
-      setTriggerFetch(prev => !prev); // Toggle the trigger to re-fetch tasks
+      refetch();
     };
 
     
@@ -291,7 +292,7 @@ const [logoutApiCall] = useLogoutMutation();
             <div id='innerBox' className='taskInnerRectangle'>
             <div className="sectionHeader">Top Priority</div>
 
-            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
+            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) && (
               groupedTasks['Top Priority'] && groupedTasks['Top Priority'].map((task) => (
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
@@ -320,7 +321,7 @@ const [logoutApiCall] = useLogoutMutation();
                     )}
                   </div>
                 ))
-                ) : null }
+                )}
             </div>
             <div id='innerBoxOne' className='taskInnerRectangle'>
                 <div className="sectionHeader">Important</div>
