@@ -37,20 +37,16 @@ import SyncAltIcon from '@mui/icons-material/SyncAlt';
 
 const TasksAppts = () => {
   const refresh = useSelector((state) => state.refresh.value);
-  console.log('refresh state:', refresh);
   const currentDate = moment().tz('America/New_York');
-  console.log('currentDate:', currentDate);
   const [selectedDate, setSelectedDate] = useState({
     year: currentDate.year(),
     month: currentDate.month() + 1, // Months are zero-indexed in moment.js
     day: currentDate.date(),
   });
-  console.log('selectedDate:', selectedDate);
 
   // State variable to trigger re-render
   const [refreshKey, setRefreshKey] = useState(0);
   const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-  console.log('formattedDate:', formattedDate);
 
 
   const { data: fetchedTasks, error, refetch } = useGetTasksQuery(formattedDate);
@@ -367,6 +363,16 @@ const [logoutApiCall] = useLogoutMutation();
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
   </div>
+  
+  <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
+                        : 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
+                        </div>
+                        </div>
 </div>
     </div>
     {expandedTask === task._id && (
@@ -406,6 +412,15 @@ const [logoutApiCall] = useLogoutMutation();
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
   </div>
+  <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
+                        : 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
+                        </div>
+      </div>
 </div>
                     </div>
                     {expandedTask === task._id && (
@@ -447,6 +462,15 @@ const [logoutApiCall] = useLogoutMutation();
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
   </div>
+  <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
+                        : 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
+                        </div>
+                        </div>
 </div>
                     </div>
                     {expandedTask === task._id && (
