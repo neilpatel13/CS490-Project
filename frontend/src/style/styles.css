@@ -123,7 +123,10 @@ body {
   background: #4B6DE9;
 }
 
-/**/
+#innerBox, #innerBoxOne, #innerBoxTwo {
+  min-height: 7rem !important; /* Adjust as needed */
+  min-width: 32rem !important; /* Adjust as needed */
+}
 
 
 .taskInnerRectangle{

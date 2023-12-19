@@ -14,10 +14,18 @@ export const taskApiSlice = apiSlice.injectEndpoints({
         body: newTask,
       }),
     }),
+    updatePriority: builder.mutation({
+      query: ({ taskId, newPriority }) => ({
+        url: `/api/tasks/${taskId}/priority`,
+        method: 'PUT',
+        body: { priority: newPriority },
+      }),
+    }),
   }),
 });
 
 export const {
   useGetTasksQuery,
   useAddTaskMutation,
+  useUpdatePriorityMutation,
 } = taskApiSlice;

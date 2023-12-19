@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import DraggableTask from '../components/DraggableTask';
+import DroppableTaskList from '../components/DroppableTaskList';
 import logo from '../assets/mainLogo.svg';
 import lo from '../assets/logout.svg';
 ///import usr from '../assets/profile.svg';
@@ -37,12 +39,24 @@ const TasksAppts = () => {
     month: currentDate.format('MM'),
     day: currentDate.format('DD'),
   });
+
+  // State variable to trigger re-render
+  const [refreshKey, setRefreshKey] = useState(0);
+  const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+  const { data: fetchedTasks, error, refetch } = useGetTasksQuery(formattedDate);
+  // Function to trigger refetch
+  const handleDrop = useCallback(() => {
+    // Trigger a refetch of the tasks
+    refetch();
+    // Trigger a re-render of the component
+    setTriggerFetch(Date.now());
+  }, [refetch]);
+
   const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
   const [hasClickedPlanDay, setHasClickedPlanDay] = useState(false);
 
   const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
-
-  const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+  
   const [tasks, setTasks] = useState([]);
 
   // Define selectedDateObj and today here
@@ -67,9 +81,6 @@ const TasksAppts = () => {
 
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
 
-
-    const { data: fetchedTasks, error, refetch } = useGetTasksQuery(formattedDate);
-
     useEffect(() => {
       const selectedDateIsNotCurrentDate = !moment.utc(selectedDate).isSame(moment.utc(currentDate), 'day');
       const shouldFetchTasks = selectedDateIsNotCurrentDate || (selectedDateIsNotCurrentDate === false && hasClickedPlanDay);
@@ -86,7 +97,9 @@ const TasksAppts = () => {
       }
     }, [selectedDate, triggerFetch, hasClickedPlanDay]);
 
-    
+    useEffect(() => {
+      fetchTasks();
+    }, [triggerFetch]);
 
 
 const handlePlanDayClick = () => {
@@ -114,7 +127,7 @@ const handlePlanDayClick = () => {
 
 // Function to fetch tasks based on the selected date
 const fetchTasks = useCallback(async () => {
-  const { data: fetchedTasks } = await useGetTasksQuery(formattedDate);
+  const { data: fetchedTasks } = await refetch();
   if (fetchedTasks) {
     setTasks(fetchedTasks); // Update the tasks state
   } else {
@@ -145,8 +158,9 @@ const handleTitleClick = (task) => {
 
     
 
-    const onAddTask = (newTask) => {
+    const onAddTask = () => {
       refetch();
+      setTriggerFetch(Date.now()); // Trigger a re-render of the component
     };
 
     const handleNewTaskAdded = () => {
@@ -290,12 +304,14 @@ const [logoutApiCall] = useLogoutMutation();
         alignItems="center" //made a change here, was 'flex-start'
         sx={{bgcolor:'#FFF'}}
         >
-      {/* added drag drop context here */}
+
+          <DroppableTaskList priority="Top Priority" onDrop={handleDrop}>
             <div id='innerBox' className='taskInnerRectangle'>
             <div className="sectionHeader">Top Priority</div>
 
             {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) && (
               groupedTasks['Top Priority'] && groupedTasks['Top Priority'].map((task) => (
+                <DraggableTask key={task._id} task={task}>
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                       {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
@@ -327,13 +343,18 @@ const [logoutApiCall] = useLogoutMutation();
                       </div>
                     )}
                   </div>
+                  </DraggableTask>
                 ))
                 )}
             </div>
+            </DroppableTaskList>
+            <DroppableTaskList priority="Important" onDrop={handleDrop}>
             <div id='innerBoxOne' className='taskInnerRectangle'>
                 <div className="sectionHeader">Important</div>
                 {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
+                  
                   groupedTasks['Important'] && groupedTasks['Important'].map((task) => (
+                  <DraggableTask key={task._id} task={task}>
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
@@ -364,13 +385,20 @@ const [logoutApiCall] = useLogoutMutation();
                       </div>
                     )}
                   </div>
+                  </DraggableTask>
                 ))
+                
                 ) : null }
             </div>
+            </DroppableTaskList>
+
+            
+            <DroppableTaskList priority="Other" onDrop={handleDrop}>
             <div id='innerBoxTwo' className='taskInnerRectangle'>
             <div className="sectionHeader">Other</div>
             {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
               groupedTasks['Other'] && groupedTasks['Other'].map((task) => (
+                <DraggableTask key={task._id} task={task}>
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
@@ -401,9 +429,11 @@ const [logoutApiCall] = useLogoutMutation();
                       </div>
                     )}
                   </div>
+                  </DraggableTask>
                 ))
                 ) : null}
             </div>
+            </DroppableTaskList>
         </Box>
       </div>
       </Box>
