@@ -5,8 +5,11 @@ import {Button,
     DialogContent,DialogContentText,
     DialogTitle, MenuItem, InputLabel} from '@mui/material';
 import { useAddTaskMutation, useGetTasksQuery } from '../slices/taskApiSlice';
+import { useDispatch } from 'react-redux';
+import { toggleRefresh } from '../slices/refreshSlice';
 
-    const TaskAddingDialog = ({open, handleClose, onAddTask, selectedDate }) =>{
+    const TaskAddingDialog = ({open, handleClose, selectedDate }) =>{
+        const dispatch = useDispatch();
         const [taskName, setTaskName] = useState('');
         const [timer, setTimer] = useState(null);
         const [notes, setNotes] = useState('');
@@ -52,7 +55,9 @@ import { useAddTaskMutation, useGetTasksQuery } from '../slices/taskApiSlice';
 
         const [addTask, { isLoading: isAdding, isError: addError}] = useAddTaskMutation();
 
-        const handleSubmit = async () => {
+        const handleSubmit = async (event) => {
+            event.preventDefault();
+
             if(taskName.trim()=== '' || timer.trim() ==='' || priority==='') {
               return;
             }
@@ -67,18 +72,18 @@ import { useAddTaskMutation, useGetTasksQuery } from '../slices/taskApiSlice';
               date: formattedDate,
             };
           
-            try{
-              const addedTask = await addTask(newTask).unwrap();
-              onAddTask(); // Call onAddTask after the new task is successfully added
-              setTaskName('');
-              setTimer('');
-              setNotes('');
-              setPriority('');
+            try {
+                const addedTask = await addTask(newTask).unwrap();
+                // ... other code ...
           
-              handleClose();
-            } catch(error){
-              console.error('failed to add task', error);
-            }
+                handleClose();
+          
+                // Dispatch the toggleRefresh action
+                dispatch(toggleRefresh());
+                console.log('toggleRefresh action dispatched');
+              } catch (error) {
+                console.error('Failed to add task', error);
+              }
           };
 
         return(

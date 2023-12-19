@@ -32,18 +32,27 @@ import moment from 'moment-timezone';
 
 
 const TasksAppts = () => {
+  const refresh = useSelector((state) => state.refresh.value);
+  console.log('refresh state:', refresh);
   const dateInEST = moment().tz('America/New_York');
   const currentDate = moment().tz('America/New_York');
+  console.log('currentDate:', currentDate);
   const [selectedDate, setSelectedDate] = useState({
     year: currentDate.format('YYYY'),
     month: currentDate.format('MM'),
     day: currentDate.format('DD'),
   });
+  console.log('selectedDate:', selectedDate);
 
   // State variable to trigger re-render
   const [refreshKey, setRefreshKey] = useState(0);
   const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+  console.log('formattedDate:', formattedDate);
+
+
   const { data: fetchedTasks, error, refetch } = useGetTasksQuery(formattedDate);
+
+  
   // Function to trigger refetch
   const handleDrop = useCallback(() => {
     // Trigger a refetch of the tasks
@@ -82,6 +91,10 @@ const TasksAppts = () => {
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
 
     useEffect(() => {
+      refetch();
+    }, [refresh]);
+
+    useEffect(() => {
       const selectedDateIsNotCurrentDate = !moment.utc(selectedDate).isSame(moment.utc(currentDate), 'day');
       const shouldFetchTasks = selectedDateIsNotCurrentDate || (selectedDateIsNotCurrentDate === false && hasClickedPlanDay);
     
@@ -96,10 +109,6 @@ const TasksAppts = () => {
         setTasks([]);
       }
     }, [selectedDate, triggerFetch, hasClickedPlanDay]);
-
-    useEffect(() => {
-      fetchTasks();
-    }, [triggerFetch]);
 
 
 const handlePlanDayClick = () => {
@@ -158,9 +167,10 @@ const handleTitleClick = (task) => {
 
     
 
-    const onAddTask = () => {
-      refetch();
-      setTriggerFetch(Date.now()); // Trigger a re-render of the component
+    const onAddTask = async () => {
+      // Update the formatted date state variable
+      setFormattedDate(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+      
     };
 
     const handleNewTaskAdded = () => {
@@ -293,7 +303,7 @@ const [logoutApiCall] = useLogoutMutation();
         <AddIcon fontSize="1.25rem" />
     </Fab>
     </div>
-    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={handleNewTaskAdded} selectedDate={selectedDate} />
+    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={refetch} selectedDate={selectedDate} />
     {currentTask && <TimerModal open={modalOpen} handleClose={handleModalClose} task={currentTask} />}
       <div id='taskBox' className='taskRectangle'>
         <Box
