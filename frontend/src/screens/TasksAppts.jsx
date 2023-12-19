@@ -986,8 +986,13 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
           alignItems: "center",
           flexDirection: "row",
           position: "absolute",
-          left: "14.8%",
+          left: "15%",
           top: "5%",
+          backgroundColor: "#dee6fc",
+          borderRadius: "10px",
+          padding: "7px",
+          width: "40vw",
+          height: "7vh",
         }}
       >
         <div
@@ -996,7 +1001,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
           style={{
             color: "#000",
             fontFamily: "DM Sans",
-            fontSize: "2vh",
+            fontSize: "1vh",
             fontStyle: "normal",
             fontWeight: "500",
             lineHeight: "normal",
@@ -1007,7 +1012,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleMonthDecrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "12px",
+              fontSize: "30px",
               marginLeft: "10px",
             }}
           >
@@ -1036,7 +1041,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleMonthIncrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "12px",
+              fontSize: "30px",
               marginLeft: "5px",
             }}
           >
@@ -1047,7 +1052,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleDayDecrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "12px",
+              fontSize: "30px",
               marginLeft: "10px",
             }}
           >
@@ -1074,7 +1079,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleDayIncrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "12px",
+              fontSize: "30px",
               marginLeft: "5px",
             }}
           >
@@ -1085,7 +1090,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleYearDecrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "12px",
+              fontSize: "30px",
               marginLeft: "10px",
             }}
           >
@@ -1113,7 +1118,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleYearIncrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "12px",
+              fontSize: "30px",
               marginLeft: "5px",
             }}
           >
