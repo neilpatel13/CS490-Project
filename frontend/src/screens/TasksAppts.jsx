@@ -143,13 +143,18 @@ const handlePlanDayClick = () => {
 
 // Function to fetch tasks based on the selected date
 const fetchTasks = useCallback(async () => {
-  const { data: fetchedTasks } = await refetch();
+  // Assuming selectedDate is a JavaScript Date object
+  const formattedDate = moment(selectedDate).format('YYYY-MM-DD'); // Format in local time
+
+  // Refetch function with the formatted date
+  const { data: fetchedTasks } = await refetch({ query: { date: formattedDate } });
+
   if (fetchedTasks) {
-    setTasks(fetchedTasks); // Update the tasks state
+      setTasks(fetchedTasks); // Update the tasks state
   } else {
-    setTasks([]); // Clear tasks if no tasks were fetched
+      setTasks([]); // Clear tasks if no tasks were fetched
   }
-}, [selectedDate]);
+}, [selectedDate, refetch]);
 
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
