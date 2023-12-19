@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors'; // Import cors
 dotenv.config();
 import cookieParser from 'cookie-parser';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
@@ -24,8 +25,10 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(cookieParser());
 
-app.use('/api/users', userRoutes);
+// Enable CORS for the frontend origin
+app.use(cors({ origin: 'http://localhost:3000' }));
 
+app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 
 app.get('/', (req, res) => res.send('Server is ready'));

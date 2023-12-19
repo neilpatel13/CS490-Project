@@ -69,47 +69,64 @@ const TasksAppts = () => {
     const { data: fetchedTasks, error, refetch } = useGetTasksQuery(formattedDate);
 
     useEffect(() => {
-      const selectedDateIsNotCurrentDate = !moment.utc(selectedDate).isSame(moment.utc(currentDate), 'day');
-      const shouldFetchTasks = selectedDateIsNotCurrentDate || (selectedDateIsNotCurrentDate === false && hasClickedPlanDay);
+      // ... (the rest of your useEffect logic) ...
     
-      if (shouldFetchTasks) {
-        refetch().then((result) => {
-          if (result.isSuccess) {
-            setTasks(result.data);
+      const fetchTasksDirectly = async (date) => {
+        try {
+          const response = await fetch(`http://localhost:8000/api/tasks?date=${date}`, {
+            // Include necessary headers for authentication if needed
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
-        });
-      } else {
-        // If shouldFetchTasks is false, clear the tasks
-        setTasks([]);
-      }
-    }, [selectedDate, triggerFetch, hasClickedPlanDay]);
-
+          const data = await response.json();
+          setTasks(data);
+          console.log("Tasks fetched:", data);
+        } catch (error) {
+          console.error("Error fetching tasks:", error);
+        }
+      };
+    
+      // ... (the rest of your useEffect logic) ...
+    }, [selectedDate, hasClickedPlanDay]);
+    
+    
+    
+    
+    
+    
+    
     
 
 
-const handlePlanDayClick = () => {
-  // Set selectedDate to the current date when the "Plan Day" button is clicked
-  setSelectedDate({
-    year: currentDate.format('YYYY'),
-    month: currentDate.format('MM'),
-    day: currentDate.format('DD'),
-  });
-  setTriggerFetch(Date.now()); // Set triggerFetch to the current timestamp
-  setHasClickedPlanDay(true); // Set hasClickedPlanDay to true
-};
+    const handlePlanDayClick = () => {
+      console.log("Plan Day clicked");
+      const today = moment().tz('America/New_York');
+      setSelectedDate({
+        year: today.format('YYYY'),
+        month: today.format('MM'),
+        day: today.format('DD')
+      });
+      setHasClickedPlanDay(true);
+      setTriggerFetch(Date.now());
+    };
+    
 
     const handleDateChange = (field, value) => {
-    setSelectedDate(prev => {
-      return { ...prev, [field]: value };
-    });
-    // Reset shouldFetchTasks to false only if the new date is the current date
-    const newDate = { ...selectedDate, [field]: value };
-    const newDateIsCurrentDate = moment(newDate).isSame(currentDate, 'day');
-    if (newDateIsCurrentDate) {
-      setShouldFetchTasks(false);
-    }
-  };
-
+      console.log("Date change handler triggered");
+      setSelectedDate(prev => ({
+        ...prev, 
+        [field]: value 
+      }));
+    
+      const newSelectedDate = moment({ ...selectedDate, [field]: value }).tz('America/New_York');
+      const isToday = newSelectedDate.isSame(moment().tz('America/New_York'), 'day');
+      console.log("New date is today:", isToday);
+      setHasClickedPlanDay(isToday);
+    };
+    
+    
+    
 // Function to fetch tasks based on the selected date
 const fetchTasks = useCallback(async () => {
   const { data: fetchedTasks } = await useGetTasksQuery(formattedDate);
