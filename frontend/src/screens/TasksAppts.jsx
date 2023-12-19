@@ -1,5 +1,8 @@
-import logo from "../assets/mainLogo.svg";
-import lo from "../assets/logout.svg";
+import React, { useState, useEffect, useCallback, useContext } from 'react';
+import DraggableTask from '../components/DraggableTask';
+import DroppableTaskList from '../components/DroppableTaskList';
+import logo from '../assets/mainLogo.svg';
+import lo from '../assets/logout.svg';
 ///import usr from '../assets/profile.svg';
 ///import lock from '../assets/lock.svg';
 ///import cl from '../assets/clock.svg';
@@ -8,9 +11,6 @@ import { Button, Box, Typography, Fab, Select, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { logout } from "../slices/authSlice";
 import { useLogoutMutation } from "../slices/userApiSlice";
-
-// import * as React from 'react';
-
 //import {useEffect, useState} from 'react';
 import { useSelector } from "react-redux";
 import TaskAddingDialog from "../components/TaskDialog";
@@ -22,14 +22,62 @@ import ExpandCircleDownOutlinedIcon from "@mui/icons-material/ExpandCircleDownOu
 // adding dnd import
 import TimerModal from "../components/FocusTime";
 // edit icon import
-import React, { useEffect, useState, useContext } from "react";
-import { useGetTasksQuery } from "../slices/taskApiSlice";
-import { isToday } from "date-fns";
+import { useGetTasksQuery } from '../slices/taskApiSlice';
+import { isToday, addDays, isSameDay } from 'date-fns';
+import moment from 'moment-timezone';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
+
+
+
+
 
 const TasksAppts = () => {
-  const [triggerFetch, setTriggerFetch] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [expandedTask, setExpandedTask] = useState(null);
+  const refresh = useSelector((state) => state.refresh.value);
+  const currentDate = moment().tz('America/New_York');
+  const [selectedDate, setSelectedDate] = useState({
+    year: currentDate.year(),
+    month: currentDate.month() + 1, // Months are zero-indexed in moment.js
+    day: currentDate.date(),
+  });
+
+  // State variable to trigger re-render
+  const [refreshKey, setRefreshKey] = useState(0);
+  const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+
+
+  const { data: fetchedTasks, error, refetch } = useGetTasksQuery(formattedDate);
+
+  
+  // Function to trigger refetch
+  const handleDrop = useCallback(() => {
+    // Trigger a refetch of the tasks
+    refetch();
+    // Trigger a re-render of the component
+    setTriggerFetch(Date.now());
+  }, [refetch]);
+
+  const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
+  const [hasClickedPlanDay, setHasClickedPlanDay] = useState(false);
+
+  const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
+  
+  const [tasks, setTasks] = useState([]);
+  const updateTaskInState = (updatedTask) => {
+    setTasks(tasks.map(task => task._id === updatedTask._id ? updatedTask : task));
+  };
+
+  // Define selectedDateObj and today here
+  const selectedDateObj = new Date(formattedDate);
+  selectedDateObj.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+    const [triggerFetch, setTriggerFetch] = useState(false);
+    const [dialogOpen, setDialogOpen ] = useState(false);
+    const [expandedTasks, setExpandedTasks] = useState([]);
 
   // adding some logic for focus time here
   const [modalOpen, setModalOpen] = useState(false);
@@ -40,8 +88,6 @@ const TasksAppts = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
   //loading tasks if they exist
-
-  const today = new Date();
   const currentHour = today.getHours();
   const currentMinute = today.getMinutes();
   const [timeSlots, setTimeSlots] = useState([]);
@@ -66,19 +112,99 @@ const TasksAppts = () => {
 
   const abortController = new AbortController();
 
-  const [selectedDate, setSelectedDate] = useState({
+  /* 
+    const [selectedDate, setSelectedDate] = useState({
     month: (today.getMonth() + 1).toString().padStart(2, "0"), // Adding 1 because months are zero-based
     day: today.getDate().toString().padStart(2, "0"),
     year: today.getFullYear().toString(),
   });
+  */
   // adding some logic for focus time here
 
- 
+    const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
+
+    useEffect(() => {
+      refetch();
+    }, [refresh]);
+
+    useEffect(() => {
+      const selectedDateIsNotCurrentDate = !moment.utc(selectedDate).isSame(moment.utc(currentDate), 'day');
+      const shouldFetchTasks = selectedDateIsNotCurrentDate || (selectedDateIsNotCurrentDate === false && hasClickedPlanDay);
+    
+      if (shouldFetchTasks) {
+        refetch().then((result) => {
+          if (result.isSuccess) {
+            setTasks(result.data);
+          }
+        });
+      } else {
+        // If shouldFetchTasks is false, clear the tasks
+        setTasks([]);
+      }
+    }, [selectedDate, triggerFetch, hasClickedPlanDay]);
 
 
-    const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
-    const [tasks, setTasks] = useState([]);
+const handlePlanDayClick = () => {
+  const today = moment().tz('America/New_York');
+  const formattedDate = today.format('YYYY-MM-DD'); // Format the date as 'YYYY-MM-DD'
+
+  setLoading(true);
+
+  // Fetch appointments for the current date
+  listEventsofDay(formattedDate).then(() => {
+    setSelectedDate({
+      year: today.year(),
+      month: today.month() + 1, // Months are zero-indexed in moment.js
+      day: today.date(),
+    });
+
+    setShouldFetchTasks(true); // Ensure tasks are fetched
+
+    planDay().finally(() => {
+      setLoading(false);
+      setPlanDayClicked(true);
+    });
+  });
+};
+
+    const handleDateChange = (field, value) => {
+    setSelectedDate(prev => {
+      return { ...prev, [field]: value };
+    });
+    
+    // Reset shouldFetchTasks to false only if the new date is the current date
+    const newDate = { ...selectedDate, [field]: value };
+    const newDateIsCurrentDate = moment(newDate).isSame(currentDate, 'day');
+    if (newDateIsCurrentDate) {
+      setShouldFetchTasks(false);
+    }
+
+    //appts
+    setSelectedDate((prev) => ({ ...prev, [field]: value }));
+    const updatedDate = { ...selectedDate, [field]: value };
+    const dateStr = `${updatedDate.year}-${updatedDate.month}-${updatedDate.day}`;
+    listEventsofDay(dateStr);
+    setPlanDayClicked(false);
+  };
+
+// Function to fetch tasks based on the selected date
+const fetchTasks = useCallback(async () => {
+  // Assuming selectedDate is a JavaScript Date object
+  const formattedDate = moment(selectedDate).format('YYYY-MM-DD'); // Format in local time
+
+  // Refetch function with the formatted date
+  const { data: fetchedTasks } = await refetch({ query: { date: formattedDate } });
+
+  if (fetchedTasks) {
+      setTasks(fetchedTasks); // Update the tasks state
+  } else {
+      setTasks([]); // Clear tasks if no tasks were fetched
+  }
+}, [selectedDate, refetch]);
+
+
+const [lastUpdated, setLastUpdated] = useState(Date.now());
+    
 
 
 //function for opening the focus time modal
@@ -98,20 +224,17 @@ const handleTitleClick = (task) => {
         setDialogOpen(false);
     };
 
-
-    const [lastUpdated, setLastUpdated] = useState(Date.now());
-
-    const onAddTask = (newTask) => {
-      console.log('Before adding task', tasks);
-      setTasks((prevTasks) => [...prevTasks, newTask]);
-      console.log('after adding tasks', tasks);
-      setLastUpdated(Date.now());
-    }
-
-    const handleNewTaskAdded = () => {
-      setTriggerFetch(prev => !prev); // Toggle the trigger to re-fetch tasks
+    const onAddTask = async () => {
+      // Update the formatted date state variable
+      setFormattedDate(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+      
     };
 
+    const handleNewTaskAdded = () => {
+      refetch();
+    };
+
+    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
     useEffect(() => {
       const fetchTasks = async () => {
       if (!isLoading && !isError && initialTasks) {
@@ -134,20 +257,24 @@ const handleTitleClick = (task) => {
   }, [triggerFetch, lastUpdated, initialTasks, isLoading, isError, formattedDate]);
 
 //toggle expanded task
-const handleTaskClick = (taskId) => {
-  setExpandedTask((prevExpandedTask) =>
-      prevExpandedTask === taskId ? null : taskId
-  );
+const handleTaskClick = (id) => {
+  setExpandedTasks((prevTasks) => {
+    if (prevTasks.includes(id)) {
+      return prevTasks.filter((taskId) => taskId !== id);
+    } else {
+      return [...prevTasks, id];
+    }
+  });
 };
 
 //handling priority 
-const groupedTasks = tasks.reduce((acc,task) => {
+const groupedTasks = tasks ? tasks.reduce((acc,task) => {
   if(!acc[task.priority]){
     acc[task.priority] = [];
   }
     acc[task.priority].push(task);
     return acc;
-  }, {});
+}, {}) : {};
 
   //logout api call
   const [logoutApiCall] = useLogoutMutation();
@@ -174,15 +301,6 @@ const groupedTasks = tasks.reduce((acc,task) => {
     const newDay = Math.min(parseInt(selectedDate.day, 10), daysInMonth);
     handleDateChange("day", newDay.toString().padStart(2, "0"));
   };
-
-  const handleDateChange = (field, value) => {
-
-    setSelectedDate((prev) => ({ ...prev, [field]: value }));
-    const updatedDate = { ...selectedDate, [field]: value };
-    const dateStr = `${updatedDate.year}-${updatedDate.month}-${updatedDate.day}`;
-    listEventsofDay(dateStr);
-  };
-
 
   // Generate an array of years around the selected year
   const generateYearRange = () => {
@@ -238,6 +356,31 @@ const groupedTasks = tasks.reduce((acc,task) => {
     const newYear = currentYear + 1;
     handleDateChange("year", newYear.toString());
   };
+
+  const handleIconClick = async (task) => {
+    const states = ['not started', 'in progress', 'complete', 'rolled over'];
+    const currentIndex = states.indexOf(task.state);
+    const nextState = states[(currentIndex + 1) % states.length];
+  
+    try {
+      const response = await fetch(`/api/tasks/${task._id}/state`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include other headers as needed, like authorization headers
+        },
+        body: JSON.stringify({ state: nextState }),
+      });
+  
+      const updatedTask = await response.json();
+      // Update the local state to reflect the change immediately
+      // This assumes you have a way to update the task in your local state, e.g., a state setter or a context/redux action
+      updateTaskInState(updatedTask);
+    } catch (error) {
+      console.error('Failed to update task state:', error);
+    }
+  };
+  
   const handleAuthClick = async () => {
     try {
       setLoading(true);
@@ -245,10 +388,8 @@ const groupedTasks = tasks.reduce((acc,task) => {
         if (resp.error !== undefined) {
           throw resp;
         }
-
         sessionStorage.setItem(SESSION_STORAGE_KEY, resp.credential);
       };
-
       if (gapi.client.getToken() === null) {
         tokenClient.requestAccessToken({ prompt: "consent" });
       } else {
@@ -260,6 +401,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
       setLoading(false);
     }
   };
+
   const initialTimeSlot = [...Array(16)].map((_, index) => {
     const hour = 5 + index;
     if (hour < 5 || hour >= 21) {
@@ -271,6 +413,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
       events: [],
     };
   });
+
   useEffect(() => {
     setTimeSlots(initialTimeSlot);
     if (initialized) {
@@ -278,7 +421,6 @@ const groupedTasks = tasks.reduce((acc,task) => {
       async function gapiLoaded() {
         gapi.load("client", initializeGapiClient);
       }
-
       async function initializeGapiClient() {
         await gapi.client.init({
           apiKey: API_KEY,
@@ -541,15 +683,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
     }
   };
 
-  const handlePlanDayClick = async () => {
-    setLoading(true);
-
-    // Trigger the planDay function
-    planDay().finally(() => {
-      // Reset loading state
-      setLoading(false);
-    });
-  };
+  
 
   const isToday = (date) => {
     const currentDate = new Date();
@@ -631,7 +765,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
               color: "#fff",
             }}
             onClick={handlePlanDayClick}
-            disabled={!isToday(selectedDate) || planDayClicked}
+            disabled={planDayClicked}
           >
             Plan Day
           </Button>
@@ -663,25 +797,28 @@ const groupedTasks = tasks.reduce((acc,task) => {
             top: "18%",
           }}
         >
-          <div
-            id="taskHeading"
-            style={{
-              color: "#000",
-              fontFamily: "DM Sans",
-              fontSize: "4vh",
-              fontStyle: "normal",
-              fontWeight: "700",
-              lineHeight: "normal",
-            }}
-          >
-            Tasks
-          </div>
-
-      <Fab onClick={handleClickOpen} size="small" color="primary" aria-label="add" sx={{width:'30px', height:'30px', marginLeft:'10px'}}>
-        <AddIcon fontSize="1.25rem" />
-    </Fab>
+        </div>
+  <Box> 
+  <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', position:'absolute', left:'14.8%', top: '15%' }}>
+    <div id='taskHeading' style={{color: "#000",fontFamily: "DM Sans", fontSize: "3.5vh", fontStyle: "normal", fontWeight: "700", lineHeight: "normal"}}>
+      Tasks
+      </div>
+      <Fab 
+  onClick={handleClickOpen} 
+  size="small" 
+  aria-label="add" 
+  sx={{
+    width:'35px', 
+    height:'0px', 
+    marginLeft:'10px',
+    background: 'linear-gradient(345deg, #166ffa 30%, #3081ff 70%)',
+    color: 'white',
+  }}
+>
+  <AddIcon />
+</Fab>
     </div>
-    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={handleNewTaskAdded} selectedDate={selectedDate} />
+    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={refetch} selectedDate={selectedDate} />
     {currentTask && <TimerModal open={modalOpen} handleClose={handleModalClose} task={currentTask} />}
       <div id='taskBox' className='taskRectangle'>
                <Box
@@ -692,108 +829,152 @@ const groupedTasks = tasks.reduce((acc,task) => {
         alignItems="center" //made a change here, was 'flex-start'
         sx={{bgcolor:'#FFF'}}
         >
-      {/* added drag drop context here */}
+
+          <DroppableTaskList priority="Top Priority" onDrop={handleDrop}>
             <div id='innerBox' className='taskInnerRectangle'>
             <div className="sectionHeader">Top Priority</div>
 
-              {groupedTasks['Top Priority'] &&
-                groupedTasks['Top Priority'].map((task) => (
-                  <div key={task._id} className="taskCard">
-                    <div className="taskHeader">
-                      {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
-                      <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                      <div className="taskTitle" onClick={() => handleTitleClick(task)}>
-                        {task.taskName}
-                        </div>
-                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) && (
+              groupedTasks['Top Priority'] && groupedTasks['Top Priority'].map((task) => (
+            <DraggableTask key={task._id} task={task}>
+            <div key={task._id} className="taskCard">
+            <div className="taskHeader">
+            <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
+  <div onClick={() => handleIconClick(task)}>
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
+  </div>
+  <div className="taskTitle" onClick={() => handleTitleClick(task)}>
+    {task.taskName}
+  </div>
+  
+  <div style={{ position: 'absolute', left: '500px', top: '9px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
-                        {expandedTask === task._id ? 
+                        {expandedTasks.includes(task._id) ?
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
                         </div>
                         </div>
-                      </div>
-                    </div>
-                    {expandedTask === task._id && (
-                      <div className="taskDetails">
-                        <div id='break' className='taskBreak'/>
-                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
-                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
-
-                      </div>
-                    )}
-                  </div>
-                ))}
+</div>
+    </div>
+    {expandedTasks.includes(task._id) && (
+      <div className="taskDetails">
+        <div id='break' className='taskBreak'/>
+        <p style={{ marginTop: '17px'}}>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+        {task.notes !== "" && task.notes.trim() !== "" && (
+        <p>
+            <span style={{color:'#545454'}}>Notes:</span><br/>
+            <span style={{fontWeight:"bold"}}>{task.notes}</span>
+          </p>
+        )}
+      </div>
+    )}
+  </div>
+</DraggableTask>
+                ))
+                )}
             </div>
-
+            </DroppableTaskList>
+            <DroppableTaskList priority="Important" onDrop={handleDrop}>
             <div id='innerBoxOne' className='taskInnerRectangle'>
                 <div className="sectionHeader">Important</div>
-                {groupedTasks['Important'] &&
-                groupedTasks['Important'].map((task) => (
-
+                {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
+                  
+                  groupedTasks['Important'] && groupedTasks['Important'].map((task) => (
+                  <DraggableTask key={task._id} task={task}>
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                    <div className="taskTitle" onClick={() => handleTitleClick(task)}>
-                        {task.taskName}
-                        </div>
-                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+  <div onClick={() => handleIconClick(task)}>
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+  </div>
+  <div className="taskTitle" onClick={() => handleTitleClick(task)}>
+    {task.taskName}
+  </div>
+  <div style={{ position: 'absolute', left: '500px', top: '9px', display: 'flex', alignItems: 'center'}}>                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
-                        {expandedTask === task._id ? 
+                        {expandedTasks.includes(task._id) ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
                         </div>
-                        </div>
-                      </div>
+      </div>
+</div>
                     </div>
-                    {expandedTask === task._id && (
+                    {expandedTasks.includes(task._id) && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
-                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
-                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
+                        <p style={{ marginTop: '17px'}}>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        {task.notes !== "" && task.notes.trim() !== "" && (
+  <p>
+    <span style={{color:'#545454'}}>Notes:</span><br/>
+    <span style={{fontWeight:"bold"}}>{task.notes}</span>
+  </p>
+)}
                       </div>
                     )}
                   </div>
-                ))}
+                  </DraggableTask>
+                ))
+                
+                ) : null }
             </div>
+            </DroppableTaskList>
 
+            
+            <DroppableTaskList priority="Other" onDrop={handleDrop}>
             <div id='innerBoxTwo' className='taskInnerRectangle'>
             <div className="sectionHeader">Other</div>
-                {groupedTasks['Other'] &&
-                groupedTasks['Other'].map((task) => (
+            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
+              groupedTasks['Other'] && groupedTasks['Other'].map((task) => (
+                <DraggableTask key={task._id} task={task}>
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
-                    <div className="taskTitle" onClick={() => handleTitleClick(task)}>
-                        {task.taskName}
-                        </div>
-                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
-                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+  <div onClick={() => handleIconClick(task)}>
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+  </div>
+  <div className="taskTitle" onClick={() => handleTitleClick(task)}>
+    {task.taskName}
+  </div>
+  <div style={{ position: 'absolute', left: '500px', top: '9px', display: 'flex', alignItems: 'center'}}>                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
-                        {expandedTask === task._id ? 
+                        {expandedTasks.includes(task._id) ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
                         </div>
                         </div>
-                      </div>
+</div>
                     </div>
-                    {expandedTask === task._id && (
+                    {expandedTasks.includes(task._id) && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
-                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
-                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
-
+                        <p style={{ marginTop: '17px'}}>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        {task.notes !== "" && task.notes.trim() !== "" && (
+  <p>
+    <span style={{color:'#545454'}}>Notes:</span><br/>
+    <span style={{fontWeight:"bold"}}>{task.notes}</span>
+  </p>
+)}
                       </div>
                     )}
                   </div>
-                ))}
+                  </DraggableTask>
+                ))
+                ) : null}
             </div>
-
+            </DroppableTaskList>
         </Box>
       </div>
 
@@ -941,7 +1122,6 @@ const groupedTasks = tasks.reduce((acc,task) => {
           {/* ... (existing code) */}
         </div>
       </div>
-
       <div>
         <Box>
           <div
@@ -1049,6 +1229,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
           </div>
         </Box>
       </div>
+    </Box>
     </Box>
   );
 };

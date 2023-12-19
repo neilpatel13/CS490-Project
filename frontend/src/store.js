@@ -3,6 +3,7 @@ import { apiSlice } from './slices/apiSlice';
 import authReducer from './slices/authSlice';
 import taskReducer from './slices/taskSlice';
 import { taskApiSlice } from './slices/taskApiSlice';
+import refreshReducer from './slices/refreshSlice';
 
 const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
         [taskApiSlice.reducerPath]: taskApiSlice.reducer,
         auth: authReducer,
         tasks: taskReducer,
+        refresh: refreshReducer, // Add this line
     },
     middleware: (getDefaultMiddleware) => 
     getDefaultMiddleware().concat(apiSlice.middleware, taskApiSlice.middleware),

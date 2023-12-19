@@ -4,15 +4,17 @@ import {Button,
     Dialog,DialogActions,
     DialogContent,DialogContentText,
     DialogTitle, MenuItem, InputLabel} from '@mui/material';
-    import { useAddTaskMutation } from '../slices/taskApiSlice';
+import { useAddTaskMutation, useGetTasksQuery } from '../slices/taskApiSlice';
+import { useDispatch } from 'react-redux';
+import { toggleRefresh } from '../slices/refreshSlice';
 
-
-    const TaskAddingDialog = ({open, handleClose, onAddTask, selectedDate }) =>{
-
+    const TaskAddingDialog = ({open, handleClose, selectedDate }) =>{
+        const dispatch = useDispatch();
         const [taskName, setTaskName] = useState('');
         const [timer, setTimer] = useState(null);
         const [notes, setNotes] = useState('');
         const [priority, setPriority] = useState('');
+        const { refetch } = useGetTasksQuery();
 
         const priorityOptions = ['Top Priority', 'Important', 'Other'];
 
@@ -44,46 +46,46 @@ import {Button,
         //recent change
         const handleNumberChange = (event) => {
             const value = event.target.value;
-            if(!isNaN(value) && value >= 0) {
-                setTimer(value==='' ? null : value);
+            if (!isNaN(value) && value >= 0) {
+                setTimer(value === '' ? null : parseInt(value, 10));
             } else {
-                setTimer('0');
+                setTimer(0); // Set to 0 instead of '0' to keep the state as a number
             }
         };
 
 
         const [addTask, { isLoading: isAdding, isError: addError}] = useAddTaskMutation();
 
-        const handleSubmit = async (taskData) => {
-            if(taskName.trim()=== '' || timer.trim() ==='' || priority==='') {
+        const handleSubmit = async (event) => {
+            event.preventDefault();
+        
+            // Ensure taskName and priority are not empty and timer is a number
+            if(taskName.trim() === '' || priority === '' || isNaN(timer) || timer === null) {
                 return;
             }
-
+        
             const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-
-        const newTask = {
-            taskName,
-            numberOfTimers: timer, // Change this line to match the backend field name
-            notes,
-            priority,
-            date: formattedDate,
-        };
-
-            try{
-
+        
+            const newTask = {
+                taskName,
+                numberOfTimers: Number(timer), // Change this line to match the backend field name
+                notes,
+                priority,
+                date: formattedDate,
+            };
+        
+            try {
                 const addedTask = await addTask(newTask).unwrap();
-                onAddTask(newTask);
-                setTaskName('');
-                setTimer('');
-                setNotes('');
-                setPriority('');
+                // ... other code ...
         
                 handleClose();
-            } catch(error){
-                console.error('failed to add task', error);
+        
+                // Dispatch the toggleRefresh action
+                dispatch(toggleRefresh());
+                console.log('toggleRefresh action dispatched');
+            } catch (error) {
+                console.error('Failed to add task', error);
             }
-            onAddTask();
-
         };
 
         return(

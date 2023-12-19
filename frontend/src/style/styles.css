@@ -97,7 +97,7 @@ body {
   border-radius: 10px;
   background: #FFF;
   box-shadow: 2px 5px 50px 0px rgba(36, 37, 40, 0.10);
-  top: 25vh;
+  top: 22vh;
   left: 15vw;
   bottom: 10px;
   position: absolute;
@@ -123,16 +123,21 @@ body {
   background: #4B6DE9;
 }
 
-/**/
+#innerBox, #innerBoxOne, #innerBoxTwo {
+  min-height: 7rem !important; /* Adjust as needed */
+  min-width: 38rem !important; /* Adjust as needed */
+}
 
 
 .taskInnerRectangle{
-  margin:10px;
-  margin-top: 10px;
+  margin-right:10px;
+  margin-bottom: 10px;
+  margin-top: 40px;
+  margin-left: 0px;
   padding: 10px;
   display:flex;
   flex-direction: column;
-  width: 88%; /* trying to have this fill out the box more, was 25vh */
+  width: 100%; /* trying to have this fill out the box more, was 25vh */
   border-radius: 8px;
   flex-grow: 1;
   flex-shrink: 0;
@@ -155,9 +160,11 @@ body {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
+  margin-left: 5px;
   padding: 15px;
   transition: box-shadow 0.2s;
   cursor: pointer;
+  width: 98% !important;
 }
 
 .taskHeader {
