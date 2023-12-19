@@ -990,7 +990,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
           top: "5%",
           backgroundColor: "#dee6fc",
           borderRadius: "10px",
-          padding: "7px",
+          padding: "15px",
           width: "40vw",
           height: "7vh",
         }}
