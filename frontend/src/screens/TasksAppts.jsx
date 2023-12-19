@@ -73,7 +73,6 @@ const TasksAppts = () => {
   const selectedDateObj = new Date(formattedDate);
   selectedDateObj.setHours(0, 0, 0, 0);
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
 
     const [triggerFetch, setTriggerFetch] = useState(false);
     const [dialogOpen, setDialogOpen ] = useState(false);
