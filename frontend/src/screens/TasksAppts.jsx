@@ -38,7 +38,6 @@ import SyncAltIcon from '@mui/icons-material/SyncAlt';
 const TasksAppts = () => {
   const refresh = useSelector((state) => state.refresh.value);
   console.log('refresh state:', refresh);
-  const dateInEST = moment().tz('America/New_York');
   const currentDate = moment().tz('America/New_York');
   console.log('currentDate:', currentDate);
   const [selectedDate, setSelectedDate] = useState({
@@ -118,16 +117,14 @@ const TasksAppts = () => {
     }, [selectedDate, triggerFetch, hasClickedPlanDay]);
 
 
-const handlePlanDayClick = () => {
-  // Set selectedDate to the current date when the "Plan Day" button is clicked
-  setSelectedDate({
-    year: currentDate.format('YYYY'),
-    month: currentDate.format('MM'),
-    day: currentDate.format('DD'),
-  });
-  setTriggerFetch(Date.now()); // Set triggerFetch to the current timestamp
-  setHasClickedPlanDay(true); // Set hasClickedPlanDay to true
-};
+    const handlePlanDayClick = () => {
+      const today = moment().tz('America/New_York');
+      setSelectedDate({
+        year: today.year(),
+        month: today.month() + 1, // Months are zero-indexed in moment.js
+        day: today.date(),
+      });
+    };
 
     const handleDateChange = (field, value) => {
     setSelectedDate(prev => {
