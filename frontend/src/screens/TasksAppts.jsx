@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import logo from '../assets/mainLogo.svg';
+import React, { useState, useEffect, useCallback } from 'react';import logo from '../assets/mainLogo.svg';
 import lo from '../assets/logout.svg';
 ///import usr from '../assets/profile.svg';
 ///import lock from '../assets/lock.svg';
@@ -23,11 +22,33 @@ import TimerModal from '../components/FocusTime';
 // edit icon import
 import { useGetTasksQuery } from '../slices/taskApiSlice';
 import { isToday, addDays, isSameDay } from 'date-fns';
+import moment from 'moment-timezone';
 
 
 
 
 const TasksAppts = () => {
+  const dateInEST = moment().tz('America/New_York');
+  const currentDate = moment().tz('America/New_York');
+  const [selectedDate, setSelectedDate] = useState({
+    year: currentDate.format('YYYY'),
+    month: currentDate.format('MM'),
+    day: currentDate.format('DD'),
+  });
+  const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
+  const [hasClickedPlanDay, setHasClickedPlanDay] = useState(false);
+
+  const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
+
+  const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+  const [tasks, setTasks] = useState([]);
+
+  // Define selectedDateObj and today here
+  const selectedDateObj = new Date(formattedDate);
+  selectedDateObj.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
     const [triggerFetch, setTriggerFetch] = useState(false);
     const [dialogOpen, setDialogOpen ] = useState(false);
     const [expandedTask, setExpandedTask] = useState(null);
@@ -42,79 +63,61 @@ const TasksAppts = () => {
     const { userInfo } = useSelector((state) => state.auth);
     //loading tasks if they exist 
 
-    const [tasks, setTasks] = useState([]);
-
     const [shouldFetchTasks, setShouldFetchTasks] = useState(false);
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
-    const [selectedDate, setSelectedDate] = useState({
-      year: today.getFullYear().toString(),
-      month: (today.getMonth() + 1).toString().padStart(2, '0'),
-      day: today.getDate().toString().padStart(2, '0'),
-  });
+    const { data: fetchedTasks, error, refetch } = useGetTasksQuery(formattedDate);
+    console.log('Fetched tasks:', fetchedTasks);
+    console.log('Fetch error:', error);
 
-    const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-
-    const [displayCurrentDayTasks, setDisplayCurrentDayTasks] = useState(false);
-    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate, {
-      skip: !displayCurrentDayTasks && isToday(selectedDate)
-    });
-
-    const [loadCurrentDayTasks, setLoadCurrentDayTasks] = useState(false);
+    useEffect(() => {
+      const selectedDateIsNotCurrentDate = !moment(selectedDate).isSame(currentDate, 'day');
+      const shouldFetchTasks = selectedDateIsNotCurrentDate || (selectedDateIsNotCurrentDate === false && loadCurrentDayTasks);
+    
+      if (shouldFetchTasks) {
+        refetch().then((result) => {
+          if (result.isSuccess) {
+            setTasks(result.data);
+          }
+        });
+      }
+    }, [selectedDate, triggerFetch, loadCurrentDayTasks]);
 
     const handlePlanDayClick = () => {
-      const currentDate = new Date();
+      // Set selectedDate to the current date when the "Plan Day" button is clicked
       setSelectedDate({
-        year: currentDate.getFullYear().toString(),
-        month: (currentDate.getMonth() + 1).toString().padStart(2, '0'),
-        day: currentDate.getDate().toString().padStart(2, '0'),
+        year: currentDate.format('YYYY'),
+        month: currentDate.format('MM'),
+        day: currentDate.format('DD'),
       });
-      setDisplayCurrentDayTasks(true);
-      fetchTasks();
+      setTriggerFetch(Date.now()); // Set triggerFetch to the current timestamp
+      setLoadCurrentDayTasks(true); // Set loadCurrentDayTasks to true
     };
-
     const handleDateChange = (field, value) => {
-      setSelectedDate(prev => {
-        const updatedDate = { ...prev, [field]: value };
-        const newSelectedDate = new Date(updatedDate.year, updatedDate.month - 1, updatedDate.day);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (newSelectedDate <= today) {
-          fetchTasks();
-        } else {
-          setTasks([]); // Clear tasks for future dates
-          setDisplayCurrentDayTasks(false); // Reset display for future dates
-        }
-        return updatedDate;
-      });
-    };
-
+    setSelectedDate(prev => {
+      return { ...prev, [field]: value };
+    });
+    // Reset shouldFetchTasks to false only if the new date is the current date
+    const newDate = { ...selectedDate, [field]: value };
+    const newDateIsCurrentDate = moment(newDate).isSame(currentDate, 'day');
+    if (newDateIsCurrentDate) {
+      setShouldFetchTasks(false);
+    }
+  };
 
 // Function to fetch tasks based on the selected date
-const fetchTasks = () => {
-  const selectedDateObj = new Date(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  if (selectedDateObj < today) {
-      if (!isLoading && !isError && initialTasks) {
-          setTasks(initialTasks);
-      }
+const fetchTasks = useCallback(async () => {
+  const { data: fetchedTasks } = await useGetTasksQuery(formattedDate);
+  if (fetchedTasks) {
+    console.log('Fetched tasks:', fetchedTasks);
+    setTasks(fetchedTasks); // Update the tasks state
+  } else {
+    setTasks([]); // Clear tasks if no tasks were fetched
   }
-};
+}, [selectedDate]);
 
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
-
-  useEffect(() => {
-        if (displayCurrentDayTasks) {
-            fetchTasks();
-        }
-    }, [displayCurrentDayTasks, initialTasks, isLoading, isError]);
-
-    
-
     
 
 //function for opening the focus time modal
@@ -157,13 +160,13 @@ const handleTaskClick = (taskId) => {
 };
 
 //handling priority 
-const groupedTasks = tasks.reduce((acc,task) => {
+const groupedTasks = tasks ? tasks.reduce((acc,task) => {
   if(!acc[task.priority]){
     acc[task.priority] = [];
   }
     acc[task.priority].push(task);
     return acc;
-}, {});
+}, {}) : {};
 
 //logout api call
 const [logoutApiCall] = useLogoutMutation();
@@ -288,8 +291,8 @@ const [logoutApiCall] = useLogoutMutation();
             <div id='innerBox' className='taskInnerRectangle'>
             <div className="sectionHeader">Top Priority</div>
 
-              {groupedTasks['Top Priority'] &&
-                groupedTasks['Top Priority'].map((task) => (
+            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
+              groupedTasks['Top Priority'] && groupedTasks['Top Priority'].map((task) => (
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                       {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
@@ -316,12 +319,13 @@ const [logoutApiCall] = useLogoutMutation();
                       </div>
                     )}
                   </div>
-                ))}
+                ))
+                ) : null }
             </div>
             <div id='innerBoxOne' className='taskInnerRectangle'>
                 <div className="sectionHeader">Important</div>
-                {groupedTasks['Important'] &&
-                groupedTasks['Important'].map((task) => (
+                {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
+                  groupedTasks['Important'] && groupedTasks['Important'].map((task) => (
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
@@ -347,12 +351,13 @@ const [logoutApiCall] = useLogoutMutation();
                       </div>
                     )}
                   </div>
-                ))}
+                ))
+                ) : null }
             </div>
             <div id='innerBoxTwo' className='taskInnerRectangle'>
             <div className="sectionHeader">Other</div>
-                {groupedTasks['Other'] &&
-                groupedTasks['Other'].map((task) => (
+            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
+              groupedTasks['Other'] && groupedTasks['Other'].map((task) => (
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
@@ -378,7 +383,8 @@ const [logoutApiCall] = useLogoutMutation();
                       </div>
                     )}
                   </div>
-                ))}
+                ))
+                ) : null}
             </div>
         </Box>
       </div>

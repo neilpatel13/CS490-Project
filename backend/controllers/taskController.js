@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Task from '../models/taskModel.js';
 import User from '../models/userModel.js';
+import moment from 'moment-timezone';
 
 // Add a new task
 export const addTask = asyncHandler(async (req, res) => {
@@ -94,24 +95,26 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
     const userDate = new Date(req.query.date);
     userDate.setHours(0, 0, 0, 0); // Set the time to the start of the day
 
-    // Convert userDate to UTC
-    const userDateUTC = new Date(Date.UTC(userDate.getFullYear(), userDate.getMonth(), userDate.getDate()));
-
-    // Calculate nextDay in UTC
-    const nextDayUTC = new Date(userDateUTC);
-    nextDayUTC.setDate(userDateUTC.getDate() + 1);
+    // Calculate nextDay in local time
+    const nextDay = new Date(userDate);
+    nextDay.setDate(userDate.getDate() + 1);
 
     let query = {
       user: req.user._id,
-      date: { $lt: nextDayUTC }, // Tasks on or before the selected date
     };
 
-    // If the selected date is before the current date, include tasks that are not complete
+    // If the selected date is the current date, include tasks that are not complete
     const currentDate = new Date();
-currentDate.setHours(0, 0, 0, 0);
-if (userDate.getTime() === currentDate.getTime()) {
-  query.state = 'complete'; // Tasks that are complete
-}
+    currentDate.setHours(0, 0, 0, 0);
+    if (userDate.getTime() === currentDate.getTime()) {
+      query.state = { $ne: 'complete' }; // Tasks that are not complete
+      query.date = { $lte: nextDay }; // Tasks on or before the selected date
+    } else {
+      query.$or = [
+        { state: { $ne: 'complete' }, date: { $lte: nextDay } }, // Tasks that are not complete and were created on or before the selected date
+        { state: 'complete', date: { $gte: userDate, $lt: nextDay } } // Tasks that are complete and were created on the selected date
+      ];
+    }
 
     const tasks = await Task.find(query);
     res.json(tasks);
