@@ -73,83 +73,78 @@ const TasksAppts = () => {
   });
   // adding some logic for focus time here
 
-  const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
-  const {
-    data: initialTasks,
-    isLoading,
-    isError,
-  } = useGetTasksQuery(formattedDate);
-  const [tasks, setTasks] = useState([]);
+ 
 
-  //function for opening the focus time modal
-  const handleTitleClick = (task) => {
-    setCurrentTask(task);
-    setModalOpen(true);
-  };
-  const handleModalClose = () => {
+
+    const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
+    const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
+    const [tasks, setTasks] = useState([]);
+
+
+//function for opening the focus time modal
+const handleTitleClick = (task) => {
+  setCurrentTask(task);
+  setModalOpen(true);
+};
+ const handleModalClose = () => {
     setModalOpen(false);
   };
 
-  //dialog functions for adding tasks
-  const handleClickOpen = () => {
-    setDialogOpen(true);
-  };
-  const handleClose = () => {
-    setDialogOpen(false);
-  };
+    //dialog functions for adding tasks
+    const handleClickOpen = () => {
+        setDialogOpen(true);
+    };
+    const handleClose = () =>{
+        setDialogOpen(false);
+    };
 
-  const [lastUpdated, setLastUpdated] = useState(Date.now());
 
-  const onAddTask = (newTask) => {
-    console.log("Before adding task", tasks);
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-    console.log("after adding tasks", tasks);
-    setLastUpdated(Date.now());
-  };
+    const [lastUpdated, setLastUpdated] = useState(Date.now());
 
-  const handleNewTaskAdded = () => {
-    setTriggerFetch((prev) => !prev); // Toggle the trigger to re-fetch tasks
-  };
+    const onAddTask = (newTask) => {
+      console.log('Before adding task', tasks);
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+      console.log('after adding tasks', tasks);
+      setLastUpdated(Date.now());
+    }
 
-  useEffect(() => {
-    const fetchTasks = async () => {
+    const handleNewTaskAdded = () => {
+      setTriggerFetch(prev => !prev); // Toggle the trigger to re-fetch tasks
+    };
+
+    useEffect(() => {
+      const fetchTasks = async () => {
       if (!isLoading && !isError && initialTasks) {
-        const currentDate = new Date();
-        const selectedDateObj = new Date(formattedDate);
+          const currentDate = new Date();
+          const selectedDateObj = new Date(formattedDate);
 
-        const filteredTasks = initialTasks.filter((task) => {
-          const taskDate = new Date(task.date);
+          const filteredTasks = initialTasks.filter(task => {
+              const taskDate = new Date(task.date);
 
-          // Include tasks that are not 'Complete' and are either from the past or the selected date
-          return task.state !== "Complete" && taskDate <= selectedDateObj;
-        });
+              // Include tasks that are not 'Complete' and are either from the past or the selected date
+              return task.state !== 'Complete' && (taskDate <= selectedDateObj);
+          });
 
-        setTasks(filteredTasks);
+          setTasks(filteredTasks);
+
       }
     };
 
     fetchTasks();
-  }, [
-    triggerFetch,
-    lastUpdated,
-    initialTasks,
-    isLoading,
-    isError,
-    formattedDate,
-  ]);
+  }, [triggerFetch, lastUpdated, initialTasks, isLoading, isError, formattedDate]);
 
-  //toggle expanded task
-  const handleTaskClick = (taskId) => {
-    setExpandedTask((prevExpandedTask) =>
+//toggle expanded task
+const handleTaskClick = (taskId) => {
+  setExpandedTask((prevExpandedTask) =>
       prevExpandedTask === taskId ? null : taskId
-    );
-  };
+  );
+};
 
-  //handling priority
-  const groupedTasks = tasks.reduce((acc, task) => {
-    if (!acc[task.priority]) {
-      acc[task.priority] = [];
-    }
+//handling priority 
+const groupedTasks = tasks.reduce((acc,task) => {
+  if(!acc[task.priority]){
+    acc[task.priority] = [];
+  }
     acc[task.priority].push(task);
     return acc;
   }, {});
@@ -181,11 +176,13 @@ const TasksAppts = () => {
   };
 
   const handleDateChange = (field, value) => {
+
     setSelectedDate((prev) => ({ ...prev, [field]: value }));
     const updatedDate = { ...selectedDate, [field]: value };
     const dateStr = `${updatedDate.year}-${updatedDate.month}-${updatedDate.day}`;
     listEventsofDay(dateStr);
   };
+
 
   // Generate an array of years around the selected year
   const generateYearRange = () => {
@@ -680,293 +677,126 @@ const TasksAppts = () => {
             Tasks
           </div>
 
-          <Fab
-            onClick={handleClickOpen}
-            size="small"
-            color="primary"
-            aria-label="add"
-            sx={{ width: "30px", height: "30px", marginLeft: "10px" }}
-          >
-            <AddIcon fontSize="1.25rem" />
-          </Fab>
-        </div>
-        <TaskAddingDialog
-          open={dialogOpen}
-          handleClose={handleClose}
-          onAddTask={handleNewTaskAdded}
-          selectedDate={selectedDate}
-        />
-        {currentTask && (
-          <TimerModal
-            open={modalOpen}
-            handleClose={handleModalClose}
-            task={currentTask}
-          />
-        )}
-        <div id="taskBox" className="taskRectangle">
-          <Box
-            display="flex"
-            spacing={4}
-            flexDirection="column"
-            justifyContent="space-between"
-            alignItems="center" //made a change here, was 'flex-start'
-            sx={{ bgcolor: "#FFF" }}
-          >
-            {/* added drag drop context here */}
-            <div id="innerBox" className="taskInnerRectangle">
-              <div className="sectionHeader">Top Priority</div>
+      <Fab onClick={handleClickOpen} size="small" color="primary" aria-label="add" sx={{width:'30px', height:'30px', marginLeft:'10px'}}>
+        <AddIcon fontSize="1.25rem" />
+    </Fab>
+    </div>
+    <TaskAddingDialog open={dialogOpen} handleClose={handleClose} onAddTask={handleNewTaskAdded} selectedDate={selectedDate} />
+    {currentTask && <TimerModal open={modalOpen} handleClose={handleModalClose} task={currentTask} />}
+      <div id='taskBox' className='taskRectangle'>
+               <Box
+        display="flex"
+        spacing={4}
+        flexDirection="column"
+        justifyContent="space-between"
+        alignItems="center" //made a change here, was 'flex-start'
+        sx={{bgcolor:'#FFF'}}
+        >
+      {/* added drag drop context here */}
+            <div id='innerBox' className='taskInnerRectangle'>
+            <div className="sectionHeader">Top Priority</div>
 
-              {groupedTasks["Top Priority"] &&
-                groupedTasks["Top Priority"].map((task) => (
+              {groupedTasks['Top Priority'] &&
+                groupedTasks['Top Priority'].map((task) => (
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
                       {/* added drag icon and fixed issue where it was placed relatively to the task title instead of fixed */}
-                      <div
-                        style={{
-                          position: "relative",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div
-                          className="taskTitle"
-                          onClick={() => handleTitleClick(task)}
-                        >
-                          {task.taskName}
+                      <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
+                      <div className="taskTitle" onClick={() => handleTitleClick(task)}>
+                        {task.taskName}
                         </div>
-                        <div
-                          style={{
-                            position: "absolute",
-                            left: "400px",
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <OpenWithIcon
-                            style={{
-                              color: "#292D32",
-                              fontSize: "1.25rem",
-                              top: "15.75%",
-                              marginRight: "15px",
-                            }}
-                          />
-                          <div
-                            style={{ marginTop: "-3px" }}
-                            onClick={() => handleTaskClick(task._id)}
-                          >
-                            {expandedTask === task._id ? (
-                              <ExpandCircleDownOutlinedIcon
-                                style={{
-                                  color: "#292D32",
-                                  fontSize: "1.25rem",
-                                }}
-                              />
-                            ) : (
-                              <ExpandCircleDownOutlinedIcon
-                                style={{
-                                  color: "#292D32",
-                                  fontSize: "1.25rem",
-                                  transform: "rotate(270deg)",
-                                }}
-                              />
-                            )}
-                          </div>
+                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
+                        : 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
+                        </div>
                         </div>
                       </div>
                     </div>
                     {expandedTask === task._id && (
                       <div className="taskDetails">
-                        <div id="break" className="taskBreak" />
-                        <p>
-                          Number of Pomodoro Timers (25 mins
-                          each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;
-                          <span
-                            style={{ color: "#FE754D", fontWeight: "bold" }}
-                          >
-                            {task.timer}
-                          </span>
-                        </p>
-                        <p>
-                          <span style={{ color: "#545454" }}>Notes:</span>
-                          <br />
-                          <span style={{ fontWeight: "bold" }}>
-                            {task.notes}
-                          </span>
-                        </p>
+                        <div id='break' className='taskBreak'/>
+                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
+
                       </div>
                     )}
                   </div>
                 ))}
             </div>
 
-            <div id="innerBoxOne" className="taskInnerRectangle">
-              <div className="sectionHeader">Important</div>
-              {groupedTasks["Important"] &&
-                groupedTasks["Important"].map((task) => (
+            <div id='innerBoxOne' className='taskInnerRectangle'>
+                <div className="sectionHeader">Important</div>
+                {groupedTasks['Important'] &&
+                groupedTasks['Important'].map((task) => (
+
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
-                      <div
-                        style={{
-                          position: "relative",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div
-                          className="taskTitle"
-                          onClick={() => handleTitleClick(task)}
-                        >
-                          {task.taskName}
+                    <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
+                    <div className="taskTitle" onClick={() => handleTitleClick(task)}>
+                        {task.taskName}
                         </div>
-                        <div
-                          style={{
-                            position: "absolute",
-                            left: "400px",
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <OpenWithIcon
-                            style={{
-                              color: "#292D32",
-                              fontSize: "1.25rem",
-                              top: "15.75%",
-                              marginRight: "15px",
-                            }}
-                          />
-                          <div
-                            style={{ marginTop: "-3px" }}
-                            onClick={() => handleTaskClick(task._id)}
-                          >
-                            {expandedTask === task._id ? (
-                              <ExpandCircleDownOutlinedIcon
-                                style={{
-                                  color: "#292D32",
-                                  fontSize: "1.25rem",
-                                }}
-                              />
-                            ) : (
-                              <ExpandCircleDownOutlinedIcon
-                                style={{
-                                  color: "#292D32",
-                                  fontSize: "1.25rem",
-                                  transform: "rotate(270deg)",
-                                }}
-                              />
-                            )}
-                          </div>
+                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
+                        : 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
+                        </div>
                         </div>
                       </div>
                     </div>
                     {expandedTask === task._id && (
                       <div className="taskDetails">
-                        <div id="break" className="taskBreak" />
-                        <p>
-                          Number of Pomodoro Timers (25 mins
-                          each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;
-                          <span
-                            style={{ color: "#FE754D", fontWeight: "bold" }}
-                          >
-                            {task.timer}
-                          </span>
-                        </p>
-                        <p>
-                          <span style={{ color: "#545454" }}>Notes:</span>
-                          <br />
-                          <span style={{ fontWeight: "bold" }}>
-                            {task.notes}
-                          </span>
-                        </p>
+                        <div id='break' className='taskBreak'/>
+                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
                       </div>
                     )}
                   </div>
                 ))}
             </div>
-            <div id="innerBoxTwo" className="taskInnerRectangle">
-              <div className="sectionHeader">Other</div>
-              {groupedTasks["Other"] &&
-                groupedTasks["Other"].map((task) => (
+
+            <div id='innerBoxTwo' className='taskInnerRectangle'>
+            <div className="sectionHeader">Other</div>
+                {groupedTasks['Other'] &&
+                groupedTasks['Other'].map((task) => (
                   <div key={task._id} className="taskCard">
                     <div className="taskHeader">
-                      <div
-                        style={{
-                          position: "relative",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div
-                          className="taskTitle"
-                          onClick={() => handleTitleClick(task)}
-                        >
-                          {task.taskName}
+                    <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
+                    <div className="taskTitle" onClick={() => handleTitleClick(task)}>
+                        {task.taskName}
                         </div>
-                        <div
-                          style={{
-                            position: "absolute",
-                            left: "400px",
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <OpenWithIcon
-                            style={{
-                              color: "#292D32",
-                              fontSize: "1.25rem",
-                              top: "15.75%",
-                              marginRight: "15px",
-                            }}
-                          />
-                          <div
-                            style={{ marginTop: "-3px" }}
-                            onClick={() => handleTaskClick(task._id)}
-                          >
-                            {expandedTask === task._id ? (
-                              <ExpandCircleDownOutlinedIcon
-                                style={{
-                                  color: "#292D32",
-                                  fontSize: "1.25rem",
-                                }}
-                              />
-                            ) : (
-                              <ExpandCircleDownOutlinedIcon
-                                style={{
-                                  color: "#292D32",
-                                  fontSize: "1.25rem",
-                                  transform: "rotate(270deg)",
-                                }}
-                              />
-                            )}
-                          </div>
+                        <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
+                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+                        <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
+                        {expandedTask === task._id ? 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
+                        : 
+                        <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
+                        </div>
                         </div>
                       </div>
                     </div>
                     {expandedTask === task._id && (
                       <div className="taskDetails">
-                        <div id="break" className="taskBreak" />
-                        <p>
-                          Number of Pomodoro Timers (25 mins
-                          each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;
-                          <span
-                            style={{ color: "#FE754D", fontWeight: "bold" }}
-                          >
-                            {task.timer}
-                          </span>
-                        </p>
-                        <p>
-                          <span style={{ color: "#545454" }}>Notes:</span>
-                          <br />
-                          <span style={{ fontWeight: "bold" }}>
-                            {task.notes}
-                          </span>
-                        </p>
+                        <div id='break' className='taskBreak'/>
+                        <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
+                        <p><span style={{color:'#545454'}}>Notes:</span><br/><span style={{fontWeight:"bold"}}>{task.notes}</span></p>
+
                       </div>
                     )}
                   </div>
                 ))}
             </div>
-          </Box>
-        </div>
+
+        </Box>
+      </div>
+
       </Box>
 
       <div
@@ -1005,12 +835,14 @@ const TasksAppts = () => {
           {/* Month Select */}
           <Select
             value={selectedDate.month}
+
             onChange={(e) => handleMonthChange(e.target.value)}
             style={{
               marginLeft: "5px",
               fontFamily: "DM Sans",
               fontSize: "12px",
             }}
+
           >
             {monthOptions.map((month) => (
               <MenuItem key={month} value={month}>
@@ -1172,6 +1004,7 @@ const TasksAppts = () => {
                   top: "3%",
                 }}
               >
+
                 {timeSlots.map((timeSlot, index) => (
                   <div
                     key={index}
@@ -1181,6 +1014,7 @@ const TasksAppts = () => {
                     <div style={{ width: "50px", height: "50px" }}>
                       {timeSlot.hour}
                     </div>
+
                     <div
                       style={{
                         display: "flex",
