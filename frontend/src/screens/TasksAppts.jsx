@@ -25,9 +25,13 @@ import TimerModal from '../components/FocusTime';
 import React, { useEffect, useState, useContext } from 'react';
 import { useGetTasksQuery } from '../slices/taskApiSlice';
 import { isToday } from "date-fns";
-
-
-
+//new imports for task status
+import { updateTaskState } from '../slices/taskSlice';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
+import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
+import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
+import { useUpdateTaskStateMutation } from '../slices/taskApiSlice';
 
 const TasksAppts = () => {
     const [triggerFetch, setTriggerFetch] = useState(false);
@@ -80,6 +84,49 @@ const TasksAppts = () => {
     const formattedDate = `${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`;
     const { data: initialTasks, isLoading, isError } = useGetTasksQuery(formattedDate);
     const [tasks, setTasks] = useState([]);
+
+//logic for the task status icons
+    const TaskStatusIcon=({ task }) => {
+      const [ updateTaskState ] = useUpdateTaskStateMutation();
+      const [taskState, setTaskState] = useState(task.state);
+      
+      const handleIconClick = () => {
+        let nextState;
+        switch (taskState) {
+          case 'not started':
+            nextState = 'in progress';
+            break;
+          case 'in progress':
+            nextState = 'complete';
+            break;
+          case 'complete':
+            nextState = 'not started';
+            break;
+          case 'rolled over':
+            nextState = 'complete';
+            break;
+          default:
+            nextState = 'not started';
+      }
+      updateTaskState({ _id: task._id, state: nextState });
+      setTaskState(nextState);
+    };
+      const getStatusIcon = () => {
+        switch (taskState) {
+          case 'not started':
+            return <CircleOutlinedIcon onClick={handleIconClick} />;
+          case 'in progress':
+            return <HourglassEmptyOutlinedIcon onClick={handleIconClick} />;
+          case 'complete':
+            return <CheckCircleOutlineIcon onClick={handleIconClick} />;
+          case 'rolled over':
+            return <SyncAltOutlinedIcon onClick={handleIconClick} />;
+          default:
+            return <CircleOutlinedIcon onClick={handleIconClick} />;
+      }
+    };
+    return getStatusIcon();
+  };
 
 //function for opening the focus time modal
 const handleTitleClick = (task) => {
@@ -673,6 +720,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
                       <div className="taskTitle" onClick={() => handleTitleClick(task)}>
                         {task.taskName}
                         </div>
+                        <TaskStatusIcon task={task} />
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
@@ -706,6 +754,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
                     <div className="taskTitle" onClick={() => handleTitleClick(task)}>
                         {task.taskName}
                         </div>
+                        <TaskStatusIcon task={task} />
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
@@ -737,6 +786,7 @@ const groupedTasks = tasks.reduce((acc,task) => {
                     <div className="taskTitle" onClick={() => handleTitleClick(task)}>
                         {task.taskName}
                         </div>
+                        <TaskStatusIcon task={task} />
                         <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>

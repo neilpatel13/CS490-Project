@@ -10,13 +10,13 @@ const taskSlice = createSlice({
         addTask: (state, action) => {
             state.push(action.payload);
         },
-       /* updateTaskState: (state, action) => {
+       updateTaskState: (state, action) => {
             // Find the task with the matching ID and update its state
             const task = state.find(task => task.id === action.payload.id);
             if (task) {
               task.state = action.payload.state;
             }
-          },*/ //here for when update task is implemented 
+          }, //here for when update task is implemented 
     },
 });
 

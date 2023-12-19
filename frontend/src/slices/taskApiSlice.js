@@ -14,10 +14,18 @@ export const taskApiSlice = apiSlice.injectEndpoints({
         body: newTask,
       }),
     }),
+    updateTaskState: builder.mutation({
+      query: ({ _id, state }) => ({
+        url: `/api/tasks/${_id}/state`,
+        method: 'PUT',
+        body: { state },
+      }),
+    }),
   }),
 });
 
 export const {
   useGetTasksQuery,
   useAddTaskMutation,
+  useUpdateTaskStateMutation
 } = taskApiSlice;
