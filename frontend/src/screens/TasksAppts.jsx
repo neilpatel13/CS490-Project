@@ -271,6 +271,15 @@ const groupedTasks = tasks.reduce((acc,task) => {
       events: [],
     };
   });
+  const markPastTimeSlots = (timeSlots, currentTime) => {
+    return timeSlots.map((slot) => {
+      const slotHour = convertTimeStringToNumber(slot.hour);
+      return {
+        ...slot,
+        isPast: slotHour < currentTime,
+      };
+    });
+  };
   useEffect(() => {
     setTimeSlots(initialTimeSlot);
     if (initialized) {
@@ -356,8 +365,12 @@ const groupedTasks = tasks.reduce((acc,task) => {
         events: eventsInTimeSlot,
       };
     });
+    const newUpdatedTimeSlots = markPastTimeSlots(
+      updatedTimeSlots,
+      currentHour
+    );
     //console.log("Updated time slots", updatedTimeSlots);
-    setTimeSlots(updatedTimeSlots);
+    setTimeSlots(newUpdatedTimeSlots);
   };
 
   const listEventsofDay = async (selectedDate) => {
@@ -533,8 +546,8 @@ const groupedTasks = tasks.reduce((acc,task) => {
         currentHour
       );
 
-      // Update the state with the filled schedule
-      setTimeSlots(filledTimeSlots);
+      const updatedTimeSlots = markPastTimeSlots(filledTimeSlots, currentHour);
+      setTimeSlots(updatedTimeSlots);
       setPlanDayClicked(true);
     } catch (error) {
       console.error("Error planning the day:", error);
@@ -1011,10 +1024,12 @@ const groupedTasks = tasks.reduce((acc,task) => {
                     data-testid="time-slot"
                     style={{ height: "40px", display: "flex" }}
                   >
-                    <div style={{ width: "50px", height: "50px" }}>
+                    <div
+                      style={{ width: "50px", height: "50px" }}
+                      className={timeSlot.isPast ? "past-time" : ""}
+                    >
                       {timeSlot.hour}
                     </div>
-
                     <div
                       style={{
                         display: "flex",
@@ -1027,6 +1042,11 @@ const groupedTasks = tasks.reduce((acc,task) => {
                       {timeSlot.events.map((event) => (
                         <div
                           key={event.id}
+                          className={`event-slot ${
+                            event.isPast ? "past-event" : ""
+                          } ${
+                            event.isFromTask ? "task-event" : "non-task-event"
+                          }`}
                           style={{
                             border: `1px solid ${
                               !event.isFromTask ? "#D3D3D3" : "#007BFF"
@@ -1034,8 +1054,9 @@ const groupedTasks = tasks.reduce((acc,task) => {
                             borderRadius: "5px",
                             padding: "5px",
                             marginBottom: "5px",
-                            backgroundColor: "#fff",
+                            backgroundColor: timeSlot.isPast ? "grey" : "#fff",
                             width: "100%", // Ensure full width
+                            color: event.isPast ? "#000" : "#000", // Adjust text color as needed
                           }}
                         >
                           {event.summary}
