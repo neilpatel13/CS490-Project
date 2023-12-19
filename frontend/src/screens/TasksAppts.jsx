@@ -988,7 +988,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
           position: "absolute",
           left: "15%",
           top: "5%",
-          backgroundColor: "#dee6fc",
+          backgroundColor: "#e6ecfc",
           borderRadius: "10px",
           padding: "15px",
           width: "40vw",
