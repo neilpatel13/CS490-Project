@@ -142,6 +142,7 @@ const TasksAppts = () => {
       }
     }, [selectedDate, triggerFetch, hasClickedPlanDay]);
 
+const selectedDateIsInFuture = moment(selectedDateObj).isAfter(today);
 
 const handlePlanDayClick = () => {
   const today = moment().tz('America/New_York');
@@ -833,7 +834,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             <div id='innerBox' className='taskInnerRectangle'>
             <div className="sectionHeader">Top Priority</div>
 
-            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) && (
+            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) && !selectedDateIsInFuture && (
               groupedTasks['Top Priority'] && groupedTasks['Top Priority'].map((task) => (
             <DraggableTask key={task._id} task={task}>
             <div key={task._id} className="taskCard">
@@ -881,7 +882,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             <DroppableTaskList priority="Important" onDrop={handleDrop}>
             <div id='innerBoxOne' className='taskInnerRectangle'>
                 <div className="sectionHeader">Important</div>
-                {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
+                {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) && !selectedDateIsInFuture && (
                   
                   groupedTasks['Important'] && groupedTasks['Important'].map((task) => (
                   <DraggableTask key={task._id} task={task}>
@@ -923,7 +924,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
                   </DraggableTask>
                 ))
                 
-                ) : null }
+                )}
             </div>
             </DroppableTaskList>
 
@@ -931,7 +932,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             <DroppableTaskList priority="Other" onDrop={handleDrop}>
             <div id='innerBoxTwo' className='taskInnerRectangle'>
             <div className="sectionHeader">Other</div>
-            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) ? (
+            {(selectedDateObj < today || (selectedDateObj.getTime() === today.getTime() && hasClickedPlanDay)) && !selectedDateIsInFuture && (
               groupedTasks['Other'] && groupedTasks['Other'].map((task) => (
                 <DraggableTask key={task._id} task={task}>
                   <div key={task._id} className="taskCard">
@@ -971,7 +972,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
                   </div>
                   </DraggableTask>
                 ))
-                ) : null}
+                )}
             </div>
             </DroppableTaskList>
         </Box>
