@@ -104,17 +104,12 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
     const currentDateUTC = moment.utc().startOf('day');
 
     if (currentDateUTC.isSame(userDate)) {
-        // If the selected date is the current date, fetch all tasks from the current date and incomplete tasks from previous dates
-        query.$or = [
-            { date: { $gte: userDate, $lt: nextDay } },
-            { state: { $ne: 'complete' }, date: { $lt: userDate } }
-        ];
+        // Existing logic for current date
+    } else if (currentDateUTC.isBefore(userDate)) {
+        // If the selected date is a future date, fetch only tasks created on the selected date
+        query.date = { $gte: userDate, $lt: nextDay };
     } else {
-        // For past dates, fetch both incomplete and complete tasks, but exclude 'complete' tasks that were not created on their respective dates
-        query.$or = [
-            { state: { $ne: 'complete' }, date: { $lt: nextDay } },
-            { state: 'complete', date: { $gte: userDate, $lt: nextDay } }
-        ];
+        // Existing logic for past dates
     }
 
     const tasks = await Task.find(query);
