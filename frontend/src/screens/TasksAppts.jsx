@@ -1174,13 +1174,14 @@ color: 'white',
               size="small"
               color="primary"
               aria-label="add"
-              sx={{ width:'35px', 
+              sx={{ 
+              width:'35px', 
               height:'0px', 
               marginLeft:'10px',
               background: 'linear-gradient(345deg, #166ffa 30%, #3081ff 70%)',
               color: 'white', }}
             >
-              <AddIcon fontSize="1.25rem" />
+              <AddIcon />
             </Fab>
           </div>
           <div
