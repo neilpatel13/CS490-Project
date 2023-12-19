@@ -850,7 +850,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
     {task.taskName}
   </div>
   
-  <div style={{ position: 'absolute', left: '500px', top: '9px', display: 'flex', alignItems: 'center'}}>
+  <div style={{ position: 'absolute', left: '450px', top: '9px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
                         {expandedTasks.includes(task._id) ?
@@ -990,8 +990,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
           top: "5%",
           backgroundColor: "#e6ecfc",
           borderRadius: "10px",
-          padding: "15px",
-          width: "40vw",
+          padding: "30px",
           height: "7vh",
         }}
       >
@@ -1237,7 +1236,7 @@ color: 'white',
                             border: `1px solid ${
                               !event.isFromTask ? "#D3D3D3" : "#007BFF"
                             }`,
-                            padding: "7px",
+                            padding: "6px",
                             marginBottom: "5px",
                             backgroundColor: "#fff",
                             width: "34vw", // Ensure full width

@@ -125,7 +125,7 @@ body {
 
 #innerBox, #innerBoxOne, #innerBoxTwo {
   min-height: 7rem !important; /* Adjust as needed */
-  min-width: 38rem !important; /* Adjust as needed */
+  min-width: 35rem !important; /* Adjust as needed */
 }
 
 
