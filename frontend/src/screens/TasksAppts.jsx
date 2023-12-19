@@ -1012,7 +1012,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleMonthDecrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "30px",
+              fontSize: "25px",
               marginLeft: "10px",
             }}
           >
@@ -1041,7 +1041,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleMonthIncrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "30px",
+              fontSize: "25px",
               marginLeft: "5px",
             }}
           >
@@ -1052,7 +1052,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleDayDecrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "30px",
+              fontSize: "25px",
               marginLeft: "10px",
             }}
           >
@@ -1079,7 +1079,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleDayIncrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "30px",
+              fontSize: "25px",
               marginLeft: "5px",
             }}
           >
@@ -1090,7 +1090,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleYearDecrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "30px",
+              fontSize: "25px",
               marginLeft: "10px",
             }}
           >
@@ -1118,7 +1118,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             onClick={handleYearIncrement}
             style={{
               fontFamily: "DM Sans",
-              fontSize: "30px",
+              fontSize: "25px",
               marginLeft: "5px",
             }}
           >
