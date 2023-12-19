@@ -6,8 +6,7 @@ import moment from 'moment-timezone';
 // Add a new task
 export const addTask = asyncHandler(async (req, res) => {
     if (!req.user) {
-        res.status(401);
-        throw new Error('Not authorized, no user found');
+        res.status(401).json({ 'message': 'Not authorized, no user found' });
     }
     const { taskName, priority, notes, numberOfTimers, date } = req.body;
 
