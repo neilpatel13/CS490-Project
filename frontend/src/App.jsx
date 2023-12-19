@@ -1,5 +1,5 @@
 // App.jsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ResetPasswordPage from './components/ResetPasswordPage';
@@ -13,6 +13,7 @@ import EmailVerification from './components/EmailVerification';
 import TasksAppts from './screens/TasksAppts.jsx';
 
 
+
 // Other imports...
 
 const App = () => {
@@ -20,7 +21,7 @@ const App = () => {
     <Router>
       <ToastContainer />
       <Routes>
-        <Route index element={<HomeScreen />} />
+        <Route path="/" element={<Navigate replace to="/login" />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/register" element={<RegisterScreen />} />
