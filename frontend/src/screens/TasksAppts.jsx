@@ -78,7 +78,7 @@ const TasksAppts = () => {
 
     const [triggerFetch, setTriggerFetch] = useState(false);
     const [dialogOpen, setDialogOpen ] = useState(false);
-    const [expandedTask, setExpandedTask] = useState(null);
+    const [expandedTasks, setExpandedTasks] = useState([]);
 
     // adding some logic for focus time here
     const [modalOpen, setModalOpen] = useState(false);
@@ -185,10 +185,14 @@ const handleTitleClick = (task) => {
     
 
 //toggle expanded task
-const handleTaskClick = (taskId) => {
-  setExpandedTask((prevExpandedTask) =>
-      prevExpandedTask === taskId ? null : taskId
-  );
+const handleTaskClick = (id) => {
+  setExpandedTasks((prevTasks) => {
+    if (prevTasks.includes(id)) {
+      return prevTasks.filter((taskId) => taskId !== id);
+    } else {
+      return [...prevTasks, id];
+    }
+  });
 };
 
 //handling priority 
@@ -355,10 +359,10 @@ const [logoutApiCall] = useLogoutMutation();
             <div className="taskHeader">
             <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
   <div onClick={() => handleIconClick(task)}>
-    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
   </div>
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
@@ -367,7 +371,7 @@ const [logoutApiCall] = useLogoutMutation();
   <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
-                        {expandedTask === task._id ? 
+                        {expandedTasks.includes(task._id) ?
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
@@ -375,7 +379,7 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
 </div>
     </div>
-    {expandedTask === task._id && (
+    {expandedTasks.includes(task._id) && (
       <div className="taskDetails">
         <div id='break' className='taskBreak'/>
         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
@@ -404,10 +408,10 @@ const [logoutApiCall] = useLogoutMutation();
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
   <div onClick={() => handleIconClick(task)}>
-    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
   </div>
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
@@ -415,7 +419,7 @@ const [logoutApiCall] = useLogoutMutation();
   <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
-                        {expandedTask === task._id ? 
+                        {expandedTasks.includes(task._id) ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
@@ -423,7 +427,7 @@ const [logoutApiCall] = useLogoutMutation();
       </div>
 </div>
                     </div>
-                    {expandedTask === task._id && (
+                    {expandedTasks.includes(task._id) && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
@@ -454,10 +458,10 @@ const [logoutApiCall] = useLogoutMutation();
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
   <div onClick={() => handleIconClick(task)}>
-    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 16, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
   </div>
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
@@ -465,7 +469,7 @@ const [logoutApiCall] = useLogoutMutation();
   <div style={{ position: 'absolute', left: '400px', display: 'flex', alignItems: 'center'}}>
                         <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
-                        {expandedTask === task._id ? 
+                        {expandedTasks.includes(task._id) ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
                         : 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem',transform:"rotate(270deg)"}}/>}
@@ -473,7 +477,7 @@ const [logoutApiCall] = useLogoutMutation();
                         </div>
 </div>
                     </div>
-                    {expandedTask === task._id && (
+                    {expandedTasks.includes(task._id) && (
                       <div className="taskDetails">
                         <div id='break' className='taskBreak'/>
                         <p>Number of Pomodoro Timers (25 mins each):&emsp;&emsp;&emsp; &emsp; &emsp; &emsp; &emsp;<span style={{color:'#FE754D', fontWeight: 'bold'}}>{task.timer}</span></p>
