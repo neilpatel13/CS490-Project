@@ -1214,9 +1214,9 @@ color: 'white',
                   <div
                     key={index}
                     data-testid="time-slot"
-                    style={{ height: "40px", display: "flex" }}
+                    style={{ height: "40px", display: "flex"}}
                   >
-                    <div style={{ width: "50px", height: "50px" }}>
+                    <div style={{ width: "50px", height: "50px"}}>
                       {timeSlot.hour}
                     </div>
 
@@ -1224,8 +1224,8 @@ color: 'white',
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        marginLeft: "25px",
-                        marginTop: "10px",
+                        marginLeft: "10px",
+                        marginTop: "0px",
                         flex: "1",
                       }}
                     >
@@ -1236,11 +1236,10 @@ color: 'white',
                             border: `1px solid ${
                               !event.isFromTask ? "#D3D3D3" : "#007BFF"
                             }`,
-                            borderRadius: "5px",
-                            padding: "5px",
+                            padding: "2px",
                             marginBottom: "5px",
                             backgroundColor: "#fff",
-                            width: "100%", // Ensure full width
+                            width: "34vw", // Ensure full width
                           }}
                         >
                           {event.summary}
