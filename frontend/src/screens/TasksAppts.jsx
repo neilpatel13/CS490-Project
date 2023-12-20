@@ -895,7 +895,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
   </div>
-  <div style={{ position: 'absolute', left: '500px', top: '9px', display: 'flex', alignItems: 'center'}}>                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+  <div style={{ position: 'absolute', left: '450px', top: '9px', display: 'flex', alignItems: 'center'}}>                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
                         {expandedTasks.includes(task._id) ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
@@ -943,7 +943,7 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
   </div>
-  <div style={{ position: 'absolute', left: '500px', top: '9px', display: 'flex', alignItems: 'center'}}>                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
+  <div style={{ position: 'absolute', left: '450px', top: '9px', display: 'flex', alignItems: 'center'}}>                        <OpenWithIcon style={{ color: '#292D32', fontSize: '1.25rem', top: '15.75%', marginRight: '15px'}}/>
                         <div style={{marginTop: '-3px'}} onClick={() => handleTaskClick(task._id)}>
                         {expandedTasks.includes(task._id) ? 
                         <ExpandCircleDownOutlinedIcon style={{ color: '#292D32', fontSize: '1.25rem'}}/> 
