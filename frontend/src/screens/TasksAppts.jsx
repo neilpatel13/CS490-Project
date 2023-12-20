@@ -840,10 +840,10 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
             <div className="taskHeader">
             <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
   <div onClick={() => handleIconClick(task)}>
-    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize: 18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize: 18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize: 18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize: 18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
   </div>
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
@@ -887,10 +887,10 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
   <div onClick={() => handleIconClick(task)}>
-    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize:18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize:18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize:18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize:18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
   </div>
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
@@ -935,10 +935,10 @@ const groupedTasks = tasks ? tasks.reduce((acc,task) => {
                     <div className="taskHeader">
                     <div style={{ position: 'relative', display:'flex', alignItems:'center' }}>
   <div onClick={() => handleIconClick(task)}>
-    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
-    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize:18, color: 'black', marginRight: '12px' }} />}
+    {task.state === 'not started' && <RadioButtonUncheckedIcon style={{ fontSize:18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
+    {task.state === 'in progress' && <HourglassEmptyIcon style={{ fontSize:18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
+    {task.state === 'complete' && <CheckCircleOutlineIcon style={{ fontSize:18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
+    {task.state === 'rolled over' && <SyncAltIcon style={{ fontSize:18, color: 'black', marginRight: '12px', marginTop: "-5px" }} />}
   </div>
   <div className="taskTitle" onClick={() => handleTitleClick(task)}>
     {task.taskName}
