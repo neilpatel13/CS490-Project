@@ -90,7 +90,6 @@ export const updatePriority = asyncHandler(async (req, res) => {
 });
 
 // Get tasks for a specific date
-// Get tasks for a specific date
 export const getTasksByDate = asyncHandler(async (req, res) => {
     const { date } = req.query; // Assuming date is in 'YYYY-MM-DD' format
     const userDate = moment.utc(date).startOf('day').toDate(); // Start of the user-selected day in UTC
@@ -103,17 +102,15 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
     // Current date in UTC
     const currentDateUTC = moment.utc().startOf('day');
 
-    if (currentDateUTC.isSame(userDate)) {
-        // If the selected date is the current date, fetch all tasks from the current date and incomplete tasks from previous dates
-        query.$or = [
-            { date: { $gte: userDate, $lt: nextDay } },
-            { state: { $ne: 'complete' }, date: { $lt: userDate } }
-        ];
+    if (currentDateUTC.isSame(userDate) || currentDateUTC.isBefore(userDate)) {
+        // If the selected date is the current or a future date, fetch only tasks created on the selected date
+        query.date = { $gte: userDate, $lt: nextDay };
     } else {
-        // For past dates, fetch both incomplete and complete tasks, but exclude 'complete' tasks that were not created on their respective dates
+        // For previous dates fetch all tasks that have any other state than 'complete' from and before that day. 
+        // and fetch tasks with 'complete' state but only the completed ones created on that day.
         query.$or = [
-            { state: { $ne: 'complete' }, date: { $lt: nextDay } },
-            { state: 'complete', date: { $gte: userDate, $lt: nextDay } }
+            { date: { $lte: userDate }, state: { $ne: 'complete' } },
+            { date: { $gte: userDate, $lt: nextDay }, state: 'complete' }
         ];
     }
 
